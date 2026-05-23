@@ -1,0 +1,76 @@
+'use client'
+
+import type { CartItem as CartItemType } from '@/types'
+import { formatPrice } from '@/lib/utils'
+import { useCartStore } from '@/store/cartStore'
+import { Minus, Plus, X } from 'lucide-react'
+
+interface CartItemProps {
+  item: CartItemType
+}
+
+export function CartItem({ item }: CartItemProps) {
+  const updateQty = useCartStore((s) => s.updateQty)
+  const remove    = useCartStore((s) => s.remove)
+
+  return (
+    <div className="flex gap-3 py-4 border-b border-lm last:border-0">
+      {/* Image */}
+      <div
+        className="w-16 h-20 shrink-0 rounded-card overflow-hidden flex items-center justify-center text-2xl"
+        style={{ background: 'linear-gradient(135deg, #EDE9E4 0%, #D8D4CE 100%)' }}
+      >
+        <span>{item.emoji}</span>
+      </div>
+
+      {/* Details */}
+      <div className="flex-1 min-w-0 flex flex-col gap-1">
+        <div className="flex items-start justify-between gap-2">
+          <h4 className="font-serif text-[0.95rem] font-[500] text-deep leading-tight truncate">
+            {item.name}
+          </h4>
+          <button
+            onClick={() => remove(item.id)}
+            className="shrink-0 text-mauve hover:text-deep transition-colors p-0.5"
+            aria-label="Remove item"
+          >
+            <X size={13} />
+          </button>
+        </div>
+
+        <p className="font-sans text-[0.72rem] text-mauve">Size: {item.size}</p>
+
+        {item.isCustom && (
+          <p className="font-sans text-[0.68rem] text-rose">Custom Build</p>
+        )}
+
+        <div className="flex items-center justify-between mt-auto pt-1">
+          {/* Qty controls */}
+          <div className="flex items-center border border-lm rounded-[2px] overflow-hidden">
+            <button
+              onClick={() => updateQty(item.id, -1)}
+              className="w-7 h-7 flex items-center justify-center text-mauve hover:bg-blush transition-colors"
+              aria-label="Decrease quantity"
+            >
+              <Minus size={11} />
+            </button>
+            <span className="w-7 text-center font-sans text-[0.78rem] text-deep">
+              {item.qty}
+            </span>
+            <button
+              onClick={() => updateQty(item.id, 1)}
+              className="w-7 h-7 flex items-center justify-center text-mauve hover:bg-blush transition-colors"
+              aria-label="Increase quantity"
+            >
+              <Plus size={11} />
+            </button>
+          </div>
+
+          <span className="font-sans text-[0.9rem] text-deep">
+            {formatPrice(item.price * item.qty)}
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}

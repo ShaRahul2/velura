@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
+@theme {
+  /* ── Colors — Onyx & Pearl ──────────────────── */
+  --color-rose:  #B8A898;
+  --color-blush: #EDE9E4;
+  --color-deep:  #0F0D0B;
+  --color-cream: #F8F6F3;
+  --color-mauve: #6B6058;
+  --color-gold:  #9A8878;
+  --color-lm:    #D8D4CE;
+
+  /* ── Semantic aliases ─────────────────────────── */
+  --color-accent:     #B8A898;
+  --color-surface:    #EDE9E4;
+  --color-foreground: #0F0D0B;
+  --color-background: #F8F6F3;
+  --color-muted:      #6B6058;
+  --color-border:     #D8D4CE;
+
+  /* ── Nav (always dark) ────────────────────────── */
+  --color-nav-bg:     rgba(15,13,11,0.96);
+  --color-nav-border: rgba(184,168,152,0.18);
+  --color-nav-text:   rgba(237,233,228,0.55);
+  --color-nav-active: #EDE9E4;
+
+  /* ── Typography ───────────────────────────────── */
+  --font-sans:  var(--font-dm-sans), 'DM Sans', sans-serif;
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', serif;
+
+  /* ── Border radius — editorial sharp corners ──── */
+  --radius-btn:    3px;
+  --radius-card:   4px;
+  --radius-badge:  2px;
+  --radius-input:  3px;
+  --radius-drawer: 0px;
+  --radius-pill:   50px;
+
+  /* ── Shadows (near-black only) ────────────────── */
+  --shadow-card:    0 2px 12px rgba(15,13,11,0.06);
+  --shadow-drawer: -6px 0 32px rgba(15,13,11,0.18);
+  --shadow-overlay: 0 4px 20px rgba(15,13,11,0.28);
+  --shadow-tag:     0 4px 18px rgba(15,13,11,0.08);
+  --shadow-toast:   0 4px 20px rgba(15,13,11,0.30);
+
+  /* ── Letter spacing ───────────────────────────── */
+  --tracking-logo:  0.22em;
+  --tracking-label: 0.14em;
+  --tracking-btn:   0.12em;
+  --tracking-wide:  0.18em;
+}
+
+/* CSS custom properties for direct var() use in arbitrary values */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --rose:  #B8A898;
+  --blush: #EDE9E4;
+  --deep:  #0F0D0B;
+  --cream: #F8F6F3;
+  --mauve: #6B6058;
+  --gold:  #9A8878;
+  --lm:    #D8D4CE;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--cream);
+  color: var(--deep);
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
 }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--lm); border-radius: 2px; }
