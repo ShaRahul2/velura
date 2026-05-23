@@ -1,5 +1,8 @@
 import type { Product } from '@/types'
 
+const U = (id: string, w = 800, h = 1066) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`
+
 export const products: Product[] = [
   {
     id: 1,
@@ -17,9 +20,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '28A–44DD',
     images: [
-      '/images/placeholders/feathersoft-front.jpg',
-      '/images/placeholders/feathersoft-back.jpg',
-      '/images/placeholders/feathersoft-lifestyle.jpg',
+      U('1558618666-fcd25c85cd64'),
+      U('1445205170230-053b83016050'),
+      U('1503341504253-dff4815485f1'),
     ],
   },
   {
@@ -38,9 +41,9 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–42D',
     images: [
-      '/images/placeholders/morningdew-front.jpg',
-      '/images/placeholders/morningdew-back.jpg',
-      '/images/placeholders/morningdew-lifestyle.jpg',
+      U('1509631179647-0177331693ae'),
+      U('1551803091-e20673f15770'),
+      U('1491553895911-0055eca6402d'),
     ],
   },
   {
@@ -59,9 +62,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–44DD',
     images: [
-      '/images/placeholders/nudesense-front.jpg',
-      '/images/placeholders/nudesense-back.jpg',
-      '/images/placeholders/nudesense-lifestyle.jpg',
+      U('1526510747491-58f928ec870f'),
+      U('1587614382346-4ec70e388b28'),
+      U('1548199973-03cce0bbc87b'),
     ],
   },
   {
@@ -80,9 +83,9 @@ export const products: Product[] = [
     support: 'High',
     sizes: '30B–38DD',
     images: [
-      '/images/placeholders/velvetplunge-front.jpg',
-      '/images/placeholders/velvetplunge-back.jpg',
-      '/images/placeholders/velvetplunge-lifestyle.jpg',
+      U('1515886657613-9f3515b0c78f'),
+      U('1573496359142-b8d87734a5a2'),
+      U('1602810318383-e386cc2a3ccf'),
     ],
   },
   {
@@ -101,9 +104,9 @@ export const products: Product[] = [
     support: 'High',
     sizes: '32A–40DD',
     images: [
-      '/images/placeholders/goldenhour-front.jpg',
-      '/images/placeholders/goldenhour-back.jpg',
-      '/images/placeholders/goldenhour-lifestyle.jpg',
+      U('1508214751196-bcfd4ca60f91'),
+      U('1516914589923-f105f1535f88'),
+      U('1554568218-0f1715e72254'),
     ],
   },
   {
@@ -122,9 +125,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–42DD',
     images: [
-      '/images/placeholders/floralluxe-front.jpg',
-      '/images/placeholders/floralluxe-back.jpg',
-      '/images/placeholders/floralluxe-lifestyle.jpg',
+      U('1520342868574-5fa3804e551c'),
+      U('1538481199705-c710c4e965fc'),
+      U('1445205170230-053b83016050'),
     ],
   },
   {
@@ -143,9 +146,9 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '32A–40DD',
     images: [
-      '/images/placeholders/silkdream-front.jpg',
-      '/images/placeholders/silkdream-back.jpg',
-      '/images/placeholders/silkdream-lifestyle.jpg',
+      U('1511285605577-4d62fb50d2f7'),
+      U('1469334031218-e382a71b716b'),
+      U('1520342868574-5fa3804e551c'),
     ],
   },
   {
@@ -164,9 +167,9 @@ export const products: Product[] = [
     support: 'High',
     sizes: '30B–42DD',
     images: [
-      '/images/placeholders/armorx-front.jpg',
-      '/images/placeholders/armorx-back.jpg',
-      '/images/placeholders/armorx-lifestyle.jpg',
+      U('1571019613454-1cb2f99b2d8b'),
+      U('1518611012118-696072aa579a'),
+      U('1544216717-3bbf52512659'),
     ],
   },
   {
@@ -185,9 +188,9 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–38DD',
     images: [
-      '/images/placeholders/zenflow-front.jpg',
-      '/images/placeholders/zenflow-back.jpg',
-      '/images/placeholders/zenflow-lifestyle.jpg',
+      U('1434682881908-b43d0467b798'),
+      U('1544216717-3bbf52512659'),
+      U('1571019613454-1cb2f99b2d8b'),
     ],
   },
   {
@@ -206,9 +209,9 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–40DD',
     images: [
-      '/images/placeholders/cloudlift-front.jpg',
-      '/images/placeholders/cloudlift-back.jpg',
-      '/images/placeholders/cloudlift-lifestyle.jpg',
+      U('1491553895911-0055eca6402d'),
+      U('1526510747491-58f928ec870f'),
+      U('1548199973-03cce0bbc87b'),
     ],
   },
   {
@@ -227,9 +230,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–44DD',
     images: [
-      '/images/placeholders/bareease-front.jpg',
-      '/images/placeholders/bareease-back.jpg',
-      '/images/placeholders/bareease-lifestyle.jpg',
+      U('1551803091-e20673f15770'),
+      U('1503341504253-dff4815485f1'),
+      U('1587614382346-4ec70e388b28'),
     ],
   },
   {
@@ -248,9 +251,9 @@ export const products: Product[] = [
     support: 'High',
     sizes: '34C–50H',
     images: [
-      '/images/placeholders/curvelove-front.jpg',
-      '/images/placeholders/curvelove-back.jpg',
-      '/images/placeholders/curvelove-lifestyle.jpg',
+      U('1544216717-3bbf52512659'),
+      U('1548199973-03cce0bbc87b'),
+      U('1491553895911-0055eca6402d'),
     ],
   },
   {
@@ -269,9 +272,9 @@ export const products: Product[] = [
     support: 'High',
     sizes: '34B–48G',
     images: [
-      '/images/placeholders/softcurve-front.jpg',
-      '/images/placeholders/softcurve-back.jpg',
-      '/images/placeholders/softcurve-lifestyle.jpg',
+      U('1602810318383-e386cc2a3ccf'),
+      U('1516914589923-f105f1535f88'),
+      U('1554568218-0f1715e72254'),
     ],
   },
   {
@@ -290,9 +293,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '32A–40DD',
     images: [
-      '/images/placeholders/ivorybloom-front.jpg',
-      '/images/placeholders/ivorybloom-back.jpg',
-      '/images/placeholders/ivorybloom-lifestyle.jpg',
+      U('1511285605577-4d62fb50d2f7'),
+      U('1538481199705-c710c4e965fc'),
+      U('1526510747491-58f928ec870f'),
     ],
   },
   {
@@ -311,9 +314,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '32B–40DD',
     images: [
-      '/images/placeholders/moonlitrose-front.jpg',
-      '/images/placeholders/moonlitrose-back.jpg',
-      '/images/placeholders/moonlitrose-lifestyle.jpg',
+      U('1469334031218-e382a71b716b'),
+      U('1511285605577-4d62fb50d2f7'),
+      U('1558618666-fcd25c85cd64'),
     ],
   },
 ]

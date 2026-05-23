@@ -35,7 +35,7 @@ export default async function ProductPage({ params }: PageProps) {
     <div className="max-w-6xl mx-auto px-6 md:px-10 py-12">
       {/* Product */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 mb-20">
-        <ImageGallery emoji={product.emoji} name={product.name} />
+        <ImageGallery images={product.images} name={product.name} />
         <ProductDetail product={product} />
       </div>
 

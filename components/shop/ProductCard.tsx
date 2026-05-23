@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Product } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
@@ -71,37 +72,27 @@ export function ProductCard({ product }: ProductCardProps) {
       <article className="flex flex-col gap-3">
 
         {/* ── Image area ── */}
-        <div className="relative aspect-[3/4] rounded-card overflow-hidden shadow-card">
-          {/* Base gradient */}
-          <div className="absolute inset-0" style={{ background: style.bg }} />
-          {/* Overlay pattern */}
-          <div className="absolute inset-0 opacity-80" style={{ background: style.pattern }} />
+        <div className="relative aspect-[3/4] rounded-card overflow-hidden shadow-card bg-blush">
+          {/* Real photo */}
+          <Image
+            src={product.images[0]}
+            alt={product.name}
+            fill
+            sizes="(max-width: 768px) 50vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
 
-          {/* Emoji — centred, large */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span
-              className="select-none transition-transform duration-500 group-hover:scale-110"
-              style={{
-                fontSize: 'clamp(3rem, 8vw, 4.5rem)',
-                filter: 'drop-shadow(0 8px 20px rgba(15,13,11,0.18))',
-              }}
-              aria-hidden="true"
-            >
-              {product.emoji}
-            </span>
-          </div>
-
-          {/* Sub label — fabric */}
+          {/* Subtle gradient overlay at bottom for legibility */}
           <div
-            className="absolute bottom-3 left-3 right-3 flex items-end justify-between"
-          >
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(15,13,11,0.45) 0%, transparent 45%)' }}
+          />
+
+          {/* Fabric label */}
+          <div className="absolute bottom-3 left-3">
             <span
               className="font-sans text-[0.6rem] tracking-label uppercase px-2 py-1 rounded-[2px]"
-              style={{
-                background: isDark ? 'rgba(237,233,228,0.12)' : 'rgba(15,13,11,0.07)',
-                color: isDark ? 'rgba(237,233,228,0.7)' : '#6B6058',
-                backdropFilter: 'blur(4px)',
-              }}
+              style={{ background: 'rgba(248,246,243,0.85)', color: '#6B6058', backdropFilter: 'blur(4px)' }}
             >
               {product.fabric}
             </span>
@@ -118,8 +109,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
             <button
               onClick={handleQuickAdd}
-              className="w-full font-sans text-[0.72rem] tracking-btn uppercase py-3 transition-all duration-200 hover:tracking-wide"
-              style={{ background: isDark ? 'rgba(237,233,228,0.92)' : 'rgba(15,13,11,0.88)', color: isDark ? '#0F0D0B' : '#EDE9E4' }}
+              className="w-full font-sans text-[0.72rem] tracking-btn uppercase py-3 transition-all duration-200 hover:tracking-wide bg-cream/90 text-deep backdrop-blur-sm"
             >
               Add to Bag
             </button>
