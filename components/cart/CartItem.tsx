@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import type { CartItem as CartItemType } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/store/cartStore'
@@ -17,10 +18,19 @@ export function CartItem({ item }: CartItemProps) {
     <div className="flex gap-3 py-4 border-b border-lm last:border-0">
       {/* Image */}
       <div
-        className="w-16 h-20 shrink-0 rounded-card overflow-hidden flex items-center justify-center text-2xl"
-        style={{ background: 'linear-gradient(135deg, #EDE9E4 0%, #D8D4CE 100%)' }}
+        className="w-16 h-20 shrink-0 rounded-card overflow-hidden relative bg-blush flex items-center justify-center"
       >
-        <span>{item.emoji}</span>
+        {item.images?.[0] ? (
+          <Image
+            src={item.images[0]}
+            alt={item.name}
+            fill
+            sizes="64px"
+            className="object-cover"
+          />
+        ) : (
+          <span className="text-2xl">{item.emoji}</span>
+        )}
       </div>
 
       {/* Details */}

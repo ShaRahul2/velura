@@ -52,6 +52,7 @@ interface BuilderStore extends BuilderState {
   setSupport: (support: string | null) => void
   setFabric: (fabric: string | null) => void
   setColor: (color: string | null) => void
+  setFitUnit: (unit: 'cm' | 'in') => void
   reset: () => void
 }
 
@@ -91,6 +92,7 @@ export const useBuilderStore = create<BuilderStore>()((set, get) => ({
   setFabric: (fabric) =>
     set((state) => ({ fabric, price: calculatePrice({ ...state, fabric }) })),
   setColor: (color) => set(() => ({ color })),
+  setFitUnit: (fitUnit) => set(() => ({ fitUnit })),
   reset: () => set({ ...initialState, price: BASE_PRICE }),
 }))
 
