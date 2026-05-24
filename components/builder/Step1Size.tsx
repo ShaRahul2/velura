@@ -7,7 +7,7 @@ const BANDS = ['28', '30', '32', '34', '36', '38', '40', '42', '44']
 const CUPS  = ['AA', 'A', 'B', 'C', 'D', 'DD', 'DDD', 'G']
 
 export function Step1Size() {
-  const { sizeMode, band, cup, fitUnit, setSizeMode, setBand, setCup } = useBuilderStore()
+  const { sizeMode, band, cup, fitUnit, setSizeMode, setBand, setCup, setFitUnit } = useBuilderStore()
 
   const [bust, setBust]           = useState('')
   const [underbust, setUnderbust] = useState('')
@@ -113,7 +113,7 @@ export function Step1Size() {
             {(['cm', 'in'] as const).map((u) => (
               <button
                 key={u}
-                onClick={() => useBuilderStore.getState().setSizeMode('fit')}
+                onClick={() => setFitUnit(u)}
                 className="h-7 px-3 font-sans text-[0.65rem] tracking-btn uppercase"
                 style={{
                   borderRadius: 3,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import type { ProductCategory } from '@/types'
 
 const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
@@ -17,7 +17,6 @@ const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
 const SUPPORT = ['Light', 'Medium', 'High']
 
 export function FilterSidebar() {
-  const router = useSearchParams()
   const pathname = '/shop'
   const searchParams = useSearchParams()
   const activeCat = searchParams.get('cat') ?? 'all'
