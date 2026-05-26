@@ -3,7 +3,30 @@ import type { Product } from '@/types'
 const U = (id: string, w = 800, h = 1066) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`
 
+// ── Image inventory (all brand-safe: product flat-lays or lingerie-only shots)
+//
+//  PRODUCT-ONLY (no people, no brand logos):
+//  tbKpfNvpq4Y  bra laying on bed — minimal, neutral surface
+//  RmttRpsyjb0  white brassiere on white textile — seamless/everyday
+//  47N0f0XOsHw  black-and-pink bra on white textile — structured, glamour
+//  AdjyrNhFVPI  assorted bra + sport bra flat lay — range/overview
+//  tFbsY14l-io  black lace bra on white paper — lace detail
+//  slCC8-LEJ_E  black lace bra on white table — structured lace
+//  _0k3MLWaSyU  black lace bra beside white flowers — floral, romantic
+//  2XaxD_LyxZk  blue lace bra on white table — lace, Floral Luxe
+//  f9ZalyUbcRk  bras hanging on a clothes line — airy, everyday
+//  tjOKfGLN5To  lingerie flat lay with spring flowers — romantic/bridal
+//
+//  LINGERIE-ONLY MODEL SHOTS (no branded clothing/accessories visible):
+//  3t8NAMZew9k  woman in bra top, sitting on bed — everyday lifestyle
+//  mqBEBXiBQvI  woman in white lace brassiere & panty set — bridal/silk
+//  2qsmezj9WEA  woman in white lace top with veil — bridal editorial
+//  eya7vX50lb0  woman in white lace top — bridal/moonlit lifestyle
+//  5jWt-kClzt8  woman in white lace — delicate lace detail
+//  E93sod49phw  curvy woman — body-positive, plus-size
+
 export const products: Product[] = [
+  // ── EVERYDAY ─────────────────────────────────────────────────────────────────
   {
     id: 1,
     name: 'FeatherSoft',
@@ -20,9 +43,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '28A–44DD',
     images: [
-      U('1568441556126-f36ae0900180'),
-      U('1566447172003-b861a3a44ae7'),
-      U('1601393710008-984348f7447b'),
+      U('tbKpfNvpq4Y'),   // bra on bed — minimal, soft surface
+      U('RmttRpsyjb0'),   // white bra on white textile — everyday clean
+      U('3t8NAMZew9k'),   // worn lifestyle — second-skin feel
     ],
   },
   {
@@ -41,9 +64,9 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–42D',
     images: [
-      U('1622254953856-fa097c9eef72'),
-      U('1572109754335-3807540beef2'),
-      U('1640765937555-6f413ed1d936'),
+      U('_0k3MLWaSyU'),   // lace bra with white flowers — morning, romantic
+      U('f9ZalyUbcRk'),   // bras on clothes line — airy, morning light
+      U('tFbsY14l-io'),   // lace detail flat lay — tonal lace touches
     ],
   },
   {
@@ -62,11 +85,13 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–44DD',
     images: [
-      U('1574886720975-4a489591a4a8'),
-      U('1570724097412-dca3aa07af77'),
-      U('1525171254930-643fc658b64e'),
+      U('AdjyrNhFVPI'),   // neutral-toned bra flat lay — nude range
+      U('RmttRpsyjb0'),   // white/nude bra on white — invisible feel
+      U('tbKpfNvpq4Y'),   // product on surface — minimal
     ],
   },
+
+  // ── PUSH-UP ───────────────────────────────────────────────────────────────────
   {
     id: 4,
     name: 'Velvet Plunge',
@@ -83,9 +108,9 @@ export const products: Product[] = [
     support: 'High',
     sizes: '30B–38DD',
     images: [
-      U('1584061554353-f8c337f5dbb9'),
-      U('1599836641623-a596a2c44abc'),
-      U('1656587132121-aaccc57589cf'),
+      U('47N0f0XOsHw'),   // dark structured bra on white — evening glamour
+      U('slCC8-LEJ_E'),   // black lace bra on table — velvet/editorial
+      U('tFbsY14l-io'),   // lace texture detail
     ],
   },
   {
@@ -104,11 +129,13 @@ export const products: Product[] = [
     support: 'High',
     sizes: '32A–40DD',
     images: [
-      U('1643201523264-b368be40aa7c'),
-      U('1561375958-669d8413fa06'),
-      U('1610241519159-8a62634bac9a'),
+      U('tjOKfGLN5To'),   // lingerie flat lay with flowers — warm, golden
+      U('47N0f0XOsHw'),   // structured bra — padded cup detail
+      U('3t8NAMZew9k'),   // worn — golden-hour lifestyle
     ],
   },
+
+  // ── LACE ──────────────────────────────────────────────────────────────────────
   {
     id: 6,
     name: 'Floral Luxe',
@@ -125,9 +152,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–42DD',
     images: [
-      U('1556337137-c7de215dfa78'),
-      U('1642945680515-faada4c0ca7b'),
-      U('1620900128850-b12749d73093'),
+      U('2XaxD_LyxZk'),   // blue lace bra on white table — French lace product
+      U('_0k3MLWaSyU'),   // lace bra with flowers — floral editorial
+      U('tFbsY14l-io'),   // lace detail flat lay — underwire structure
     ],
   },
   {
@@ -146,11 +173,13 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '32A–40DD',
     images: [
-      U('1626781232026-32a00f19ed5f'),
-      U('1644945591588-dd44c3c257b0'),
-      U('1519644473771-e45d361c9bb8'),
+      U('mqBEBXiBQvI'),   // woman in white lace brassiere — silk-lace editorial
+      U('RmttRpsyjb0'),   // white bra on white — silk unlined feel
+      U('5jWt-kClzt8'),   // white lace detail — delicate cups
     ],
   },
+
+  // ── SPORTS ───────────────────────────────────────────────────────────────────
   {
     id: 8,
     name: 'ArmorX',
@@ -167,9 +196,9 @@ export const products: Product[] = [
     support: 'High',
     sizes: '30B–42DD',
     images: [
-      U('1606902965551-dce093cda6e7'),
-      U('1682523426986-92746735ccc2'),
-      U('1604603565810-9f2a167d6b6e'),
+      U('f9ZalyUbcRk'),   // bras on clothes line — airy, compression context
+      U('AdjyrNhFVPI'),   // assorted bra flat lay — includes sport bra
+      U('tbKpfNvpq4Y'),   // minimal product shot
     ],
   },
   {
@@ -188,11 +217,13 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–38DD',
     images: [
-      U('1594730036615-a0f77497536f'),
-      U('1595909315417-2edd382a56dc'),
-      U('1661181358305-c53572a4a103'),
+      U('RmttRpsyjb0'),   // clean white bra — minimal, zen feel
+      U('f9ZalyUbcRk'),   // bras hanging — light, easy movement
+      U('AdjyrNhFVPI'),   // flat lay range — sports context
     ],
   },
+
+  // ── SEAMLESS ──────────────────────────────────────────────────────────────────
   {
     id: 10,
     name: 'CloudLift',
@@ -209,9 +240,9 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–40DD',
     images: [
-      U('1572358764342-612d02e2d2d2'),
-      U('1584061516874-ed56f46d8e13'),
-      U('1564485377543-cec21c4d1792'),
+      U('slCC8-LEJ_E'),   // bra on white table — seamless, minimal
+      U('RmttRpsyjb0'),   // white bra on white textile — edge-free
+      U('tbKpfNvpq4Y'),   // product on surface — barely-there
     ],
   },
   {
@@ -230,11 +261,13 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–44DD',
     images: [
-      U('1707914882389-c5ff15b51e97'),
-      U('1523263771891-38ab7e5af356'),
-      U('1568663521381-33b7c467fda0'),
+      U('3t8NAMZew9k'),   // woman in bra on bed — smooth, wireless lifestyle
+      U('RmttRpsyjb0'),   // clean minimal product — disappears under clothes
+      U('tbKpfNvpq4Y'),   // product only — wireless
     ],
   },
+
+  // ── PLUS ──────────────────────────────────────────────────────────────────────
   {
     id: 12,
     name: 'CurveLove',
@@ -251,9 +284,9 @@ export const products: Product[] = [
     support: 'High',
     sizes: '34C–50H',
     images: [
-      U('1597297260448-3cc8d0a38388'),
-      U('1635863637085-caaf8653938b'),
-      U('1597299001669-6454fec8ac25'),
+      U('E93sod49phw'),   // curvy woman — body-positive, confident
+      U('_0k3MLWaSyU'),   // lace bra with flowers — stretch lace detail
+      U('tFbsY14l-io'),   // lace flat lay — fabric quality
     ],
   },
   {
@@ -272,11 +305,13 @@ export const products: Product[] = [
     support: 'High',
     sizes: '34B–48G',
     images: [
-      U('1597460970375-1449df2fb73a'),
-      U('1643201523264-b368be40aa7c'),
-      U('1566447172003-b861a3a44ae7'),
+      U('tFbsY14l-io'),   // structured lace bra — wired cup detail
+      U('E93sod49phw'),   // curvy model — inclusive sizing
+      U('slCC8-LEJ_E'),   // bra on table — supportive structure
     ],
   },
+
+  // ── BRIDAL ────────────────────────────────────────────────────────────────────
   {
     id: 14,
     name: 'Ivory Bloom',
@@ -293,9 +328,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '32A–40DD',
     images: [
-      U('1549488497-94b52bddac5d'),
-      U('1556953336-d4f940b602ac'),
-      U('1526404746352-668ded9b50ab'),
+      U('2qsmezj9WEA'),   // woman with bridal veil in white lace — ivory editorial
+      U('mqBEBXiBQvI'),   // white lace brassiere set — product
+      U('tjOKfGLN5To'),   // romantic lingerie with flowers — bridal mood
     ],
   },
   {
@@ -314,9 +349,9 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '32B–40DD',
     images: [
-      U('1632729331940-9b9938de92b7'),
-      U('1626213216833-63ef82d1d18d'),
-      U('1549488497-94b52bddac5d'),
+      U('eya7vX50lb0'),   // woman in white lace — moonlit, dusky editorial
+      U('5jWt-kClzt8'),   // delicate lace — rose-toned detail
+      U('mqBEBXiBQvI'),   // white lace brassiere — satin product
     ],
   },
 ]
