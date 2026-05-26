@@ -49,14 +49,29 @@ export const CB_FABRIC_OPTIONS = [
 ]
 
 export const CB_COLOR_OPTIONS = [
-  { id: 'rose',  label: 'Pearl',         color: '#B8A898' },
-  { id: 'cream', label: 'Warm Stone',    color: '#EDE9E4' },
-  { id: 'deep',  label: 'Near Black',    color: '#0F0D0B' },
-  { id: 'blush', label: 'Warm White',    color: '#F8F6F3' },
-  { id: 'mauve', label: 'Warm Grey',     color: '#6B6058' },
-  { id: 'black', label: 'Onyx',          color: '#181818' },
-  { id: 'nude',  label: 'Nude',          color: '#C9B4A0' },
-  { id: 'ivory', label: 'Ivory',         color: '#F5EFE6' },
-  { id: 'smoke', label: 'Smoke',         color: '#9A8878' },
-  { id: 'slate', label: 'Slate',         color: '#5A5550' },
+  // ── Neutrals ─────────────────────────────────────────────────
+  { id: 'ivory',      label: 'Ivory',         color: '#F5EFE6' },
+  { id: 'blush',      label: 'Warm White',    color: '#F8F6F3' },
+  { id: 'nude',       label: 'Nude',          color: '#C9B4A0' },
+  { id: 'cream',      label: 'Warm Stone',    color: '#EDE9E4' },
+  { id: 'champagne',  label: 'Champagne',     color: '#D8C4A0' },
+  { id: 'rose',       label: 'Pearl',         color: '#B8A898' },
+  { id: 'smoke',      label: 'Smoke',         color: '#9A8878' },
+  { id: 'mauve',      label: 'Warm Grey',     color: '#6B6058' },
+  { id: 'slate',      label: 'Slate',         color: '#5A5550' },
+  { id: 'deep',       label: 'Near Black',    color: '#0F0D0B' },
+  { id: 'black',      label: 'Onyx',          color: '#181818' },
+
+  // ── Pinks & Reds ─────────────────────────────────────────────
+  { id: 'pink',       label: 'Baby Pink',     color: '#EDAFC0' },
+  { id: 'blushrose',  label: 'Blush Rose',    color: '#E07890' },
+  { id: 'red',        label: 'Crimson',       color: '#B02030' },
+  { id: 'burgundy',   label: 'Burgundy',      color: '#7A1C2E' },
+
+  // ── Blues & Greens ───────────────────────────────────────────
+  { id: 'lavender',   label: 'Lavender',      color: '#C5B2D5' },
+  { id: 'navy',       label: 'Navy',          color: '#1A2E52' },
+  { id: 'cobalt',     label: 'Cobalt',        color: '#2555A0' },
+  { id: 'sage',       label: 'Sage',          color: '#8DB09A' },
+  { id: 'forest',     label: 'Forest',        color: '#2D5C44' },
 ]

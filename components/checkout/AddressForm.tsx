@@ -29,6 +29,8 @@ function Field({
       </label>
       <input
         type={type}
+        name={name}
+        autoComplete={name}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}

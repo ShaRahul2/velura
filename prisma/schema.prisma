@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ────────────────────────────────────────────────────────────────────
+
+enum ProductCategory {
+  everyday
+  pushup
+  lace
+  sports
+  seamless
+  plus
+  bridal
+}
+
+enum BadgeType {
+  Bestseller
+  New
+  Sale
+  Premium
+  ComfortFit
+}
+
+enum SupportLevel {
+  Light
+  Medium
+  High
+}
+
+enum ImageType {
+  front
+  back
+  lifestyle
+  detail
+}
+
+// ── Category ─────────────────────────────────────────────────────────────────
+// One row per product category. Slug is the canonical identifier used in URLs
+// and filters. Adding a new category is a data change, not a schema migration.
+
+model Category {
+  id          Int             @id @default(autoincrement())
+  slug        ProductCategory @unique
+  label       String
+  description String?
+  imageUrl    String?
+  sortOrder   Int             @default(0)
+  products    Product[]
+}
+
+// ── Product ──────────────────────────────────────────────────────────────────
+// Core product record. `rating` and `reviewCount` are denormalised aggregates
+// recomputed whenever a Review is created/deleted (a background job or trigger).
+// `sizes` is a display-only label — not queryable by individual size.
+
+model Product {
+  id          Int            @id @default(autoincrement())
+  name        String
+  story       String
+  sub         String
+  price       Int
+  oldPrice    Int?
+  emoji       String
+  badge       BadgeType?
+  categoryId  Int
+  category    Category       @relation(fields: [categoryId], references: [id])
+  rating      Float
+  reviewCount Int
+  fabric      String
+  support     SupportLevel
+  sizes       String
+  isActive    Boolean        @default(true)
+  images      ProductImage[]
+  reviews     Review[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([categoryId])
+  @@index([support])
+  @@index([price])
+  @@index([rating])
+}
+
+// ── ProductImage ──────────────────────────────────────────────────────────────
+// Each image is its own row. `position` controls display order (0 = hero).
+// `type` allows the gallery to distinguish front/back/lifestyle shots.
+// `blurDataURL` stores a tiny base64 placeholder for the primary image.
+
+model ProductImage {
+  id          Int       @id @default(autoincrement())
+  productId   Int
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String
+  key         String?
+  alt         String?
+  position    Int       @default(0)
+  type        ImageType @default(front)
+  isPrimary   Boolean   @default(false)
+  blurDataURL String?
+
+  @@index([productId, position])
+}
+
+// ── Review ────────────────────────────────────────────────────────────────────
+// Individual customer review. `rating` is 1–5. The product's `rating` /
+// `reviewCount` fields are denormalised summaries of this table.
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating    Int
+  body      String?
+  author    String
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}

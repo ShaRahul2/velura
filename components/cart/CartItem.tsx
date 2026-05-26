@@ -40,7 +40,7 @@ export function CartItem({ item }: CartItemProps) {
             {item.name}
           </h4>
           <button
-            onClick={() => remove(item.id)}
+            onClick={() => remove(item.id, item.size)}
             className="shrink-0 text-mauve hover:text-deep transition-colors p-0.5"
             aria-label="Remove item"
           >
@@ -58,7 +58,7 @@ export function CartItem({ item }: CartItemProps) {
           {/* Qty controls */}
           <div className="flex items-center border border-lm rounded-[2px] overflow-hidden">
             <button
-              onClick={() => updateQty(item.id, -1)}
+              onClick={() => updateQty(item.id, item.size, -1)}
               className="w-7 h-7 flex items-center justify-center text-mauve hover:bg-blush transition-colors"
               aria-label="Decrease quantity"
             >
@@ -68,7 +68,7 @@ export function CartItem({ item }: CartItemProps) {
               {item.qty}
             </span>
             <button
-              onClick={() => updateQty(item.id, 1)}
+              onClick={() => updateQty(item.id, item.size, 1)}
               className="w-7 h-7 flex items-center justify-center text-mauve hover:bg-blush transition-colors"
               aria-label="Increase quantity"
             >

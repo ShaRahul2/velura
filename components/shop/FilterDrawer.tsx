@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { X } from 'lucide-react'
 import type { ProductCategory } from '@/types'
 
@@ -19,13 +19,14 @@ const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
 const SUPPORT = ['Light', 'Medium', 'High']
 
 interface FilterDrawerProps {
-  open: boolean
+  open:    boolean
   onClose: () => void
 }
 
 export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
-  const searchParams = useSearchParams()
-  const activeCat    = searchParams.get('cat') ?? 'all'
+  const router        = useRouter()
+  const searchParams  = useSearchParams()
+  const activeCat     = searchParams.get('cat') ?? 'all'
   const activeSupport = searchParams.get('support') ?? ''
 
   useEffect(() => {
@@ -39,8 +40,13 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
     if (value === 'all' || value === '') params.delete(key)
     else params.set(key, value)
     params.delete('page')
-    window.history.pushState(null, '', `/shop?${params.toString()}`)
-    window.dispatchEvent(new Event('popstate'))
+    const qs = params.toString()
+    router.push(qs ? `/shop?${qs}` : '/shop')
+  }
+
+  function clearAll() {
+    router.push('/shop')
+    onClose()
   }
 
   return (
@@ -116,11 +122,7 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
         {/* Footer — clear all */}
         <div className="px-6 py-5 border-t border-lm shrink-0">
           <button
-            onClick={() => {
-              window.history.pushState(null, '', '/shop')
-              window.dispatchEvent(new Event('popstate'))
-              onClose()
-            }}
+            onClick={clearAll}
             className="w-full h-10 font-sans text-[0.75rem] tracking-btn uppercase border border-lm text-mauve hover:border-deep hover:text-deep transition-all duration-200"
             style={{ borderRadius: 3 }}
           >

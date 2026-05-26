@@ -5,68 +5,13 @@ import Image from 'next/image'
 import type { Product } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
-import { useCartStore } from '@/store/cartStore'
-import { useUiStore } from '@/store/uiStore'
 import { Star } from 'lucide-react'
-
-/* Per-category visual treatment */
-const CAT_STYLE: Record<string, { bg: string; isDark: boolean; pattern: string }> = {
-  everyday: {
-    bg: 'linear-gradient(145deg, #F4F0EC 0%, #E5DED6 100%)',
-    isDark: false,
-    pattern: 'radial-gradient(circle at 70% 30%, rgba(184,168,152,0.18) 0%, transparent 60%)',
-  },
-  pushup: {
-    bg: 'linear-gradient(145deg, #1E1916 0%, #2E2420 100%)',
-    isDark: true,
-    pattern: 'radial-gradient(circle at 30% 70%, rgba(184,168,152,0.12) 0%, transparent 55%)',
-  },
-  lace: {
-    bg: 'linear-gradient(145deg, #FAF6F0 0%, #EFE8DF 100%)',
-    isDark: false,
-    pattern: 'radial-gradient(circle at 65% 35%, rgba(154,136,120,0.15) 0%, transparent 55%)',
-  },
-  sports: {
-    bg: 'linear-gradient(145deg, #252018 0%, #1A1710 100%)',
-    isDark: true,
-    pattern: 'linear-gradient(135deg, rgba(216,212,206,0.06) 25%, transparent 25%, transparent 75%, rgba(216,212,206,0.06) 75%)',
-  },
-  seamless: {
-    bg: 'linear-gradient(145deg, #EDE9E4 0%, #DDD8D0 100%)',
-    isDark: false,
-    pattern: 'radial-gradient(ellipse at 50% 60%, rgba(184,168,152,0.2) 0%, transparent 65%)',
-  },
-  plus: {
-    bg: 'linear-gradient(145deg, #F2EBE3 0%, #E2D8CC 100%)',
-    isDark: false,
-    pattern: 'radial-gradient(circle at 40% 40%, rgba(184,168,152,0.18) 0%, transparent 60%)',
-  },
-  bridal: {
-    bg: 'linear-gradient(145deg, #FEFCFA 0%, #F5EEE5 100%)',
-    isDark: false,
-    pattern: 'radial-gradient(circle at 60% 40%, rgba(196,184,168,0.22) 0%, transparent 58%)',
-  },
-}
 
 interface ProductCardProps {
   product: Product
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const add      = useCartStore((s) => s.add)
-  const openCart = useUiStore((s) => s.openCart)
-  const addToast = useUiStore((s) => s.addToast)
-
-  const style   = CAT_STYLE[product.cat] ?? CAT_STYLE.everyday
-  const isDark  = style.isDark
-
-  function handleQuickAdd(e: React.MouseEvent) {
-    e.preventDefault()
-    add({ id: product.id, name: product.name, price: product.price, qty: 1, size: 'M', emoji: product.emoji, images: product.images })
-    addToast(`${product.name} added to bag`)
-    openCart()
-  }
-
   return (
     <Link href={`/shop/${product.id}`} className="group block">
       <article className="flex flex-col gap-3">
@@ -105,14 +50,11 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
 
-          {/* Quick-add on hover */}
+          {/* Quick-view on hover — navigates to product detail where user picks a real size */}
           <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
-            <button
-              onClick={handleQuickAdd}
-              className="w-full font-sans text-[0.72rem] tracking-btn uppercase py-3 transition-all duration-200 hover:tracking-wide bg-cream/90 text-deep backdrop-blur-sm"
-            >
-              Add to Bag
-            </button>
+            <div className="w-full font-sans text-[0.72rem] tracking-btn uppercase py-3 text-center bg-cream/90 text-deep backdrop-blur-sm pointer-events-none">
+              View Product
+            </div>
           </div>
         </div>
 

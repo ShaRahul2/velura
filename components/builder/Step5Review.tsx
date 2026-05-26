@@ -5,17 +5,15 @@ import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { formatPrice } from '@/lib/utils'
 import { CB_COLOR_OPTIONS } from '@/data/builderOptions'
-import Link from 'next/link'
 
 const BASE_PRICE = 999
 
 interface ReviewRowProps {
   label: string
   value: string | null
-  base?: number
 }
 
-function ReviewRow({ label, value, base }: ReviewRowProps) {
+function ReviewRow({ label, value }: ReviewRowProps) {
   return (
     <div className="flex items-center justify-between py-2.5 border-b border-lm last:border-0">
       <span className="font-sans text-[0.68rem] tracking-label uppercase text-mauve">{label}</span>
