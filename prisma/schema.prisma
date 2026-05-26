@@ -123,3 +123,86 @@ model Review {
 
   @@index([productId])
 }
+
+// ── Order ─────────────────────────────────────────────────────────────────────
+// One row per customer order. Address fields are denormalised (no reuse needed).
+// Totals are recalculated server-side on creation — client values are ignored.
+
+enum OrderStatus {
+  pending
+  confirmed
+  shipped
+  delivered
+  cancelled
+}
+
+enum PaymentMethod {
+  upi
+  card
+  netbanking
+  cod
+}
+
+model Order {
+  id            String        @id
+  status        OrderStatus   @default(pending)
+  paymentMethod PaymentMethod
+  couponCode    String?
+
+  // Totals — all in INR paise-less integers
+  subtotal      Int
+  shipping      Int
+  discount      Int           @default(0)
+  total         Int
+
+  // Shipping address (denormalised)
+  firstName     String
+  lastName      String
+  email         String
+  phone         String
+  addressLine   String
+  city          String
+  state         String
+  pinCode       String
+
+  items         OrderItem[]
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ── OrderItem ─────────────────────────────────────────────────────────────────
+// One row per line in an order. `productId` is null for custom bra items.
+// `priceAtOrder` locks the price at the time of purchase.
+
+model OrderItem {
+  id           Int      @id @default(autoincrement())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    Int?
+  name         String
+  size         String
+  qty          Int
+  priceAtOrder Int
+  customSpec   Json?
+
+  @@index([orderId])
+}
+
+// ── SavedDesign ───────────────────────────────────────────────────────────────
+// Builder designs saved by the user. specHash deduplicates identical specs so
+// the AI image is generated at most once per unique configuration.
+
+model SavedDesign {
+  id         String   @id @default(cuid())
+  specHash   String   @unique
+  specJson   Json
+  previewUrl String?
+  createdAt  DateTime @default(now())
+
+  @@index([specHash])
+}

@@ -1,53 +1,58 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { CartItem } from '@/types'
 import { formatPrice } from '@/lib/utils'
-
-const FREE_SHIPPING_THRESHOLD = 999
-const SHIPPING_COST           = 79
-
-// Coupons live here — single source of truth
-const COUPONS: Record<string, { type: 'pct' | 'flat'; value: number }> = {
-  VELURA10: { type: 'pct',  value: 0.10 },
-  FIRST50:  { type: 'flat', value: 50   },
-}
+import { calcShipping, calcDiscount, FREE_SHIPPING_THRESHOLD } from '@/lib/coupons'
 
 interface Props {
-  items:    CartItem[]
-  onTotals: (totals: { subtotal: number; shipping: number; discount: number; total: number }) => void
+  items:     CartItem[]
+  onTotals:  (t: { subtotal: number; shipping: number; discount: number; total: number }) => void
+  onCoupon?: (code: string | null) => void
 }
 
-export function OrderSummaryPanel({ items, onTotals }: Props) {
+export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
   const [couponInput, setCouponInput] = useState('')
   const [appliedCode, setAppliedCode] = useState<string | null>(null)
   const [couponError, setCouponError] = useState('')
+  const [applying,    setApplying]    = useState(false)
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST
+  const shipping = calcShipping(subtotal)
+  // Discount recomputed client-side from validated code + current subtotal
+  const discount = calcDiscount(appliedCode, subtotal)
+  const total    = Math.max(0, subtotal + shipping - discount)
 
-  const coupon   = appliedCode ? COUPONS[appliedCode] : null
-  const discount = coupon
-    ? coupon.type === 'pct'
-      ? Math.round(subtotal * coupon.value)
-      : Math.min(coupon.value, subtotal)
-    : 0
-  const total = Math.max(0, subtotal + shipping - discount)
+  // Keep parent in sync on every render (covers mount + item changes + coupon changes)
+  useEffect(() => {
+    onTotals({ subtotal, shipping, discount, total })
+    // onTotals is setTotals from parent useState — stable reference, safe to omit
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotal, shipping, discount, total])
 
-  // Keep parent in sync whenever totals change
-  // (called via layout effect would cause extra renders — inline is fine for this size)
-
-  function handleApply() {
+  async function handleApply() {
     const code = couponInput.trim().toUpperCase()
-    if (COUPONS[code]) {
-      setAppliedCode(code)
-      setCouponError('')
-      onTotals({ subtotal, shipping, discount: COUPONS[code].type === 'pct'
-        ? Math.round(subtotal * COUPONS[code].value)
-        : Math.min(COUPONS[code].value, subtotal), total })
-    } else {
-      setCouponError('Invalid coupon code.')
+    if (!code) return
+    setApplying(true)
+    setCouponError('')
+    try {
+      const res  = await fetch('/api/coupons/validate', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ code, subtotal }),
+      })
+      const data = await res.json() as { data?: { code: string; discount: number }; error?: string }
+      if (!res.ok || data.error) {
+        setCouponError(data.error ?? 'Invalid coupon code.')
+        return
+      }
+      setAppliedCode(data.data!.code)
+      onCoupon?.(data.data!.code)
+    } catch {
+      setCouponError('Failed to validate coupon. Please try again.')
+    } finally {
+      setApplying(false)
     }
   }
 
@@ -55,7 +60,7 @@ export function OrderSummaryPanel({ items, onTotals }: Props) {
     setAppliedCode(null)
     setCouponInput('')
     setCouponError('')
-    onTotals({ subtotal, shipping, discount: 0, total: subtotal + shipping })
+    onCoupon?.(null)
   }
 
   return (
@@ -121,10 +126,11 @@ export function OrderSummaryPanel({ items, onTotals }: Props) {
             />
             <button
               onClick={handleApply}
-              className="h-9 px-4 font-sans text-[0.7rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200"
+              disabled={applying}
+              className="h-9 px-4 font-sans text-[0.7rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200 disabled:opacity-50"
               style={{ borderRadius: 3 }}
             >
-              Apply
+              {applying ? '…' : 'Apply'}
             </button>
           </div>
           {couponError && (

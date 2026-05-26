@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+export const dynamic = 'force-dynamic'
+
+import { useState, FormEvent, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const router       = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl  = searchParams.get('callbackUrl') ?? '/admin/products'
@@ -95,5 +97,13 @@ export default function AdminLoginPage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   )
 }
