@@ -27,12 +27,13 @@ export default function CheckoutPage() {
   const clearCart = useCartStore((s) => s.clear)
   const addToast  = useUiStore((s) => s.addToast)
 
-  const [address, setAddress] = useState<Address>(EMPTY_ADDRESS)
-  const [payment, setPayment] = useState('upi')
-  const [loading, setLoading] = useState(false)
+  const [address,    setAddress]    = useState<Address>(EMPTY_ADDRESS)
+  const [payment,    setPayment]    = useState('upi')
+  const [loading,    setLoading]    = useState(false)
+  const [couponCode, setCouponCode] = useState<string | null>(null)
 
   // Totals are owned by OrderSummaryPanel (single source of truth).
-  // The panel calls onTotals whenever coupon/discount changes.
+  // The panel calls onTotals on every render so this is always current.
   const [totals, setTotals] = useState({
     subtotal: 0,
     shipping: 0,
@@ -65,10 +66,7 @@ export default function CheckoutPage() {
           })),
           address,
           paymentMethod: payment,
-          subtotal:  totals.subtotal,
-          shipping:  totals.shipping,
-          discount:  totals.discount,
-          total:     totals.total,
+          couponCode,
         }),
       })
 
@@ -134,7 +132,11 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right — order summary (owns total calculation) */}
-          <OrderSummaryPanel items={items} onTotals={setTotals} />
+          <OrderSummaryPanel
+            items={items}
+            onTotals={setTotals}
+            onCoupon={setCouponCode}
+          />
         </div>
       </form>
     </div>

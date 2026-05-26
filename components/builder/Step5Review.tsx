@@ -5,6 +5,7 @@ import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { formatPrice } from '@/lib/utils'
 import { CB_COLOR_OPTIONS } from '@/data/builderOptions'
+import { buildVisualSpec, specToHash } from '@/lib/builderVisualSpec'
 
 const BASE_PRICE = 999
 
@@ -34,8 +35,13 @@ export function Step5Review() {
   const size = band && cup ? `${band}${cup}` : '—'
 
   function handleAddToCart() {
+    // Deterministic spec-based ID: same config → same cart line (qty++).
+    // Shifted into 1_000_000+ range so it can never collide with product IDs (1–15).
+    const spec   = buildVisualSpec({ sizeMode: store.sizeMode, band, cup, braType, strapStyle, padding, underwire, closure, support, fabric, color, fitUnit: store.fitUnit })
+    const hash   = specToHash(spec)
+    const itemId = 1_000_000 + parseInt(hash.slice(0, 7), 16)
     add({
-      id:       Date.now(),
+      id:       itemId,
       name:     `Custom ${braType ? braType.charAt(0).toUpperCase() + braType.slice(1) : ''} Bra`,
       price,
       qty:      1,
