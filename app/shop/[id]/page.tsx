@@ -1,35 +1,43 @@
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
-import { products } from '@/data/products'
+import { getProductById, getRelatedProducts, getAllProductIds } from '@/lib/products'
 import { ImageGallery } from '@/components/product/ImageGallery'
 import { ProductDetail } from '@/components/product/ProductDetail'
 import { ProductCard } from '@/components/shop/ProductCard'
+import type { ProductCategory } from '@/types'
 
 interface PageProps {
   params: Promise<{ id: string }>
 }
 
-export function generateStaticParams() {
-  return products.map((p) => ({ id: String(p.id) }))
+// React cache() deduplicates this call within a single request —
+// generateMetadata and the page component both call it but only one DB query runs.
+const getCachedProduct = cache((id: number) => getProductById(id))
+
+export async function generateStaticParams() {
+  const ids = await getAllProductIds()
+  return ids.map((id) => ({ id: String(id) }))
 }
 
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params
-  const product = products.find((p) => p.id === Number(id))
+  const product = await getCachedProduct(Number(id))
   if (!product) return {}
   return {
-    title: `${product.name} — VELURA`,
+    title:       `${product.name} — VELURA`,
     description: product.story,
   }
 }
 
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params
-  const product = products.find((p) => p.id === Number(id))
+
+  // getCachedProduct is deduplicated — generateMetadata already called it,
+  // so this resolves instantly from React's request cache (no second DB query).
+  const product = await getCachedProduct(Number(id))
   if (!product) notFound()
 
-  const related = products
-    .filter((p) => p.cat === product.cat && p.id !== product.id)
-    .slice(0, 4)
+  const related = await getRelatedProducts(product.id, product.cat as ProductCategory)
 
   return (
     <div className="max-w-6xl mx-auto px-6 md:px-10 py-12">

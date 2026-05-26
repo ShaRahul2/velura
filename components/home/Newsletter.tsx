@@ -47,7 +47,7 @@ export function Newsletter() {
             className="font-serif text-[1.1rem] italic"
             style={{ color: '#EDE9E4' }}
           >
-            You're on the list.
+            You&apos;re on the list.
           </p>
         ) : (
           <form onSubmit={handleSubmit} className="flex gap-2 max-w-sm mx-auto">

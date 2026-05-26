@@ -21,26 +21,24 @@ const EMPTY_ADDRESS: Address = {
   pinCode:     '',
 }
 
-const COUPONS: Record<string, number> = {
-  VELURA10: 0.1,
-  FIRST50:  50,
-}
-
 export default function CheckoutPage() {
-  const router     = useRouter()
-  const items      = useCartStore((s) => s.items)
-  const clearCart  = useCartStore((s) => s.clear)
-  const addToast   = useUiStore((s) => s.addToast)
+  const router    = useRouter()
+  const items     = useCartStore((s) => s.items)
+  const clearCart = useCartStore((s) => s.clear)
+  const addToast  = useUiStore((s) => s.addToast)
 
-  const [address, setAddress]     = useState<Address>(EMPTY_ADDRESS)
-  const [payment, setPayment]     = useState('upi')
-  const [coupon, setCoupon]       = useState('')
-  const [discount, setDiscount]   = useState(0)
-  const [loading, setLoading]     = useState(false)
+  const [address, setAddress] = useState<Address>(EMPTY_ADDRESS)
+  const [payment, setPayment] = useState('upi')
+  const [loading, setLoading] = useState(false)
 
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0)
-  const shipping = subtotal >= 999 ? 0 : 79
-  const total    = Math.max(0, subtotal + shipping - discount)
+  // Totals are owned by OrderSummaryPanel (single source of truth).
+  // The panel calls onTotals whenever coupon/discount changes.
+  const [totals, setTotals] = useState({
+    subtotal: 0,
+    shipping: 0,
+    discount: 0,
+    total:    0,
+  })
 
   function isAddressComplete() {
     const { firstName, lastName, email, phone, addressLine, city, state, pinCode } = address
@@ -58,7 +56,7 @@ export default function CheckoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
           items: items.map((i) => ({
-            productId:  i.id,
+            productId:  i.isCustom ? null : i.id,
             name:       i.name,
             qty:        i.qty,
             price:      i.price,
@@ -67,12 +65,22 @@ export default function CheckoutPage() {
           })),
           address,
           paymentMethod: payment,
+          subtotal:  totals.subtotal,
+          shipping:  totals.shipping,
+          discount:  totals.discount,
+          total:     totals.total,
         }),
       })
 
-      const data = await res.json()
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        addToast((err as { error?: string }).error ?? 'Something went wrong. Please try again.')
+        return
+      }
+
+      const data = await res.json() as { data: { orderId: string } }
       clearCart()
-      router.push(`/order-confirmed?id=${data.data?.orderId ?? 'ORD0000'}`)
+      router.push(`/order-confirmed?order=${data.data.orderId}`)
     } catch {
       addToast('Something went wrong. Please try again.')
     } finally {
@@ -111,7 +119,7 @@ export default function CheckoutPage() {
           {/* Left — forms */}
           <div className="space-y-8">
             <AddressForm value={address} onChange={setAddress} />
-            <PaymentMethods selected={payment} onSelect={setPayment} orderTotal={total} />
+            <PaymentMethods selected={payment} onSelect={setPayment} orderTotal={totals.total} />
 
             <button
               type="submit"
@@ -119,12 +127,14 @@ export default function CheckoutPage() {
               className="w-full h-12 font-sans text-[0.8rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-40 hover:tracking-wide transition-all duration-200"
               style={{ borderRadius: 3 }}
             >
-              {loading ? 'Placing Order…' : `Place Order · ₹${total.toLocaleString('en-IN')}`}
+              {loading
+                ? 'Placing Order…'
+                : `Place Order · ₹${totals.total.toLocaleString('en-IN')}`}
             </button>
           </div>
 
-          {/* Right — order summary */}
-          <OrderSummaryPanel items={items} />
+          {/* Right — order summary (owns total calculation) */}
+          <OrderSummaryPanel items={items} onTotals={setTotals} />
         </div>
       </form>
     </div>

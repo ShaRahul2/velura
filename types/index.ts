@@ -7,6 +7,19 @@ export type ProductCategory =
   | 'plus'
   | 'bridal'
 
+export type ImageType = 'front' | 'back' | 'lifestyle' | 'detail'
+
+export interface ProductImage {
+  id:          number
+  url:         string
+  key:         string | null
+  alt:         string | null
+  position:    number
+  type:        ImageType
+  isPrimary:   boolean
+  blurDataURL: string | null
+}
+
 export type BadgeType =
   | 'Bestseller'
   | 'New'
@@ -93,6 +106,25 @@ export interface Order {
   shipping: number
   total: number
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered'
+  createdAt: string
+}
+
+export interface Category {
+  id:          number
+  slug:        ProductCategory
+  label:       string
+  description: string | null
+  imageUrl:    string | null
+  sortOrder:   number
+}
+
+export interface Review {
+  id:        number
+  productId: number
+  rating:    number
+  body:      string | null
+  author:    string
+  verified:  boolean
   createdAt: string
 }
 

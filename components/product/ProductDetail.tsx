@@ -11,8 +11,8 @@ import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 
 function parseSizes(range: string): string[] {
-  const bands = [28,30,32,34,36,38,40,42,44]
-  const cups  = ['AA','A','B','C','D','DD','DDD','G']
+  const bands = [28,30,32,34,36,38,40,42,44,46,48,50]
+  const cups  = ['AA','A','B','C','D','DD','DDD','F','G','H']
   const sizes: string[] = []
   const [startStr, endStr] = range.split('–')
   const startBand = parseInt(startStr)

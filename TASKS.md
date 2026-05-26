@@ -1,349 +1,421 @@
 # TASKS.md — Velura Project Work Items
-# ─────────────────────────────────────
-# Format:  [STATUS] TASK-ID  Title
-# Status:  ✅ Done · 🔄 In Progress · 🧪 Testing · ⬜ Not Started · 🚫 Blocked
-# Priority: P0 (launch blocker) · P1 (core feature) · P2 (nice to have)
-# ─────────────────────────────────────
+
+Last updated: 2026-05-26  
+Stack reality: Next.js 16.2.6 · React 19.2.4 · Tailwind CSS v4 · Prisma · Zustand · NextAuth · Cloudinary · @huggingface/inference
+
+Status: ✅ Done · 🔄 In Progress / partial · 🧪 Needs verification · ⬜ Not Started · 🚫 Blocked  
+Priority: P0 launch blocker · P1 core feature · P2 polish / growth
+
+---
+
+## Current Snapshot
+
+- ✅ Full storefront: home, shop, product detail, cart drawer, checkout UI, order-confirmed page.
+- ✅ Admin panel: NextAuth login, product CRUD, Cloudinary image upload/manage.
+- ✅ Custom Bra Builder: 5-step flow, fit calculator, rich deterministic SVG preview, AI preview generation.
+- ✅ AI Visualizer (EPIC 16): `BuilderVisualSpec`, `BraSVG` with 8 cup types + overlays, `/api/builder-preview/generate` with HuggingFace SDK + Pollinations fallback + Cloudinary caching, 20-color palette, fashion-accurate AI prompts.
+- 🔄 Orders are not persisted — `POST /api/orders` returns a timestamp ID without DB writes.
+- 🔄 Saved designs are stubbed — GET returns `[]`, POST stores nothing, no `SavedDesign` Prisma model.
+- 🔄 Coupons are UI-only — client-side state, no `/api/coupons/validate`, no server enforcement.
+- 🔄 Fit calculator has a cm → band conversion bug; full `50H` range not wired in size selectors.
+- 🔄 Cart mutations (remove/qty) operate by `id` only, breaking multi-size items.
+- 🧪 `npm run lint` — last recorded state: 5 warnings, 0 errors (re-verify before build).
+- ⬜ `npm run build` not yet verified against current codebase.
 
 ---
 
 ## EPIC 1 — PROJECT FOUNDATION
-*Estimated: 1 day*
 
-- ✅  FOUND-01   Define brand identity, color tokens, typography system
-- ✅  FOUND-02   Build full HTML prototype (velura-app.html)
-- ✅  FOUND-03   Write product catalog (15 bras with storytelling copy)
-- ✅  FOUND-04   Define TypeScript types (Product, CartItem, Order, BuilderState)
-- ✅  FOUND-05   Write CLAUDE.md project intelligence file
-- ✅  FOUND-06   Write TASKS.md work breakdown (this file)
-- ⬜  FOUND-07   [P0] Scaffold Next.js 14 project with TypeScript + Tailwind
-- ⬜  FOUND-08   [P0] Configure tailwind.config.ts with Velura brand tokens
-- ⬜  FOUND-09   [P0] Set up .env.local and .env.example
-- ⬜  FOUND-10   [P0] Set up ESLint + Prettier config
-- ⬜  FOUND-11   [P1] Install and configure all npm dependencies
-- ⬜  FOUND-12   [P1] Create project folder structure (all directories)
-- ⬜  FOUND-13   [P1] Set up path aliases in tsconfig.json (@/*)
-- ⬜  FOUND-14   [P1] Write global CSS (Tailwind base + brand keyframes + fonts)
-- ⬜  FOUND-15   [P1] Create app/layout.tsx (fonts, metadata, providers wrapper)
-
-### FOUND-07 Setup Command
-```bash
-npx create-next-app@latest velura \
-  --typescript --tailwind --eslint --app \
-  --src-dir=false --import-alias "@/*"
-cd velura
-npm install zustand @prisma/client prisma \
-  cloudinary next-cloudinary \
-  razorpay clsx tailwind-merge lucide-react
-npm install -D @types/node husky lint-staged
-```
+- ✅ FOUND-01 [P0] Define brand identity, color tokens, typography system
+- ✅ FOUND-02 [P0] Build full HTML prototype reference
+- ✅ FOUND-03 [P0] Write 15-product catalog with editorial copy
+- ✅ FOUND-04 [P0] Define TypeScript domain types
+- ✅ FOUND-05 [P0] Write `CLAUDE.md` project intelligence file
+- ✅ FOUND-06 [P0] Write initial `TASKS.md` work breakdown
+- ✅ FOUND-07 [P0] Scaffold Next.js App Router project with TypeScript
+- ✅ FOUND-08 [P0] Configure Tailwind CSS v4 theme tokens in `app/globals.css`
+- ✅ FOUND-09 [P0] Add `.env.example` and local env structure
+- 🔄 FOUND-10 [P0] Configure ESLint; remove remaining lint warnings; add Prettier/lint-staged
+- ✅ FOUND-11 [P1] Install core dependencies
+- ✅ FOUND-12 [P1] Create project folder structure
+- ✅ FOUND-13 [P1] Configure `@/*` path alias
+- ✅ FOUND-14 [P1] Write global CSS tokens, fonts, and keyframes
+- ✅ FOUND-15 [P1] Create `app/layout.tsx` with fonts, metadata, nav, footer, cart, menu, toasts
+- ⬜ FOUND-16 [P1] Replace default `README.md` with Velura setup, DB, admin, and deploy docs
+- ✅ FOUND-17 [P1] Reconcile `TASKS.md` and `CLAUDE.md` to Next 16 / Tailwind v4 reality
 
 ---
 
 ## EPIC 2 — DATA LAYER
-*Estimated: 1–2 days*
 
-### 2A — Static Data (immediate, no DB needed)
-- ✅  DATA-01  [P0] Create types/index.ts with all interfaces from CLAUDE.md §5
-- ✅  DATA-02  [P0] Create data/products.ts with 15-product catalog array
-- ✅  DATA-03  [P1] Create data/builderOptions.ts (CB_BRA_TYPES, CB_STRAPS, etc.)
-- ✅  DATA-04  [P1] Create lib/utils.ts (cn, formatPrice, delay helpers)
-- ✅  DATA-05  [P1] Create lib/fitCalculator.ts (band/cup calculation logic)
+### Static Data
 
-### 2B — Database
-- ⬜  DATA-06  [P0] Write prisma/schema.prisma (Product, Order, OrderItem, SavedDesign)
-- ⬜  DATA-07  [P0] Create Neon PostgreSQL database (or local pg)
-- ⬜  DATA-08  [P0] Set DATABASE_URL in .env.local
-- ⬜  DATA-09  [P0] Run `npx prisma generate` and `npx prisma db push`
-- ⬜  DATA-10  [P0] Write prisma/seed.ts from data/products.ts
-- ⬜  DATA-11  [P0] Run `npx prisma db seed` — verify 15 products in DB
-- ⬜  DATA-12  [P1] Create lib/db.ts (Prisma client singleton, no duplicate connections)
+- ✅ DATA-01 [P0] Create `types/index.ts`
+- ✅ DATA-02 [P0] Create `data/products.ts` 15-product catalog
+- ✅ DATA-03 [P1] Create `data/builderOptions.ts` — updated to 20 colours grouped by family
+- ✅ DATA-04 [P1] Create `lib/utils.ts`
+- ✅ DATA-05 [P1] Create `lib/fitCalculator.ts` baseline calculator
+- 🔄 DATA-05B [P0] Fix fit calculator cm → band conversion bug; extend clamp range to support `50H`
 
-### 2C — API Routes
-- ⬜  DATA-13  [P0] GET  /api/products (filter by cat, sort, paginate)
-- ⬜  DATA-14  [P0] GET  /api/products/[id]
-- ⬜  DATA-15  [P0] POST /api/orders
-- ⬜  DATA-16  [P1] POST /api/fit-calculator
-- ⬜  DATA-17  [P1] GET  /api/saved-designs
-- ⬜  DATA-18  [P1] POST /api/saved-designs
-- ⬜  DATA-19  [P2] POST /api/coupons/validate (replace hardcoded codes)
+### Database
+
+- 🔄 DATA-06 [P0] Prisma schema — Product/Image/Review done; Order, OrderItem, SavedDesign models pending
+- ⬜ DATA-07 [P0] Create/verify Neon PostgreSQL database
+- 🔄 DATA-08 [P0] Set and verify all env vars: `DATABASE_URL`, Cloudinary, HF_TOKEN, NextAuth
+- ⬜ DATA-09 [P0] Run and verify `prisma generate` + `prisma db push`
+- ✅ DATA-10 [P0] Write `prisma/seed.ts`
+- ⬜ DATA-11 [P0] Run `prisma db seed` and verify 15 products in DB
+- ✅ DATA-12 [P1] Create Prisma singleton in `lib/db.ts`
+- ✅ DATA-12B [P1] Add product image metadata: `key`, `isPrimary`, `type`, `position`
+- ⬜ DATA-23 [P0] Add `Order`, `OrderItem`, and `Address` Prisma models
+- ⬜ DATA-24 [P1] Add `SavedDesign` Prisma model: `id`, `specHash`, `specJson`, `previewUrl`, `createdAt`
+
+### API Routes
+
+- ✅ DATA-13 [P0] `GET /api/products` with category/support/sort/page/limit
+- ✅ DATA-14 [P0] `GET /api/products/[id]`
+- 🔄 DATA-15 [P0] `POST /api/orders` — route exists but no DB persistence or server-side validation
+- ✅ DATA-16 [P1] `POST /api/fit-calculator`
+- 🔄 DATA-17 [P1] `GET /api/saved-designs` — returns stub `[]`
+- 🔄 DATA-18 [P1] `POST /api/saved-designs` — returns a fake ID, stores nothing
+- ⬜ DATA-19 [P1] `POST /api/coupons/validate` — missing entirely
+- ✅ DATA-20 [P1] Admin product create/update/delete routes
+- ✅ DATA-21 [P1] Product image upload/signature/list/delete/primary routes
+- ⬜ DATA-22 [P0] Add Zod schema validation for all mutating routes (`/api/orders`, `/api/saved-designs`, `/api/fit-calculator`)
 
 ---
 
 ## EPIC 3 — STATE MANAGEMENT
-*Estimated: 0.5 days*
 
-- ✅  STATE-01  [P0] Create store/cartStore.ts (add, remove, updateQty, clear, total, count)
-- ✅  STATE-02  [P0] Add Zustand persist middleware to cartStore (localStorage)
-- ✅  STATE-03  [P0] Create store/builderStore.ts (BuilderState + price calculator)
-- ✅  STATE-04  [P1] Create store/uiStore.ts (cartOpen, mobileMenuOpen, toast queue)
-- ✅  STATE-05  [P1] Write useCart() convenience hook
-- ✅  STATE-06  [P1] Write useBuilder() convenience hook
-- ⬜  STATE-07  [P2] Add cart item count to browser tab title
+- ✅ STATE-01 [P0] Create `cartStore`
+- ✅ STATE-02 [P0] Persist cart with Zustand `localStorage` middleware
+- ✅ STATE-03 [P0] Create `builderStore` with price calculation
+- ✅ STATE-04 [P1] Create `uiStore`
+- ✅ STATE-05 [P1] Export `useCart`
+- ✅ STATE-06 [P1] Export `useBuilder`
+- ⬜ STATE-07 [P2] Add cart item count to browser tab title
+- ⬜ STATE-08 [P0] Fix cart `remove`/`updateQty` to key on `cartLineId` (`id + size + specHash`) not bare `id`
+- ⬜ STATE-09 [P1] Persist builder draft to `localStorage`; restore on return visit
 
 ---
 
 ## EPIC 4 — UI COMPONENT LIBRARY
-*Estimated: 1 day*
 
-These are the base building blocks. Build these before any page components.
-
-- ⬜  UI-01  [P0] Button.tsx (variants: dark, rose, outline; sizes: sm, md, lg)
-- ⬜  UI-02  [P0] Badge.tsx (Bestseller, New, Sale, Premium, Comfort Fit with colors)
-- ⬜  UI-03  [P0] Skeleton.tsx (product card skeleton, text skeleton)
-- ⬜  UI-04  [P0] Toast.tsx (slide-up, auto-dismiss, HTML content support)
-- ⬜  UI-05  [P1] Modal.tsx (overlay + drawer pattern)
-- ⬜  UI-06  [P1] ProgressBar.tsx (shipping progress, builder step progress)
-- ⬜  UI-07  [P1] SizePill.tsx (toggle active state)
-- ⬜  UI-08  [P1] ColorSwatch.tsx (round dot with active ring)
+- ✅ UI-01 [P0] `Button.tsx`
+- ✅ UI-02 [P0] `Badge.tsx`
+- ✅ UI-03 [P0] `Skeleton.tsx`
+- ✅ UI-04 [P0] `Toast.tsx`
+- ⬜ UI-05 [P1] Shared `Modal/Dialog` primitive with focus trap and Escape close
+- ✅ UI-06 [P1] `ProgressBar.tsx`
+- 🔄 UI-07 [P1] Size selector exists; extract reusable `SizePill` component
+- ✅ UI-08 [P1] Reusable `ColorSwatch` component — extracted inside `Step4FabricColor.tsx`
 
 ---
 
 ## EPIC 5 — LAYOUT COMPONENTS
-*Estimated: 0.5 days*
 
-- ⬜  LAYOUT-01  [P0] Navbar.tsx (logo, nav links, cart icon with badge, hamburger)
-- ⬜  LAYOUT-02  [P0] MobileMenu.tsx (slide-down panel, all nav links)
-- ⬜  LAYOUT-03  [P0] Footer.tsx (4-column grid, social links, copyright)
-- ⬜  LAYOUT-04  [P0] CartDrawer.tsx (right slide-in, ship progress, totals, CTAs)
-- ⬜  LAYOUT-05  [P1] CartItem.tsx (image, name, qty controls, remove)
-- ⬜  LAYOUT-06  [P1] CartSummary.tsx (subtotal, savings, shipping, total row)
+- ✅ LAYOUT-01 [P0] `Navbar.tsx`
+- ✅ LAYOUT-02 [P0] `MobileMenu.tsx`
+- ✅ LAYOUT-03 [P0] `Footer.tsx`
+- ✅ LAYOUT-04 [P0] `CartDrawer.tsx`
+- ✅ LAYOUT-05 [P1] `CartItem.tsx`
+- ✅ LAYOUT-06 [P1] `CartSummary.tsx`
+- ⬜ LAYOUT-07 [P1] Add drawer focus trap, Escape-to-close, and restored focus on trigger
 
 ---
 
 ## EPIC 6 — HOME PAGE
-*Estimated: 1 day*
 
-- ⬜  HOME-01  [P0] app/page.tsx (SSG, compose all sections)
-- ⬜  HOME-02  [P0] HeroSection.tsx (2-col layout, SVG illustration, stats, CTAs)
-- ⬜  HOME-03  [P0] MarqueeBanner.tsx (auto-scrolling trust strip, dark bg)
-- ⬜  HOME-04  [P0] CategoryGrid.tsx (5-card bento grid, links to /shop?cat=)
-- ⬜  HOME-05  [P1] FeaturedProducts.tsx (4 bestsellers, fetch from API)
-- ⬜  HOME-06  [P1] ValuesSection.tsx (4 brand promises, dark bg)
-- ⬜  HOME-07  [P1] Testimonials.tsx (3 review cards)
-- ⬜  HOME-08  [P1] Newsletter.tsx (email capture form, gradient bg)
-- ⬜  HOME-09  [P2] Add Open Graph meta tags to layout.tsx
+- ✅ HOME-01 [P0] `app/page.tsx`
+- ✅ HOME-02 [P0] `HeroSection.tsx`
+- ✅ HOME-03 [P0] `MarqueeBanner.tsx`
+- ✅ HOME-04 [P0] `CategoryGrid.tsx`
+- 🔄 HOME-05 [P1] `FeaturedProducts.tsx` — currently static; wire to DB once orders/DB are stable
+- ✅ HOME-06 [P1] `ValuesSection.tsx`
+- ✅ HOME-07 [P1] `Testimonials.tsx`
+- 🔄 HOME-08 [P1] `Newsletter.tsx` — UI done; backend subscriber capture pending
+- ⬜ HOME-09 [P2] Full Open Graph / Twitter card metadata for home page
 
 ---
 
 ## EPIC 7 — SHOP / PRODUCT LISTING
-*Estimated: 1.5 days*
 
-- ⬜  SHOP-01  [P0] app/shop/page.tsx (ISR, revalidate: 3600, fetch from API)
-- ⬜  SHOP-02  [P0] ProductCard.tsx (image, badge, wish, quick-add, name, story, price, rating)
-- ⬜  SHOP-03  [P0] ProductGrid.tsx (responsive grid, skeleton loading, empty state)
-- ⬜  SHOP-04  [P0] FilterSidebar.tsx (category, size, color — desktop sticky)
-- ⬜  SHOP-05  [P0] SortBar.tsx (sort dropdown, view toggle 2/3 col, item count)
-- ⬜  SHOP-06  [P0] FilterDrawer.tsx (mobile slide-in filter panel)
-- ⬜  SHOP-07  [P0] BuilderPromoBanner.tsx (dark promo strip → /builder)
-- ⬜  SHOP-08  [P1] Implement URL-based filtering (?cat=lace&sort=rating)
-- ⬜  SHOP-09  [P1] Add wishlist toggle with persistent state
-- ⬜  SHOP-10  [P1] Pagination or infinite scroll (page=1&limit=12)
-- ⬜  SHOP-11  [P2] Price range slider filter
+- ✅ SHOP-01 [P0] `app/shop/page.tsx` + `ShopContent.tsx` with `revalidate = 3600`
+- 🔄 SHOP-02 [P0] `ProductCard.tsx` — done; quick-add uses invalid size `'M'` (see SHOP-12)
+- ✅ SHOP-03 [P0] `ProductGrid.tsx`
+- 🔄 SHOP-04 [P0] `FilterSidebar.tsx` — category/support done; size/colour filter pending
+- ✅ SHOP-05 [P0] `SortBar.tsx`
+- ✅ SHOP-06 [P0] `FilterDrawer.tsx`
+- ✅ SHOP-07 [P0] `BuilderPromoBanner.tsx`
+- ✅ SHOP-08 [P1] URL-based filtering for category/support/sort/page
+- ⬜ SHOP-09 [P1] Wishlist toggle with persistent state
+- ✅ SHOP-10 [P1] Pagination
+- ⬜ SHOP-11 [P2] Price range slider filter
+- ⬜ SHOP-12 [P0] Replace quick-add `size: 'M'` with a valid "Choose Size" drawer or remove quick-add
 
 ---
 
 ## EPIC 8 — PRODUCT DETAIL PAGE
-*Estimated: 1 day*
 
-- ⬜  DETAIL-01  [P0] app/shop/[id]/page.tsx (SSG with generateStaticParams)
-- ⬜  DETAIL-02  [P0] ImageGallery.tsx (thumbnail strip, main image, zoom on hover)
-- ⬜  DETAIL-03  [P0] ProductDetail.tsx (name, story, price, badge, fabric, support)
-- ⬜  DETAIL-04  [P0] SizeSelector.tsx (chip grid, selected state, size guide link)
-- ⬜  DETAIL-05  [P0] Add to Cart button with size validation
-- ⬜  DETAIL-06  [P1] ProductMeta.tsx (fabric, support, sizes accordion)
-- ⬜  DETAIL-07  [P1] RelatedProducts.tsx (same category, exclude current)
-- ⬜  DETAIL-08  [P2] Recently viewed (localStorage)
+- ✅ DETAIL-01 [P0] `app/shop/[id]/page.tsx` with `generateStaticParams`
+- ✅ DETAIL-02 [P0] `ImageGallery.tsx`
+- ✅ DETAIL-03 [P0] `ProductDetail.tsx`
+- 🔄 DETAIL-04 [P0] `SizeSelector.tsx` — selection done; range capped at `44DD`, guide missing
+- ✅ DETAIL-05 [P0] Add-to-bag with size validation
+- ⬜ DETAIL-06 [P1] `ProductMeta.tsx` accordions (care, fit guide, returns)
+- ✅ DETAIL-07 [P1] Related products
+- ⬜ DETAIL-08 [P2] Recently viewed
+- ⬜ DETAIL-09 [P0] Extend size display range through `50H` in selector and parser
 
 ---
 
 ## EPIC 9 — CUSTOM BRA BUILDER
-*Estimated: 2 days — most complex feature*
 
-- ⬜  BUILD-01  [P0] app/builder/page.tsx ('use client', step orchestration)
-- ⬜  BUILD-02  [P0] CustomBraBuilder.tsx (state container, step router)
-- ⬜  BUILD-03  [P0] StepBar.tsx (5 steps, active/done/locked states, click to nav)
-- ⬜  BUILD-04  [P0] Step1Size.tsx (SizeSelector chip grid + FitCalculator tab)
-- ⬜  BUILD-05  [P0] Step2BraType.tsx (8 type cards with icons and pricing)
-- ⬜  BUILD-06  [P0] Step3Style.tsx (straps, padding, underwire, closure, support)
-- ⬜  BUILD-07  [P0] Step4FabricColor.tsx (5 fabric cards + 10 color swatches)
-- ⬜  BUILD-08  [P0] Step5Review.tsx (summary grid, breakdown, disclaimer, CTAs)
-- ⬜  BUILD-09  [P0] ProductPreview.tsx (sticky panel, live price, trust strip)
-- ⬜  BUILD-10  [P0] BraSVG.tsx (dynamic SVG: color fill + strap shape variants)
-- ⬜  BUILD-11  [P0] Per-step validation (cannot advance without required selections)
-- ⬜  BUILD-12  [P1] FitCalculator sub-component (bust/underbust → size suggestion)
-- ⬜  BUILD-13  [P1] Save design to localStorage then POST /api/saved-designs
-- ⬜  BUILD-14  [P1] Add custom item to cart (compatible with CartStore)
-- ⬜  BUILD-15  [P2] Animate step transitions (fadeUp between steps)
-- ⬜  BUILD-16  [P2] Share/copy design URL
+- ✅ BUILD-01 [P0] `app/builder/page.tsx`
+- ✅ BUILD-02 [P0] `CustomBraBuilder.tsx` — reactive `useBuilderStore()` hook; "Continue" button bug fixed
+- ✅ BUILD-03 [P0] `StepBar.tsx`
+- ✅ BUILD-04 [P0] `Step1Size.tsx`
+- ✅ BUILD-05 [P0] `Step2BraType.tsx`
+- ✅ BUILD-06 [P0] `Step3Style.tsx`
+- ✅ BUILD-07 [P0] `Step4FabricColor.tsx` — 20-colour grouped picker with labelled families
+- ✅ BUILD-08 [P0] `Step5Review.tsx`
+- ✅ BUILD-09 [P0] `ProductPreview.tsx` — SVG + AI preview toggle, spec-hash change resets AI state
+- ✅ BUILD-10 [P0] `BraSVG.tsx` — 8 cup shapes, strap variants, padding/underwire/closure/fabric/bridal overlays, 20-colour map
+- ✅ BUILD-11 [P0] Per-step validation gates the "Continue" button
+- 🔄 BUILD-12 [P1] Fit calculator sub-flow — sizing math needs cm band fix (see DATA-05B)
+- ⬜ BUILD-13 [P1] Save design: write to `localStorage` then `POST /api/saved-designs` with `previewUrl`
+- 🔄 BUILD-14 [P1] Add custom item to cart — works, but item ID uses `Date.now()` (unstable)
+- ⬜ BUILD-15 [P2] Animate step transitions (fade/slide)
+- ⬜ BUILD-16 [P2] Shareable design URL encoding spec params in query string
+- ⬜ BUILD-17 [P2] Mobile builder preview — show compact sticky summary below step on narrow screens
+- ⬜ BUILD-18 [P1] Stabilize custom cart item ID — use `specHash + timestamp` instead of bare `Date.now()` to avoid ID collision with product IDs
 
 ---
 
 ## EPIC 10 — CHECKOUT
-*Estimated: 1 day*
 
-- ⬜  CHECK-01  [P0] app/checkout/page.tsx ('use client')
-- ⬜  CHECK-02  [P0] AddressForm.tsx (Indian address fields, state dropdown, validation)
-- ⬜  CHECK-03  [P0] PaymentMethods.tsx (card, UPI, net banking, COD radio group)
-- ⬜  CHECK-04  [P0] OrderSummaryPanel.tsx (items, coupon input, totals, place order)
-- ⬜  CHECK-05  [P0] POST /api/orders — create order in DB
-- ⬜  CHECK-06  [P0] app/order-confirmed/page.tsx (success screen, order number)
-- ⬜  CHECK-07  [P1] Coupon code validation (VELURA10, FIRST50)
-- ⬜  CHECK-08  [P1] Form validation with error states (all required fields)
-- ⬜  CHECK-09  [P1] Empty cart guard (redirect to /shop if cart empty)
-- ⬜  CHECK-10  [P2] Razorpay payment gateway integration (lib/razorpay.ts)
-- ⬜  CHECK-11  [P2] Email order confirmation (Resend or Nodemailer)
+- ✅ CHECK-01 [P0] `app/checkout/page.tsx`
+- ✅ CHECK-02 [P0] `AddressForm.tsx`
+- ✅ CHECK-03 [P0] `PaymentMethods.tsx`
+- 🔄 CHECK-04 [P0] `OrderSummaryPanel.tsx` — totals/coupon UI done; coupon state not wired to component
+- 🔄 CHECK-05 [P0] `POST /api/orders` — no DB persistence; must add Order/OrderItem models first
+- ✅ CHECK-06 [P0] `app/order-confirmed/page.tsx`
+- ⬜ CHECK-07 [P0] Wire coupon: connect `OrderSummaryPanel` state → `POST /api/coupons/validate` → checkout total
+- ⬜ CHECK-08 [P1] Field-level validation: email, phone, PIN, UPI ID, COD ≤ ₹5000
+- ✅ CHECK-09 [P1] Empty cart guard
+- ⬜ CHECK-10 [P2] Razorpay create order / verify payment / webhook integration
+- ⬜ CHECK-11 [P2] Email order confirmation (Resend / SendGrid)
+- ⬜ CHECK-12 [P0] Recalculate totals server-side before order creation; never trust client prices
+- ⬜ CHECK-13 [P0] Fix confirmation page query param mismatch — checkout sends `?id=`, confirmation reads `?order=`
 
 ---
 
 ## EPIC 11 — IMAGE SYSTEM
-*Estimated: 0.5–1 day setup + ongoing as photos arrive*
 
-- ⬜  IMG-01  [P0] Create Cloudinary account (free tier: 25GB)
-- ⬜  IMG-02  [P0] Set CLOUDINARY_* env vars
-- ⬜  IMG-03  [P0] Create lib/cloudinary.ts (upload + transform URL helpers)
-- ⬜  IMG-04  [P0] Configure next.config.ts to allow res.cloudinary.com images
-- ⬜  IMG-05  [P0] Create Cloudinary folder: velura/products/
-- ⬜  IMG-06  [P1] Upload placeholder product images (3 per product = 45 images)
-- ⬜  IMG-07  [P1] Update products DB with Cloudinary URLs
-- ⬜  IMG-08  [P1] Generate blurDataURL for each product (base64 tiny placeholder)
-- ⬜  IMG-09  [P2] Product photography brief (angles: front, back, on-body lifestyle)
-- ⬜  IMG-10  [P2] Upload production photography when ready
-
-### next.config.ts image domains
-```ts
-images: {
-  remotePatterns: [{
-    protocol: 'https',
-    hostname: 'res.cloudinary.com',
-  }]
-}
-```
+- ⬜ IMG-01 [P0] Create/verify Cloudinary account
+- 🔄 IMG-02 [P0] Set/verify Cloudinary env vars
+- ✅ IMG-03 [P0] `lib/cloudinary-upload.ts` — upload, delete, signature, URL helper
+- ✅ IMG-04 [P0] Configure `next.config.ts` remote image patterns for `res.cloudinary.com`
+- 🔄 IMG-05 [P0] Cloudinary folder convention defined; production folder verification pending
+- ⬜ IMG-06 [P1] Upload placeholder images for all 15 products (3 per product)
+- 🔄 IMG-07 [P1] DB can store Cloudinary URLs; catalog migration pending
+- ⬜ IMG-08 [P1] Generate `blurDataURL` for each product image
+- ⬜ IMG-09 [P2] Product photography brief (front / back / lifestyle per garment)
+- ⬜ IMG-10 [P2] Upload final production photography (45 images minimum)
+- ✅ IMG-11 [P1] Admin direct upload to Cloudinary
+- ✅ IMG-12 [P1] Admin image manager: list, set primary, delete
 
 ---
 
 ## EPIC 12 — PERFORMANCE & SEO
-*Estimated: 1 day*
 
-- ⬜  PERF-01  [P0] Verify home page is SSG (no 'use client' at page level)
-- ⬜  PERF-02  [P0] Verify shop page is ISR (revalidate: 3600)
-- ⬜  PERF-03  [P0] Verify product pages are SSG (generateStaticParams)
-- ⬜  PERF-04  [P0] All product images use next/image with correct sizes prop
-- ⬜  PERF-05  [P1] Above-fold images have priority={true}
-- ⬜  PERF-06  [P1] Add metadata exports to all page.tsx files (title, description)
-- ⬜  PERF-07  [P1] Add JSON-LD structured data to product detail pages
-- ⬜  PERF-08  [P1] Generate sitemap.xml
-- ⬜  PERF-09  [P2] Run Lighthouse — target 90+ on all metrics
-- ⬜  PERF-10  [P2] Add robots.txt
+- ✅ PERF-01 [P0] Home page is server-rendered (no page-level `use client`)
+- ✅ PERF-02 [P0] Shop page exports `revalidate = 3600`
+- ✅ PERF-03 [P0] Product pages use `generateStaticParams`
+- ✅ PERF-04 [P0] All product images use `next/image`
+- 🔄 PERF-05 [P1] `priority` prop used on detail; above-fold hero/shop audit pending
+- 🔄 PERF-06 [P1] Metadata exists for root/shop/builder/product; checkout/admin noindex pending
+- ⬜ PERF-07 [P1] Product JSON-LD structured data
+- ⬜ PERF-08 [P1] `app/sitemap.ts`
+- ⬜ PERF-09 [P2] Lighthouse score target: 90+ on all public pages
+- ⬜ PERF-10 [P2] `app/robots.ts`
+- ⬜ PERF-11 [P1] Branded `loading.tsx`, `error.tsx`, and `not-found.tsx` under `app/`
 
 ---
 
 ## EPIC 13 — QUALITY & TESTING
-*Estimated: 1 day*
 
-- ⬜  QA-01  [P0] Test all 5 builder steps end-to-end
-- ⬜  QA-02  [P0] Test cart: add, remove, qty change, persist after refresh
-- ⬜  QA-03  [P0] Test checkout form validation (empty, invalid email, short PIN)
-- ⬜  QA-04  [P0] Test mobile layout on 375px, 414px, 768px viewports
-- ⬜  QA-05  [P0] Test all filter combinations in shop page
-- ⬜  QA-06  [P1] Test fit calculator with known size inputs
-- ⬜  QA-07  [P1] Test custom bra add-to-cart (ID conflict, cart render)
-- ⬜  QA-08  [P1] Test free shipping threshold (₹998 vs ₹999 vs ₹1000)
-- ⬜  QA-09  [P1] Test coupon codes (valid, invalid, empty)
-- ⬜  QA-10  [P2] Write unit tests for fitCalculator.ts (jest)
-- ⬜  QA-11  [P2] Write unit tests for price calculation in builderStore.ts
+- 🧪 QA-00 [P0] `npm run lint` — 5 warnings reported in last run; re-verify and reduce to 0
+- 🧪 QA-13 [P0] `npm run build` — not yet run against current codebase; must pass before deploy
+- ⬜ QA-01 [P0] E2E manual: all 5 builder steps → add to cart → checkout
+- ⬜ QA-02 [P0] Cart: add/remove/qty/persist/multi-size/custom-item behavior
+- ⬜ QA-03 [P0] Checkout: validation, server error paths, cart-clear only on success
+- ⬜ QA-04 [P0] Mobile layout smoke: 375px, 414px, 768px
+- ⬜ QA-05 [P0] Shop filter/sort/pagination combinations
+- ⬜ QA-06 [P1] Fit calculator: known cm/in inputs → expected band/cup
+- ⬜ QA-07 [P1] Custom bra cart ID stability (no collision with product IDs)
+- ⬜ QA-08 [P1] Free shipping threshold toggle at ₹999
+- ⬜ QA-09 [P1] Coupon codes: VELURA10, FIRST50
+- ⬜ QA-10 [P2] Unit tests for `fitCalculator.ts`
+- ⬜ QA-11 [P2] Unit tests for builder pricing in `builderStore`
+- ⬜ QA-12 [P1] E2E smoke via Playwright: browse → product → cart → checkout → confirmation
+- ⬜ QA-14 [P1] AI preview: test all 20 colours × 3 bra types that AI renders correctly
+- ⬜ QA-15 [P2] AI prompt QA matrix: sports/high/wide, lace/light/classic, strapless, wirefree/everyday
 
 ---
 
 ## EPIC 14 — DEPLOYMENT
-*Estimated: 0.5 days*
 
-- ⬜  DEPLOY-01  [P0] Create Vercel account, connect GitHub repo
-- ⬜  DEPLOY-02  [P0] Set all environment variables in Vercel dashboard
-- ⬜  DEPLOY-03  [P0] Set DATABASE_URL to Neon production connection string
-- ⬜  DEPLOY-04  [P0] Run `npx prisma db push` on production DB
-- ⬜  DEPLOY-05  [P0] Run `npx prisma db seed` on production DB
-- ⬜  DEPLOY-06  [P0] Deploy to Vercel — verify all pages load
-- ⬜  DEPLOY-07  [P1] Configure custom domain (velura.in or similar)
-- ⬜  DEPLOY-08  [P1] Enable Vercel Analytics
-- ⬜  DEPLOY-09  [P2] Set up staging environment (preview deployments on PRs)
-
----
-
-## DEPENDENCY MAP
-
-```
-FOUND-07 (scaffold)
-  └─► FOUND-08, 09, 10, 11, 12, 13, 14, 15
-        └─► DATA-01 (types)
-              └─► DATA-02 (products.ts)
-                    └─► DATA-06 (schema)
-                          └─► DATA-07, 08, 09, 10, 11, 12
-                                └─► DATA-13..19 (API routes)
-
-FOUND-07
-  └─► STATE-01..07 (stores)
-        └─► UI-01..08 (base components)
-              └─► LAYOUT-01..06 (layout components)
-                    └─► HOME-01..09
-                    └─► SHOP-01..11
-                    └─► DETAIL-01..08
-                    └─► BUILD-01..16
-                    └─► CHECK-01..11
-
-IMG-01..05 (Cloudinary setup)
-  └─► IMG-06..10 (image upload)
-        └─► DETAIL-02 (ImageGallery)
-
-SHOP-01 + CHECK-05 (API calls)
-  └─► DATA-13..15 (API routes must exist first)
-
-DEPLOY-01..06
-  └─► All P0 tasks must be done first
-```
+- ⬜ DEPLOY-01 [P0] Create/connect Vercel project
+- ⬜ DEPLOY-02 [P0] Set all environment variables in Vercel (DB, Cloudinary, HF, NextAuth)
+- ⬜ DEPLOY-03 [P0] Set production `DATABASE_URL` (Neon)
+- ⬜ DEPLOY-04 [P0] Push Prisma schema to production DB
+- ⬜ DEPLOY-05 [P0] Seed production DB with 15 products
+- ⬜ DEPLOY-06 [P0] Deploy and smoke-test all public pages
+- ⬜ DEPLOY-07 [P1] Configure custom domain (`velura.in`)
+- ⬜ DEPLOY-08 [P1] Enable Vercel Analytics and/or Posthog
+- ⬜ DEPLOY-09 [P2] Set up preview deployment on PR branches
 
 ---
 
-## SPRINT PLAN (2-Week Launch Sprint)
+## EPIC 15 — ADMIN & CATALOG OPS
 
-### Week 1 — Foundation + Core Pages
-
-| Day | Focus                         | Tasks                                  |
-|-----|-------------------------------|----------------------------------------|
-| 1   | Project setup                 | FOUND-07 to FOUND-15                   |
-| 2   | Data layer                    | DATA-01 to DATA-12                     |
-| 3   | API routes + stores           | DATA-13 to DATA-19, STATE-01 to 07     |
-| 4   | UI components                 | UI-01 to 08, LAYOUT-01 to 06           |
-| 5   | Home page                     | HOME-01 to 09                          |
-
-### Week 2 — Features + Polish + Deploy
-
-| Day | Focus                         | Tasks                                  |
-|-----|-------------------------------|----------------------------------------|
-| 6   | Shop + Product listing        | SHOP-01 to 11                          |
-| 7   | Product detail page           | DETAIL-01 to 08                        |
-| 8   | Custom Bra Builder            | BUILD-01 to 14                         |
-| 9   | Checkout + Order flow         | CHECK-01 to 09                         |
-| 10  | Images + SEO + QA + Deploy    | IMG-01 to 08, PERF-01 to 08, DEPLOY-01 to 07 |
+- ✅ ADMIN-01 [P0] NextAuth credential auth
+- ✅ ADMIN-02 [P0] Protect `/admin/*` with `proxy.ts`
+- ✅ ADMIN-03 [P0] Admin login page
+- ✅ ADMIN-04 [P0] Admin product list
+- ✅ ADMIN-05 [P0] Product create/edit form
+- ✅ ADMIN-06 [P1] Product active/draft toggle route
+- ✅ ADMIN-07 [P1] Product delete with Cloudinary cleanup
+- ✅ ADMIN-08 [P1] Product image upload panel
+- ✅ ADMIN-09 [P1] Product image primary/delete management
+- ⬜ ADMIN-10 [P0] Robust form validation and user-friendly API error messages
+- ⬜ ADMIN-11 [P1] Admin dashboard: order list, revenue totals (requires order persistence)
+- ⬜ ADMIN-12 [P1] Admin order status update route (pending → shipped → delivered)
+- ⬜ ADMIN-13 [P2] Role model for non-owner admin access
 
 ---
 
-## NOTES & DECISIONS LOG
+## EPIC 16 — AI CUSTOM BRA VISUALIZER
 
-| Date     | Decision                                              | Reason                              |
-|----------|-------------------------------------------------------|-------------------------------------|
-| May 2025 | Use Next.js App Router over Pages Router              | SSG/ISR/CSR mix needed              |
-| May 2025 | Use Zustand over Redux                                | Simpler, no boilerplate             |
-| May 2025 | Use Neon for Postgres (not local)                     | Zero local setup, same in prod      |
-| May 2025 | Emoji + GRADS as image placeholder until photography  | Unblock dev, swap later             |
-| May 2025 | All CB_ builder functions → separate component files  | Maintainability as codebase grows   |
-| May 2025 | No external animation library                         | CSS keyframes sufficient, no bloat  |
-| May 2025 | Razorpay P2 (not P0)                                  | COD works for MVP, Razorpay later   |
+Goal: deterministic instant SVG preview always-on; optional AI-generated ideal flat-lay product image on demand.
+
+### Core (done)
+- ✅ AIPREV-01 [P0] `lib/builderVisualSpec.ts` — `BuilderVisualSpec` normalized view-model, `specToHash()`, `buildAIPrompt()`, `buildPollinationsPrompt()`
+- ✅ AIPREV-02 [P0] `BraSVG.tsx` — 8 cup geometries, padding/underwire/closure/lace/silk/bridal overlays, mirror transform for right cup, 20-colour FILL/STROKE maps
+- ✅ AIPREV-03 [P0] Deterministic SVG always rendered; AI image is an optional toggle
+- ✅ AIPREV-04 [P1] `buildAIPrompt()` — fashion-specific visual language per bra type, strap style, padding depth, fabric texture, closure hardware, colour with exact hex
+- ✅ AIPREV-05 [P1] `buildPollinationsPrompt()` — short ≤200 char visual-first prompt for Pollinations FLUX (avoids truncation)
+- ✅ AIPREV-07 [P1] `ProductPreview.tsx` — loading skeleton, error/retry, SVG↔AI toggle, disclaimer, spec-hash change resets AI state
+- ✅ AIPREV-08 [P1] Cloudinary cache: same spec-hash never generated twice (`velura/custom-previews/{hash}`)
+- ✅ AIPREV-10 [P2] Disclaimer: "Preview is representative; final fit and finish may vary."
+- ✅ AIPREV-12 [P1] `/api/builder-preview/generate` — rate limit bypassed in `NODE_ENV === 'development'`
+- ✅ AIPREV-13 [P1] Provider chain: HuggingFace SDK (`@huggingface/inference`) → Pollinations fallback; Replicate as paid alternative
+- ✅ AIPREV-14 [P1] 20-colour palette — Neutrals, Pinks & Reds, Blues & Greens; `Step4FabricColor` grouped UI with section labels
+
+### Pending
+- ⬜ AIPREV-06 [P1] Attach `previewUrl` to saved design and custom cart item on generation success
+- ⬜ AIPREV-09 [P2] Prompt style presets: editorial flat-lay, ghost mannequin, fabric macro, line-art spec sheet
+- ⬜ AIPREV-11 [P2] Visual QA matrix: sports/high/wide · lace/light/classic · strapless/bridal · wirefree/everyday
+- ⬜ AIPREV-15 [P2] Show AI provider label in preview UI ("Generated with FLUX" etc.)
+- ⬜ AIPREV-16 [P2] Redis-backed rate limiting for production (replace in-memory Map)
+- ⬜ AIPREV-17 [P2] "Download preview" button on AI success state
+- ⬜ AIPREV-18 [P2] Mobile AI preview — currently hidden on narrow screens; show compact toggle below step
 
 ---
 
-*Last updated: May 2025*
-*Total tasks: 120+*
-*P0 (launch blockers): ~60*
-*P1 (core features): ~45*
-*P2 (nice to have): ~20*
+## EPIC 17 — FUTURE: ORDER MANAGEMENT
+
+- ⬜ ORD-01 [P1] Order detail page for customers: `/orders/[id]`
+- ⬜ ORD-02 [P1] Email order confirmation on `POST /api/orders` success
+- ⬜ ORD-03 [P2] Order status tracking page
+- ⬜ ORD-04 [P2] Razorpay create/verify/webhook integration
+- ⬜ ORD-05 [P2] COD order acknowledgement SMS (Twilio/MSG91)
+
+---
+
+## EPIC 18 — FUTURE: CUSTOMER ACCOUNTS
+
+- ⬜ ACC-01 [P2] Customer registration and login (NextAuth email or OTP)
+- ⬜ ACC-02 [P2] Saved addresses
+- ⬜ ACC-03 [P2] Order history page
+- ⬜ ACC-04 [P2] Wishlist with persistent storage
+- ⬜ ACC-05 [P2] Saved designs gallery (requires DATA-24)
+
+---
+
+## EPIC 19 — FUTURE: MARKETING & GROWTH
+
+- ⬜ MKT-01 [P2] Newsletter subscriber capture backend (Mailchimp / Resend list)
+- ⬜ MKT-02 [P2] Discount code management in admin
+- ⬜ MKT-03 [P2] Referral code system
+- ⬜ MKT-04 [P2] Product reviews — submit, moderate, display
+- ⬜ MKT-05 [P2] Blog/editorial content pages
+- ⬜ MKT-06 [P2] Branded OG image for social sharing
+
+---
+
+## Launch Blockers (P0 summary)
+
+Issues that must be resolved before public launch:
+
+| ID | Issue |
+|----|-------|
+| QA-00 | `npm run lint` warnings must be 0 |
+| QA-13 | `npm run build` must pass cleanly |
+| STATE-08 | Cart remove/qty broken for multi-size items |
+| SHOP-12 | Quick-add inserts invalid size `'M'` |
+| DATA-05B | Fit calculator cm band conversion wrong |
+| DETAIL-09 | Size selectors cap at `44DD`, not `50H` |
+| DATA-23 | Order/OrderItem Prisma models missing |
+| DATA-15 | `POST /api/orders` has no DB persistence |
+| CHECK-12 | Server never recalculates totals; client prices trusted |
+| CHECK-13 | Confirmation page reads wrong query param (`?order=` vs `?id=`) |
+| DATA-22 | Mutating API routes have no input validation |
+| IMG-01 | Cloudinary account must be confirmed active |
+| DATA-09 | `prisma db push` not run on production schema |
+| DEPLOY-01–06 | Vercel project, env vars, DB, seed, deploy |
+
+---
+
+## Immediate Next Sprint
+
+Ordered by dependency and impact:
+
+1. **QA-13 / QA-00** — Run `npm run build` and `npm run lint`; fix all errors/warnings before anything else.
+2. **CHECK-13** — Fix confirmation page query param (`?id=` → `?order=` or vice versa); one-line fix.
+3. **STATE-08** — Fix cart `remove`/`updateQty` to use `cartLineId` composite key.
+4. **SHOP-12** — Replace quick-add `size: 'M'` with a "Choose Size" flow or remove button.
+5. **DATA-05B + DETAIL-09** — Fix fit calculator cm band bug; extend size range to `50H`.
+6. **DATA-23 + DATA-15 + CHECK-12** — Add Order/OrderItem Prisma models; persist orders; recalculate server-side totals.
+7. **DATA-22** — Add Zod validation to `/api/orders`, `/api/fit-calculator`, `/api/saved-designs`.
+8. **CHECK-07 + DATA-19** — Wire coupon UI → `/api/coupons/validate`.
+9. **DATA-24 + DATA-17/18 + BUILD-13** — Add SavedDesign model; implement saved designs persistence; attach `previewUrl`.
+10. **FOUND-16** — Write `README.md` with setup, DB, seed, admin, and deploy instructions.
+
+---
+
+## Improvement Ideas (not yet tracked)
+
+- Builder: add a "Start from a saved design" entry point once saved designs exist.
+- Builder: show a mobile-friendly sticky bottom bar with current price + "Continue" on narrow screens.
+- Shop: add a "New Arrivals" filter derived from `createdAt` rather than a hardcoded badge.
+- Product detail: show stock/availability indicator once inventory tracking is added.
+- AI preview: let users regenerate with a different seed to see color variation.
+- AI preview: cache hit rate metric to measure Cloudinary cache effectiveness.
+- Accessibility: audit drawer focus trapping and reduced-motion support for marquee/animations.
+- Security: add `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options` headers in `next.config.ts`.
+
+---
+
+## Notes & Decisions
+
+| Date | Decision | Reason |
+|------|----------|--------|
+| 2025-05 | Use App Router | SSG/ISR/client interactivity mix |
+| 2025-05 | Use Zustand | Small client state, less boilerplate |
+| 2025-05 | Use Onyx & Pearl theme | Premium editorial direction |
+| 2026-05-25 | Track as Next 16 / Tailwind 4 | Actual installed stack differs from original CLAUDE.md |
+| 2026-05-25 | Hybrid visualizer | Instant SVG avoids AI latency; AI preview adds emotional clarity |
+| 2026-05-25 | HuggingFace SDK primary, Pollinations fallback | HF SDK handles routing; Pollinations is free zero-config backstop |
+| 2026-05-26 | 20-colour palette | Neutral + Pinks/Reds + Blues/Greens covers full lingerie market needs; each colour has matched FILL/STROKE/SVG/API validation |

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { LayoutGrid, Grid3x3, SlidersHorizontal } from 'lucide-react'
 import { FilterDrawer } from './FilterDrawer'
 
@@ -14,14 +14,15 @@ const SORT_OPTIONS = [
 ]
 
 interface SortBarProps {
-  total: number
-  cols: 2 | 3
-  onColsChange: (c: 2 | 3) => void
+  total:         number
+  cols:          2 | 3
+  onColsChange:  (c: 2 | 3) => void
 }
 
 export function SortBar({ total, cols, onColsChange }: SortBarProps) {
-  const searchParams    = useSearchParams()
-  const activeSort      = searchParams.get('sort') ?? ''
+  const router       = useRouter()
+  const searchParams = useSearchParams()
+  const activeSort   = searchParams.get('sort') ?? ''
   const [filterOpen, setFilterOpen] = useState(false)
 
   const activeFilterCount = [searchParams.get('cat'), searchParams.get('support')]
@@ -32,8 +33,8 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
     if (value === '') params.delete('sort')
     else params.set('sort', value)
     params.delete('page')
-    window.history.pushState(null, '', `/shop?${params.toString()}`)
-    window.dispatchEvent(new Event('popstate'))
+    const qs = params.toString()
+    router.push(qs ? `/shop?${qs}` : '/shop')
   }
 
   return (

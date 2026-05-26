@@ -18,7 +18,7 @@ function ConfirmedContent() {
           className="font-serif font-light text-deep mb-4"
           style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.01em' }}
         >
-          It's on its way.
+          It&apos;s on its way.
         </h1>
         <p className="font-sans text-[0.9rem] font-light text-mauve mb-2">
           Invisible, weightless, unforgettable.
@@ -29,7 +29,7 @@ function ConfirmedContent() {
           </p>
         )}
         <p className="font-sans text-[0.82rem] text-mauve mb-10">
-          You'll receive a confirmation shortly.
+          You&apos;ll receive a confirmation shortly.
           <br />
           Estimated delivery: 3–5 business days.
         </p>

@@ -1,15 +1,27 @@
 import Link from 'next/link'
-import { products } from '@/data/products'
+import { db } from '@/lib/db'
 import { ProductCard } from '@/components/shop/ProductCard'
+import { mapDbProductToProduct } from '@/lib/products'
 
 const FEATURED_IDS = [1, 4, 6, 12]
 
-export function FeaturedProducts() {
-  const featured = products.filter((p) => FEATURED_IDS.includes(p.id))
+export async function FeaturedProducts() {
+  const rows = await db.product.findMany({
+    where:   { id: { in: FEATURED_IDS }, isActive: true },
+    include: { category: true, images: { orderBy: { position: 'asc' } } },
+    orderBy: { id: 'asc' },
+  })
+
+  // Preserve the intended curation order
+  const sorted = FEATURED_IDS
+    .map((id) => rows.find((r) => r.id === id))
+    .filter((r): r is NonNullable<typeof r> => r !== undefined)
+    .map(mapDbProductToProduct)
+
+  if (sorted.length === 0) return null
 
   return (
     <section className="py-20 px-6 md:px-10 max-w-6xl mx-auto">
-      {/* Header */}
       <div className="flex items-end justify-between mb-10">
         <div>
           <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-3">
@@ -30,14 +42,12 @@ export function FeaturedProducts() {
         </Link>
       </div>
 
-      {/* Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
-        {featured.map((product) => (
+        {sorted.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
-      {/* Mobile CTA */}
       <div className="mt-8 flex justify-center md:hidden">
         <Link
           href="/shop"

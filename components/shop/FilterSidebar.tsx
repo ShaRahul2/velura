@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import type { ProductCategory } from '@/types'
 
 const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
@@ -17,21 +17,18 @@ const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
 const SUPPORT = ['Light', 'Medium', 'High']
 
 export function FilterSidebar() {
-  const pathname = '/shop'
+  const router       = useRouter()
   const searchParams = useSearchParams()
-  const activeCat = searchParams.get('cat') ?? 'all'
+  const activeCat    = searchParams.get('cat') ?? 'all'
   const activeSupport = searchParams.get('support') ?? ''
 
   function setParam(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString())
-    if (value === 'all' || value === '') {
-      params.delete(key)
-    } else {
-      params.set(key, value)
-    }
+    if (value === 'all' || value === '') params.delete(key)
+    else params.set(key, value)
     params.delete('page')
-    window.history.pushState(null, '', `${pathname}?${params.toString()}`)
-    window.dispatchEvent(new Event('popstate'))
+    const qs = params.toString()
+    router.push(qs ? `/shop?${qs}` : '/shop')
   }
 
   return (
@@ -50,7 +47,7 @@ export function FilterSidebar() {
                   onClick={() => setParam('cat', id)}
                   className="w-full text-left font-sans text-[0.82rem] py-1.5 transition-colors"
                   style={{
-                    color: active ? '#0F0D0B' : '#6B6058',
+                    color:      active ? '#0F0D0B' : '#6B6058',
                     fontWeight: active ? 500 : 300,
                   }}
                 >
@@ -76,7 +73,7 @@ export function FilterSidebar() {
                   onClick={() => setParam('support', active ? '' : level)}
                   className="w-full text-left font-sans text-[0.82rem] py-1.5 transition-colors"
                   style={{
-                    color: active ? '#0F0D0B' : '#6B6058',
+                    color:      active ? '#0F0D0B' : '#6B6058',
                     fontWeight: active ? 500 : 300,
                   }}
                 >

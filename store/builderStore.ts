@@ -71,12 +71,12 @@ const initialState: BuilderState = {
   fitUnit: 'cm',
 }
 
-export const useBuilderStore = create<BuilderStore>()((set, get) => ({
+export const useBuilderStore = create<BuilderStore>()((set) => ({
   ...initialState,
   price: BASE_PRICE,
   setSizeMode: (sizeMode) => set(() => ({ sizeMode })),
-  setBand: (band) => set((state) => ({ band })),
-  setCup: (cup) => set((state) => ({ cup })),
+  setBand: (band) => set(() => ({ band })),
+  setCup: (cup) => set(() => ({ cup })),
   setBraType: (braType) =>
     set((state) => ({ braType, price: calculatePrice({ ...state, braType }) })),
   setStrapStyle: (strapStyle) =>

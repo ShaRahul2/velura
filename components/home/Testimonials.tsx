@@ -64,7 +64,7 @@ export function Testimonials() {
                 <Stars count={rating} />
               </p>
               <p className="font-serif text-[1.08rem] font-light italic text-deep leading-relaxed">
-                "{quote}"
+                &ldquo;{quote}&rdquo;
               </p>
               <div className="mt-auto pt-4 border-t border-lm flex items-center justify-between">
                 <div>

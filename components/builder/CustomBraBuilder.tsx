@@ -22,8 +22,8 @@ function canProceed(step: number, store: ReturnType<typeof useBuilderStore.getSt
 
 export function CustomBraBuilder() {
   const [step, setStep] = useState(1)
-  const store = useBuilderStore()
-  const ready = canProceed(step, useBuilderStore.getState())
+  const store = useBuilderStore()           // reactive — re-renders on every selection
+  const ready = canProceed(step, store)
 
   function next() { if (step < STEPS) setStep(step + 1) }
   function prev() { if (step > 1)     setStep(step - 1) }
