@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
@@ -26,6 +26,8 @@ export default function CheckoutPage() {
   const items     = useCartStore((s) => s.items)
   const clearCart = useCartStore((s) => s.clear)
   const addToast  = useUiStore((s) => s.addToast)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   const [address,    setAddress]    = useState<Address>(EMPTY_ADDRESS)
   const [payment,    setPayment]    = useState('upi')
@@ -86,16 +88,20 @@ export default function CheckoutPage() {
     }
   }
 
-  if (items.length === 0) {
+  if (!mounted || items.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <p className="font-serif text-[1.4rem] font-light text-deep">Your bag is empty.</p>
-        <Link
-          href="/shop"
-          className="font-sans text-[0.78rem] tracking-btn uppercase underline underline-offset-4 text-mauve"
-        >
-          Explore Collection
-        </Link>
+        {mounted && (
+          <>
+            <p className="font-serif text-[1.4rem] font-light text-deep">Your bag is empty.</p>
+            <Link
+              href="/shop"
+              className="font-sans text-[0.78rem] tracking-btn uppercase underline underline-offset-4 text-mauve"
+            >
+              Explore Collection
+            </Link>
+          </>
+        )}
       </div>
     )
   }

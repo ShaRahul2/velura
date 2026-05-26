@@ -5,6 +5,7 @@ import { ShoppingBag, Menu } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const NAV_LINKS = [
   { href: '/shop',    label: 'Collections' },
@@ -16,6 +17,8 @@ export function Navbar() {
   const openCart   = useUiStore((s) => s.openCart)
   const openMenu   = useUiStore((s) => s.openMobileMenu)
   const pathname   = usePathname()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   return (
     <header
@@ -60,7 +63,7 @@ export function Navbar() {
         aria-label="Open cart"
       >
         <ShoppingBag size={18} />
-        {count > 0 && (
+        {mounted && count > 0 && (
           <span
             className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[0.55rem] font-sans font-semibold px-1"
             style={{ background: '#B8A898', color: '#0F0D0B' }}
