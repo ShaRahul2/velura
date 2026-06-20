@@ -37,7 +37,7 @@ export function Navbar() {
       {/* Logo */}
       <Link
         href="/"
-        className="font-serif text-[1.08rem] tracking-logo mr-auto"
+        className="font-serif text-[1.08rem] lg:text-[1.15rem] tracking-logo mr-auto"
         style={{ color: '#EDE9E4' }}
       >
         VELURA
@@ -51,7 +51,7 @@ export function Navbar() {
             <Link
               key={href}
               href={href}
-              className="font-sans text-[0.72rem] tracking-btn uppercase transition-colors duration-200"
+              className="font-sans text-[0.72rem] lg:text-[0.76rem] tracking-btn uppercase transition-colors duration-200"
               style={{ color: active ? '#EDE9E4' : 'rgba(237,233,228,0.55)' }}
             >
               {label}

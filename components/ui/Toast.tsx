@@ -43,7 +43,7 @@ function Toast({
         maxWidth: '340px',
       }}
     >
-      <span className="font-sans text-[0.8rem] font-light flex-1">{message}</span>
+      <span className="font-sans text-[0.8rem] lg:text-[0.86rem] font-light flex-1">{message}</span>
       <button
         onClick={() => onDismiss(id)}
         className="shrink-0 opacity-50 hover:opacity-100 transition-opacity"

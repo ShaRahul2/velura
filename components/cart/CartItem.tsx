@@ -19,7 +19,7 @@ export function CartItem({ item }: CartItemProps) {
     <div className="flex gap-3 py-4 border-b border-lm last:border-0">
       {/* Image */}
       <div
-        className="w-16 h-20 shrink-0 rounded-card overflow-hidden relative bg-blush flex items-center justify-center"
+        className="w-16 h-20 lg:w-20 lg:h-24 shrink-0 rounded-card overflow-hidden relative bg-blush flex items-center justify-center"
       >
         {item.images?.[0] ? (
           <Image
@@ -37,7 +37,7 @@ export function CartItem({ item }: CartItemProps) {
       {/* Details */}
       <div className="flex-1 min-w-0 flex flex-col gap-1">
         <div className="flex items-start justify-between gap-2">
-          <h4 className="font-serif text-[0.95rem] font-[500] text-deep leading-tight truncate">
+          <h4 className="font-serif text-[0.95rem] lg:text-[1.02rem] font-[500] text-deep leading-tight truncate">
             {item.name}
           </h4>
           <button
@@ -49,11 +49,11 @@ export function CartItem({ item }: CartItemProps) {
           </button>
         </div>
 
-        <p className="font-sans text-[0.72rem] text-mauve">Size: {item.size}</p>
+        <p className="font-sans text-[0.72rem] lg:text-[0.78rem] text-mauve">Size: {item.size}</p>
 
         {item.isCustom && (
           <div className="flex items-center gap-1.5">
-            <p className="font-sans text-[0.68rem] text-rose">Custom Build</p>
+            <p className="font-sans text-[0.68rem] lg:text-[0.74rem] text-rose">Custom Build</p>
             {item.customSpec?.color && (
               <span
                 className="inline-block w-2.5 h-2.5 rounded-full border border-lm"
@@ -73,7 +73,7 @@ export function CartItem({ item }: CartItemProps) {
             >
               <Minus size={11} />
             </button>
-            <span className="w-7 text-center font-sans text-[0.78rem] text-deep">
+            <span className="w-7 text-center font-sans text-[0.78rem] lg:text-[0.84rem] text-deep">
               {item.qty}
             </span>
             <button
@@ -85,7 +85,7 @@ export function CartItem({ item }: CartItemProps) {
             </button>
           </div>
 
-          <span className="font-sans text-[0.9rem] text-deep">
+          <span className="font-sans text-[0.9rem] lg:text-[0.98rem] text-deep">
             {formatPrice(item.price * item.qty)}
           </span>
         </div>

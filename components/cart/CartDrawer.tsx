@@ -41,7 +41,7 @@ export function CartDrawer() {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 h-16 border-b border-lm shrink-0">
-          <h2 className="font-serif text-[1.2rem] text-deep">Your Bag</h2>
+          <h2 className="font-serif text-[1.2rem] lg:text-[1.35rem] text-deep">Your Bag</h2>
           <button
             onClick={closeCart}
             className="p-2 text-mauve hover:text-deep transition-colors"
@@ -55,13 +55,13 @@ export function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-6 py-2">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center py-16">
-              <p className="font-serif text-[1.4rem] text-deep">Your bag is empty.</p>
-              <p className="font-sans text-[0.82rem] text-mauve">
+              <p className="font-serif text-[1.4rem] lg:text-[1.55rem] text-deep">Your bag is empty.</p>
+              <p className="font-sans text-[0.82rem] lg:text-[0.9rem] text-mauve">
                 Invisible, weightless, unforgettable.
               </p>
               <button
                 onClick={closeCart}
-                className="mt-2 font-sans text-[0.8rem] tracking-btn uppercase underline underline-offset-4 text-mauve hover:text-deep transition-colors"
+                className="mt-2 font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase underline underline-offset-4 text-mauve hover:text-deep transition-colors"
               >
                 Explore Collection
               </button>

@@ -20,14 +20,14 @@ export function CartSummary({ subtotal }: CartSummaryProps) {
       {/* Shipping progress */}
       {remaining > 0 ? (
         <div className="rounded-card bg-blush p-3">
-          <p className="font-sans text-[0.72rem] text-mauve mb-2">
+          <p className="font-sans text-[0.72rem] lg:text-[0.78rem] text-mauve mb-2">
             Add {formatPrice(remaining)} more for free shipping
           </p>
           <ProgressBar value={subtotal} max={FREE_SHIPPING_THRESHOLD} />
         </div>
       ) : (
         <div className="rounded-card bg-blush p-3">
-          <p className="font-sans text-[0.72rem] text-mauve">
+          <p className="font-sans text-[0.72rem] lg:text-[0.78rem] text-mauve">
             ✓ Free shipping unlocked
           </p>
           <ProgressBar value={FREE_SHIPPING_THRESHOLD} max={FREE_SHIPPING_THRESHOLD} className="mt-2" />
@@ -36,11 +36,11 @@ export function CartSummary({ subtotal }: CartSummaryProps) {
 
       {/* Totals */}
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between font-sans text-[0.82rem]">
+        <div className="flex justify-between font-sans text-[0.82rem] lg:text-[0.88rem]">
           <span className="text-mauve">Subtotal</span>
           <span className="text-deep">{formatPrice(subtotal)}</span>
         </div>
-        <div className="flex justify-between font-sans text-[0.82rem]">
+        <div className="flex justify-between font-sans text-[0.82rem] lg:text-[0.88rem]">
           <span className="text-mauve">Shipping</span>
           <span className="text-deep">
             {shipping === 0 ? 'Free' : formatPrice(shipping)}
@@ -48,8 +48,8 @@ export function CartSummary({ subtotal }: CartSummaryProps) {
         </div>
         <div className="h-px bg-lm my-1" />
         <div className="flex justify-between">
-          <span className="font-sans text-[0.9rem] font-medium text-deep">Total</span>
-          <span className="font-serif text-[1.1rem] text-deep">{formatPrice(total)}</span>
+          <span className="font-sans text-[0.9rem] lg:text-[0.95rem] font-medium text-deep">Total</span>
+          <span className="font-serif text-[1.1rem] lg:text-[1.2rem] text-deep">{formatPrice(total)}</span>
         </div>
       </div>
     </div>

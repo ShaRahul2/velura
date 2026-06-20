@@ -16,7 +16,7 @@ const METHODS = [
 export function PaymentMethods({ selected, onSelect, orderTotal }: PaymentMethodsProps) {
   return (
     <div>
-      <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
+      <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-4">
         Payment Method
       </p>
       <div className="space-y-2">
@@ -52,8 +52,8 @@ export function PaymentMethods({ selected, onSelect, orderTotal }: PaymentMethod
               {/* Icon + label */}
               <span className="text-lg">{method.icon}</span>
               <div className="flex-1 min-w-0">
-                <p className="font-sans text-[0.82rem] text-deep">{method.label}</p>
-                <p className="font-sans text-[0.65rem] text-mauve mt-0.5">{method.sub}</p>
+                <p className="font-sans text-[0.82rem] lg:text-[0.88rem] text-deep">{method.label}</p>
+                <p className="font-sans text-[0.65rem] lg:text-[0.7rem] text-mauve mt-0.5">{method.sub}</p>
               </div>
             </button>
           )
@@ -63,13 +63,13 @@ export function PaymentMethods({ selected, onSelect, orderTotal }: PaymentMethod
       {/* UPI input */}
       {selected === 'upi' && (
         <div className="mt-3">
-          <label className="font-sans text-[0.65rem] tracking-label uppercase text-mauve block mb-1.5">
+          <label className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve block mb-1.5">
             UPI ID
           </label>
           <input
             type="text"
             placeholder="yourname@upi"
-            className="w-full h-11 px-3 font-sans text-[0.85rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors"
+            className="w-full h-11 px-3 font-sans text-[0.85rem] lg:text-[0.92rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors"
             style={{ borderRadius: 3 }}
           />
         </div>

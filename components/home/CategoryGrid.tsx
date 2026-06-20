@@ -70,7 +70,7 @@ const CATEGORIES = [
 
 export function CategoryGrid() {
   return (
-    <section className="py-20 px-6 md:px-10 max-w-6xl mx-auto">
+    <section className="py-20 lg:py-24 2xl:py-28 px-6 md:px-10 max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="flex items-end justify-between mb-10">
         <div>
@@ -79,18 +79,18 @@ export function CategoryGrid() {
           </p>
           <h2
             className="font-serif font-light text-deep"
-            style={{ fontSize: 'clamp(1.8rem, 4vw, 2.9rem)', letterSpacing: '-0.01em' }}
+            style={{ fontSize: 'clamp(1.8rem, 3.8vw, 3.1rem)', letterSpacing: '-0.01em' }}
           >
             Every shape. Every occasion.
           </h2>
         </div>
-        <p className="hidden md:block font-sans text-[0.78rem] text-mauve">
+        <p className="hidden md:block font-sans text-[0.78rem] lg:text-[0.84rem] text-mauve">
           7 collections
         </p>
       </div>
 
       {/* Bento grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-[180px] md:auto-rows-[200px] gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-[180px] md:auto-rows-[200px] lg:auto-rows-[220px] 2xl:auto-rows-[240px] gap-3 lg:gap-4 2xl:gap-5">
         {CATEGORIES.map(({ id, label, sub, emoji, count, range, bg, accentColor, isDark, span, emojiSize }) => (
           <Link
             key={id}
@@ -107,7 +107,7 @@ export function CategoryGrid() {
             {/* Top row */}
             <div className="flex items-start justify-between relative z-10">
               <div
-                className="border px-2 py-1 rounded-[2px] font-sans text-[0.62rem] tracking-label uppercase"
+                className="border px-2 py-1 rounded-[2px] font-sans text-[0.62rem] lg:text-[0.68rem] 2xl:text-[0.72rem] tracking-label uppercase"
                 style={{
                   borderColor: isDark ? 'rgba(184,168,152,0.3)' : 'rgba(107,96,88,0.2)',
                   color: isDark ? 'rgba(237,233,228,0.7)' : '#6B6058',
@@ -116,7 +116,7 @@ export function CategoryGrid() {
               >
                 {count} styles
               </div>
-              <span className={`${emojiSize} transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6`} aria-hidden="true">
+              <span className={`${emojiSize} lg:text-[4.5rem] 2xl:text-[5rem] transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6`} aria-hidden="true">
                 {emoji}
               </span>
             </div>
@@ -124,19 +124,19 @@ export function CategoryGrid() {
             {/* Bottom row */}
             <div className="relative z-10">
               <h3
-                className="font-serif font-light text-[1.1rem] leading-tight mb-1"
+                className="font-serif font-light text-[1.1rem] lg:text-[1.2rem] 2xl:text-[1.3rem] leading-tight mb-1"
                 style={{ color: isDark ? '#EDE9E4' : '#0F0D0B' }}
               >
                 {label}
               </h3>
               <p
-                className="font-sans text-[0.72rem] font-light leading-snug mb-2 line-clamp-1"
+                className="font-sans text-[0.72rem] lg:text-[0.78rem] 2xl:text-[0.84rem] font-light leading-snug mb-2 line-clamp-1"
                 style={{ color: isDark ? 'rgba(237,233,228,0.5)' : '#6B6058' }}
               >
                 {sub}
               </p>
               <p
-                className="font-sans text-[0.65rem] tracking-label uppercase"
+                className="font-sans text-[0.65rem] lg:text-[0.7rem] 2xl:text-[0.76rem] tracking-label uppercase"
                 style={{ color: isDark ? accentColor : accentColor }}
               >
                 {range}

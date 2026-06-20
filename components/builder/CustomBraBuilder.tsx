@@ -40,7 +40,7 @@ export function CustomBraBuilder() {
     <section className="builder-shell h-[calc(100svh-4rem)] min-h-[540px] flex flex-col bg-cream overflow-hidden">
       {/* Header — compact */}
       <div className="border-b border-lm py-1.5 lg:py-2 px-5 md:px-10 shrink-0">
-        <div className="flex items-center justify-between max-w-6xl mx-auto">
+        <div className="flex items-center justify-between max-w-6xl xl:max-w-7xl mx-auto">
           <div className="text-center flex-1">
             <p className="font-sans text-[0.56rem] tracking-label uppercase text-rose mb-px">
               Custom Bra Builder
@@ -53,11 +53,11 @@ export function CustomBraBuilder() {
             </h1>
           </div>
           <div className="flex items-center gap-3 text-right">
-            <div className="font-sans text-[0.58rem] text-mauve hidden sm:block">Total</div>
-            <div className="font-serif text-[1.05rem] font-light text-deep tabular-nums">{formatPrice(price)}</div>
+            <div className="font-sans text-[0.58rem] lg:text-[0.62rem] text-mauve hidden sm:block">Total</div>
+            <div className="font-serif text-[1.05rem] lg:text-[1.15rem] font-light text-deep tabular-nums">{formatPrice(price)}</div>
             <button
               onClick={resetAll}
-              className="font-sans text-[0.58rem] tracking-btn uppercase text-mauve hover:text-deep border border-lm px-2 py-0.5 rounded-[2px] transition-colors"
+              className="font-sans text-[0.58rem] lg:text-[0.62rem] tracking-btn uppercase text-mauve hover:text-deep border border-lm px-2 py-0.5 rounded-[2px] transition-colors"
             >
               Reset
             </button>
@@ -66,10 +66,10 @@ export function CustomBraBuilder() {
       </div>
 
       {/* Body — fills remaining viewport height */}
-      <div className="flex-1 min-h-0 overflow-hidden max-w-6xl w-full mx-auto px-3 sm:px-5 md:px-6 py-1.5 lg:py-2 flex flex-col">
+      <div className="flex-1 min-h-0 overflow-hidden max-w-6xl xl:max-w-7xl w-full mx-auto px-3 sm:px-5 md:px-6 py-1.5 lg:py-2 flex flex-col">
         <StepBar current={step} onStepClick={goTo} />
 
-        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] gap-3 lg:gap-4 flex-1 min-h-0 overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.95fr)] 2xl:grid-cols-[minmax(0,0.95fr)_minmax(360px,1fr)] gap-3 lg:gap-4 xl:gap-6 2xl:gap-8 flex-1 min-h-0 overflow-hidden">
           {/* Left — every step is sized to remain visible as a whole */}
           <div className="flex flex-col min-h-0 overflow-hidden">
             <div className="flex-1 min-h-0 overflow-hidden">
@@ -109,7 +109,7 @@ export function CustomBraBuilder() {
           {/* Right — live preview, fills height */}
           <div className="hidden md:flex flex-col overflow-hidden">
             <div
-              className="flex-1 min-h-0 overflow-hidden p-2 lg:p-2.5"
+              className="flex-1 min-h-0 overflow-hidden p-2 lg:p-2.5 2xl:p-3"
               style={{ borderRadius: 4, border: '1px solid #D8D4CE', background: '#FDFBF9' }}
             >
               <ProductPreview currentStep={step} />

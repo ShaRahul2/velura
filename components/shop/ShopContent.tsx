@@ -18,7 +18,7 @@ interface ShopContentProps {
 }
 
 export function ShopContent({ initialProducts, total, currentPage, currentCat }: ShopContentProps) {
-  const [cols, setCols] = useState<2 | 3>(3)
+  const [cols, setCols] = useState<2 | 3 | 4 | 5>(3)
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
   const cat        = currentCat as ProductCategory | undefined
@@ -35,21 +35,21 @@ export function ShopContent({ initialProducts, total, currentPage, currentCat }:
   const rest   = initialProducts.slice(6)
 
   return (
-    <div className="max-w-6xl mx-auto px-6 md:px-10 py-12">
+    <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto px-6 md:px-10 py-12 lg:py-16 2xl:py-20">
       {/* Page header */}
-      <div className="mb-10">
-        <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-3">
+      <div className="mb-10 lg:mb-12 2xl:mb-16">
+        <p className="font-sans text-[0.68rem] lg:text-[0.74rem] tracking-label uppercase text-rose mb-3">
           {catLabel}
         </p>
         <h1
           className="font-serif font-light text-deep"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 2.9rem)', letterSpacing: '-0.01em' }}
+          style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3.4rem)', letterSpacing: '-0.01em' }}
         >
           {headingText}
         </h1>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex gap-10 lg:gap-12 2xl:gap-16">
         {/* Desktop filter sidebar */}
         <Suspense>
           <FilterSidebar />

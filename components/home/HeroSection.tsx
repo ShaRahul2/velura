@@ -22,7 +22,7 @@ export function HeroSection() {
           <h1
             className="font-serif font-light leading-[1.06] mb-6"
             style={{
-              fontSize: 'clamp(2.4rem, 5.5vw, 4.6rem)',
+              fontSize: 'clamp(2.4rem, 5vw, 4.8rem)',
               letterSpacing: '-0.01em',
               color: '#0F0D0B',
             }}
@@ -32,20 +32,20 @@ export function HeroSection() {
             who knows.
           </h1>
 
-          <p className="font-sans text-[0.92rem] font-light text-mauve leading-relaxed mb-10 max-w-xs">
+          <p className="font-sans text-[0.92rem] lg:text-[1rem] font-light text-mauve leading-relaxed mb-10 max-w-xs">
             Disappears under anything.<br />Remembered by your body.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/shop"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase bg-deep text-blush hover:tracking-wide transition-all duration-200"
+              className="inline-flex items-center justify-center h-12 px-8 rounded-btn font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase bg-deep text-blush hover:tracking-wide transition-all duration-200"
             >
               Explore Collection
             </Link>
             <Link
               href="/builder"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200"
+              className="inline-flex items-center justify-center h-12 px-8 rounded-btn font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200"
             >
               ✦ Build Yours
             </Link>
@@ -63,8 +63,8 @@ export function HeroSection() {
             { value: '4.8★', label: 'Avg. rating' },
           ].map(({ value, label }) => (
             <div key={label}>
-              <p className="font-serif text-[1.4rem] font-light text-deep">{value}</p>
-              <p className="font-sans text-[0.65rem] tracking-label uppercase text-mauve mt-0.5">{label}</p>
+              <p className="font-serif text-[1.4rem] lg:text-[1.55rem] font-light text-deep">{value}</p>
+              <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve mt-0.5">{label}</p>
             </div>
           ))}
         </div>
@@ -77,7 +77,7 @@ export function HeroSection() {
       >
         {/* Showcase grid */}
         <div
-          className="w-full max-w-[340px] flex flex-col gap-3"
+          className="w-full max-w-[340px] lg:max-w-[400px] 2xl:max-w-[440px] flex flex-col gap-3"
           style={{ animation: 'fadeUp 0.8s 0.1s ease both' }}
         >
           {/* Large card */}
@@ -97,28 +97,28 @@ export function HeroSection() {
 
         {/* Tag — top right */}
         <div
-          className="absolute top-8 right-8 border px-3 py-1.5 rounded-[2px]"
+          className="absolute top-8 right-8 border px-3 py-1.5 lg:px-4 lg:py-2 rounded-[2px]"
           style={{
             borderColor: 'rgba(107,96,88,0.25)',
             background: 'rgba(255,255,255,0.55)',
             backdropFilter: 'blur(8px)',
           }}
         >
-          <p className="font-sans text-[0.65rem] tracking-label uppercase text-mauve">
-            28AA – 50H
+          <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve">
+            26AA – 52K
           </p>
         </div>
 
         {/* Tag — bottom left */}
         <div
-          className="absolute bottom-8 left-8 border px-3 py-1.5 rounded-[2px]"
+          className="absolute bottom-8 left-8 border px-3 py-1.5 lg:px-4 lg:py-2 rounded-[2px]"
           style={{
             borderColor: 'rgba(107,96,88,0.25)',
             background: 'rgba(255,255,255,0.55)',
             backdropFilter: 'blur(8px)',
           }}
         >
-          <p className="font-sans text-[0.65rem] tracking-label uppercase text-mauve">
+          <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve">
             From {formatPrice(499)}
           </p>
         </div>
@@ -158,7 +158,7 @@ function ProductHeroCard({
         <span
           className="select-none"
           style={{
-            fontSize: size === 'lg' ? '3.5rem' : '2.2rem',
+            fontSize: size === 'lg' ? '3.8rem' : '2.4rem',
             filter: 'drop-shadow(0 4px 12px rgba(15,13,11,0.15))',
           }}
           aria-hidden="true"
@@ -172,14 +172,14 @@ function ProductHeroCard({
         <p
           className="font-serif leading-tight"
           style={{
-            fontSize: size === 'lg' ? '1rem' : '0.82rem',
+            fontSize: size === 'lg' ? '1.1rem' : '0.9rem',
             color: isDark ? '#EDE9E4' : '#0F0D0B',
           }}
         >
           {product.name}
         </p>
         <p
-          className="font-sans text-[0.68rem] mt-0.5"
+          className="font-sans text-[0.68rem] lg:text-[0.74rem] mt-0.5"
           style={{ color: isDark ? 'rgba(237,233,228,0.6)' : '#6B6058' }}
         >
           {formatPrice(product.price)}

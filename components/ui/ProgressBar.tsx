@@ -13,7 +13,7 @@ export function ProgressBar({ value, max = 100, className, label }: ProgressBarP
   return (
     <div className={cn('w-full', className)}>
       {label && (
-        <p className="font-sans text-[0.72rem] text-mauve mb-1.5">{label}</p>
+        <p className="font-sans text-[0.72rem] lg:text-[0.78rem] text-mauve mb-1.5">{label}</p>
       )}
       <div className="h-1 w-full rounded-full overflow-hidden bg-lm">
         <div

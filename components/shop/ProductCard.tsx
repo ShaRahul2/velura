@@ -38,9 +38,9 @@ export function ProductCard({ product }: ProductCardProps) {
           src={product.images[0]}
           alt={product.name}
           fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1536px) 25vw, 20vw"
           className={cn(
-            'object-cover transition-opacity duration-500',
+            'object-cover transition-all duration-500 group-hover:scale-[1.02]',
             hasAlt && hovered ? 'opacity-0' : 'opacity-100'
           )}
         />
@@ -51,9 +51,9 @@ export function ProductCard({ product }: ProductCardProps) {
             src={product.images[1]}
             alt={`${product.name} — back view`}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1536px) 25vw, 20vw"
             className={cn(
-              'object-cover transition-opacity duration-500',
+              'object-cover transition-all duration-500 group-hover:scale-[1.02]',
               hovered ? 'opacity-100' : 'opacity-0'
             )}
           />
@@ -75,7 +75,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Fabric label — bottom left */}
         <div className="absolute bottom-3 left-3 z-10">
           <span
-            className="font-sans text-[0.58rem] tracking-label uppercase px-2 py-1"
+            className="font-sans text-[0.58rem] lg:text-[0.64rem] tracking-label uppercase px-2 py-1"
             style={{
               borderRadius: 2,
               background:   'rgba(248,246,243,0.88)',
@@ -92,7 +92,7 @@ export function ProductCard({ product }: ProductCardProps) {
           className="absolute bottom-0 inset-x-0 pb-3 pt-6 transition-opacity duration-300 pointer-events-none"
           style={{ opacity: hovered ? 1 : 0 }}
         >
-          <p className="text-center font-sans text-[0.62rem] tracking-[0.2em] uppercase text-[rgba(237,233,228,0.85)]">
+          <p className="text-center font-sans text-[0.62rem] lg:text-[0.68rem] tracking-[0.2em] uppercase text-[rgba(237,233,228,0.85)]">
             View Details ↗
           </p>
         </div>
@@ -120,16 +120,16 @@ export function ProductCard({ product }: ProductCardProps) {
       </button>
 
       {/* ── Info ──────────────────────────────────────────────────────────── */}
-      <div className="mt-3 px-0.5 flex flex-col gap-1.5">
+      <div className="mt-3 lg:mt-4 xl:mt-5 px-0.5 flex flex-col gap-1.5 lg:gap-2">
 
         {/* Color swatches + rating row */}
         <div className="flex items-center justify-between">
           {product.colorways && product.colorways.length > 0 ? (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 lg:gap-2">
               {product.colorways.slice(0, 4).map((hex, i) => (
                 <span
                   key={i}
-                  className="inline-block w-3.5 h-3.5 rounded-full flex-shrink-0"
+                  className="inline-block w-3.5 h-3.5 lg:w-4 lg:h-4 2xl:w-[18px] 2xl:h-[18px] rounded-full flex-shrink-0"
                   style={{
                     background:  hex,
                     boxShadow:   'inset 0 0 0 1px rgba(15,13,11,0.12)',
@@ -138,7 +138,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 />
               ))}
               {product.colorways.length > 4 && (
-                <span className="font-sans text-[0.58rem] text-mauve opacity-70">
+                <span className="font-sans text-[0.58rem] lg:text-[0.64rem] text-mauve opacity-70">
                   +{product.colorways.length - 4}
                 </span>
               )}
@@ -149,8 +149,8 @@ export function ProductCard({ product }: ProductCardProps) {
 
           {/* Star rating */}
           <div className="flex items-center gap-1">
-            <Star className="w-3 h-3 fill-gold text-gold" />
-            <span className="font-sans text-[0.66rem] text-mauve">
+            <Star className="w-3 lg:w-3.5 2xl:w-4 h-3 lg:h-3.5 2xl:h-4 fill-gold text-gold" />
+            <span className="font-sans text-[0.66rem] lg:text-[0.72rem] text-mauve">
               {product.rating}
               <span className="opacity-50 ml-0.5">({product.reviews.toLocaleString('en-IN')})</span>
             </span>
@@ -160,16 +160,16 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Name + price */}
         <div className="flex items-start justify-between gap-2">
           <Link href={`/shop/${product.id}`} className="flex-1 min-w-0">
-            <h3 className="font-serif text-[1rem] font-[500] tracking-[0.01em] text-deep leading-tight line-clamp-1 hover:opacity-70 transition-opacity">
+            <h3 className="font-serif text-[clamp(0.95rem,0.95vw,1.2rem)] font-[500] tracking-[0.01em] text-deep leading-tight line-clamp-1 hover:opacity-70 transition-opacity">
               {product.name}
             </h3>
           </Link>
           <div className="text-right shrink-0">
-            <span className="font-sans text-[1rem] font-normal text-deep leading-none">
+            <span className="font-sans text-[clamp(0.95rem,0.95vw,1.2rem)] font-normal text-deep leading-none">
               {formatPrice(product.price)}
             </span>
             {product.oldPrice && (
-              <p className="font-sans text-[0.68rem] text-mauve line-through leading-tight mt-0.5">
+              <p className="font-sans text-[0.68rem] lg:text-[0.74rem] text-mauve line-through leading-tight mt-0.5">
                 {formatPrice(product.oldPrice)}
               </p>
             )}
@@ -177,14 +177,14 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Story */}
-        <p className="font-sans text-[0.7rem] italic text-mauve leading-snug line-clamp-1">
+        <p className="font-sans text-[clamp(0.68rem,0.7vw,0.82rem)] italic text-mauve leading-snug line-clamp-1">
           {product.story}
         </p>
 
         {/* Sizes range pill */}
         <div>
           <span
-            className="font-sans text-[0.58rem] tracking-[0.08em] uppercase text-mauve px-2 py-[3px] inline-block"
+            className="font-sans text-[0.58rem] lg:text-[0.62rem] tracking-[0.08em] uppercase text-mauve px-2 py-[3px] inline-block"
             style={{
               borderRadius: 2,
               border:       '1px solid #D8D4CE',

@@ -99,7 +99,7 @@ export default function CheckoutPage() {
             <p className="font-serif text-[1.4rem] font-light text-deep">Your bag is empty.</p>
             <Link
               href="/shop"
-              className="font-sans text-[0.78rem] tracking-btn uppercase underline underline-offset-4 text-mauve"
+              className="font-sans text-[0.78rem] lg:text-[0.84rem] tracking-btn uppercase underline underline-offset-4 text-mauve"
             >
               Explore Collection
             </Link>
@@ -110,9 +110,9 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-6 md:px-10 py-12">
+    <div className="max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto px-6 md:px-10 py-12 lg:py-16">
       <div className="mb-8">
-        <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-2">Checkout</p>
+        <p className="font-sans text-[0.68rem] lg:text-[0.74rem] tracking-label uppercase text-rose mb-2">Checkout</p>
         <h1
           className="font-serif font-light text-deep"
           style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', letterSpacing: '-0.01em' }}
@@ -122,7 +122,7 @@ export default function CheckoutPage() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_380px] gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_380px] lg:grid-cols-[1fr_420px] xl:gap-14 gap-10">
           {/* Left — forms */}
           <div className="space-y-8">
             <AddressForm value={address} onChange={setAddress} />

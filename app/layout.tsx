@@ -24,7 +24,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: 'VELURA — Crafted for the Woman Who Knows',
-  description: 'Premium Indian lingerie. XS–4XL, 28AA–50H. Crafted for every body.',
+  description: 'Premium Indian lingerie. XS–4XL, 26AA–52K. Crafted for every body.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
