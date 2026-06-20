@@ -1,13 +1,13 @@
 const ITEMS = [
   'Crafted for every body',
-  '28AA – 50H',
+  '26AA – 52K',
   'Free shipping above ₹999',
   'XS – 4XL',
   '15-day easy returns',
   'Invisible under anything',
   'Made in India',
   'Crafted for every body',
-  '28AA – 50H',
+  '26AA – 52K',
   'Free shipping above ₹999',
   'XS – 4XL',
   '15-day easy returns',
@@ -28,7 +28,7 @@ export function MarqueeBanner() {
         {ITEMS.map((item, i) => (
           <span
             key={i}
-            className="font-sans text-[0.68rem] tracking-label uppercase px-6"
+            className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase px-6"
             style={{ color: '#EDE9E4' }}
           >
             {item}

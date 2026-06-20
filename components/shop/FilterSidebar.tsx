@@ -32,10 +32,10 @@ export function FilterSidebar() {
   }
 
   return (
-    <aside className="hidden md:block w-52 shrink-0">
+    <aside className="hidden md:block w-52 lg:w-56 xl:w-60 2xl:w-64 shrink-0">
       {/* Category */}
       <div className="mb-8">
-        <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
+        <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-4">
           Category
         </p>
         <ul className="flex flex-col gap-0.5">
@@ -45,7 +45,7 @@ export function FilterSidebar() {
               <li key={id}>
                 <button
                   onClick={() => setParam('cat', id)}
-                  className="w-full text-left font-sans text-[0.82rem] py-1.5 transition-colors"
+                  className="w-full text-left font-sans text-[0.82rem] lg:text-[0.88rem] py-1.5 transition-colors"
                   style={{
                     color:      active ? '#0F0D0B' : '#6B6058',
                     fontWeight: active ? 500 : 300,
@@ -61,7 +61,7 @@ export function FilterSidebar() {
 
       {/* Support level */}
       <div>
-        <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
+        <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-4">
           Support
         </p>
         <ul className="flex flex-col gap-0.5">
@@ -71,7 +71,7 @@ export function FilterSidebar() {
               <li key={level}>
                 <button
                   onClick={() => setParam('support', active ? '' : level)}
-                  className="w-full text-left font-sans text-[0.82rem] py-1.5 transition-colors"
+                  className="w-full text-left font-sans text-[0.82rem] lg:text-[0.88rem] py-1.5 transition-colors"
                   style={{
                     color:      active ? '#0F0D0B' : '#6B6058',
                     fontWeight: active ? 500 : 300,

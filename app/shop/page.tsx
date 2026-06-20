@@ -7,7 +7,7 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Shop — VELURA',
-  description: 'Explore the full Velura collection. 28AA–50H. Everyday, sports, lace, bridal, and more.',
+  description: 'Explore the full Velura collection. 26AA–52K. Everyday, sports, lace, bridal, and more.',
 }
 
 interface PageProps {

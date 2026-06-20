@@ -36,19 +36,19 @@ const COLS = [
 export function Footer() {
   return (
     <footer className="bg-deep text-blush">
-      <div className="max-w-6xl mx-auto px-6 md:px-10 pt-16 pb-10">
+      <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1280px] mx-auto px-6 md:px-10 pt-16 lg:pt-20 pb-10">
         {/* Top row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
           {/* Brand column */}
           <div className="col-span-2 md:col-span-1">
-            <p className="font-serif text-[1.6rem] tracking-logo mb-3" style={{ color: '#EDE9E4' }}>
+            <p className="font-serif text-[1.6rem] lg:text-[1.8rem] tracking-logo mb-3" style={{ color: '#EDE9E4' }}>
               VELURA
             </p>
-            <p className="font-sans text-[0.8rem] font-light leading-relaxed" style={{ color: 'rgba(237,233,228,0.45)' }}>
+            <p className="font-sans text-[0.8rem] lg:text-[0.88rem] font-light leading-relaxed" style={{ color: 'rgba(237,233,228,0.45)' }}>
               Crafted for the woman who knows.
             </p>
-            <p className="font-sans text-[0.72rem] mt-4" style={{ color: 'rgba(237,233,228,0.35)' }}>
-              ₹499 – ₹2,499 · XS–4XL · 28AA–50H
+            <p className="font-sans text-[0.72rem] lg:text-[0.78rem] mt-4" style={{ color: 'rgba(237,233,228,0.35)' }}>
+              ₹499 – ₹2,499 · XS–4XL · 26AA–52K
             </p>
           </div>
 
@@ -56,7 +56,7 @@ export function Footer() {
           {COLS.map((col) => (
             <div key={col.title}>
               <p
-                className="font-sans text-[0.68rem] tracking-label uppercase mb-5"
+                className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase mb-5"
                 style={{ color: '#B8A898' }}
               >
                 {col.title}
@@ -66,7 +66,7 @@ export function Footer() {
                   <li key={label}>
                     <Link
                       href={href}
-                      className="font-sans text-[0.8rem] font-light transition-colors duration-200"
+                      className="font-sans text-[0.8rem] lg:text-[0.86rem] font-light transition-colors duration-200"
                       style={{ color: 'rgba(237,233,228,0.45)' }}
                     >
                       {label}
@@ -83,7 +83,7 @@ export function Footer() {
 
         {/* Bottom row */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-7">
-          <p className="font-sans text-[0.7rem]" style={{ color: 'rgba(237,233,228,0.3)' }}>
+          <p className="font-sans text-[0.7rem] lg:text-[0.74rem]" style={{ color: 'rgba(237,233,228,0.3)' }}>
             © {new Date().getFullYear()} Velura. All rights reserved.
           </p>
           <div className="flex gap-6">
@@ -91,7 +91,7 @@ export function Footer() {
               <Link
                 key={label}
                 href="#"
-                className="font-sans text-[0.7rem] transition-colors"
+                className="font-sans text-[0.7rem] lg:text-[0.74rem] transition-colors"
                 style={{ color: 'rgba(237,233,228,0.3)' }}
               >
                 {label}

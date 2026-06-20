@@ -31,7 +31,7 @@ function Field({
 
   return (
     <div>
-      <label className="font-sans text-[0.65rem] tracking-label uppercase text-mauve block mb-1.5">
+      <label className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve block mb-1.5">
         {label}{required && <span className="text-rose ml-0.5">*</span>}
       </label>
       <input
@@ -43,11 +43,11 @@ function Field({
         onBlur={() => setTouched(true)}
         placeholder={placeholder}
         required={required}
-        className="w-full h-11 px-3 font-sans text-[0.85rem] text-deep bg-cream border focus:outline-none transition-colors"
+        className="w-full h-11 px-3 font-sans text-[0.85rem] lg:text-[0.92rem] text-deep bg-cream border focus:outline-none transition-colors"
         style={{ borderRadius: 3, borderColor: error ? 'var(--rose)' : touched && value ? 'var(--deep)' : 'var(--lm)' }}
       />
       {error && (
-        <p className="font-sans text-[0.62rem] text-rose mt-1">{error}</p>
+        <p className="font-sans text-[0.62rem] lg:text-[0.68rem] text-rose mt-1">{error}</p>
       )}
       {!error && hint && !touched && (
         <p className="font-sans text-[0.62rem] text-mauve opacity-60 mt-1">{hint}</p>
@@ -86,7 +86,7 @@ export function AddressForm({ value, onChange }: AddressFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Field label="City" name="city" value={value.city} onChange={set('city')} placeholder="Mumbai" />
           <div>
-            <label className="font-sans text-[0.65rem] tracking-label uppercase text-mauve block mb-1.5">
+            <label className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve block mb-1.5">
               State <span className="text-rose">*</span>
             </label>
             <select

@@ -71,18 +71,18 @@ export function ProductDetail({ product }: ProductDetailProps) {
         {product.badge && <Badge type={product.badge} />}
         <h1
           className="font-serif font-light text-deep leading-tight"
-          style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', letterSpacing: '-0.01em' }}
+          style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.5rem)', letterSpacing: '-0.01em' }}
         >
           {product.name}
         </h1>
-        <p className="font-sans text-[0.82rem] italic text-mauve">{product.story}</p>
+        <p className="font-sans text-[0.82rem] lg:text-[0.9rem] italic text-mauve">{product.story}</p>
       </div>
 
       {/* Price */}
       <div className="flex items-baseline gap-3">
-        <span className="font-sans text-[1.3rem] text-deep">{formatPrice(product.price)}</span>
+        <span className="font-sans text-[1.3rem] lg:text-[1.45rem] text-deep">{formatPrice(product.price)}</span>
         {product.oldPrice && (
-          <span className="font-sans text-[0.9rem] text-mauve line-through">
+          <span className="font-sans text-[0.9rem] lg:text-[1rem] text-mauve line-through">
             {formatPrice(product.oldPrice)}
           </span>
         )}
@@ -99,22 +99,22 @@ export function ProductDetail({ product }: ProductDetailProps) {
             />
           ))}
         </div>
-        <span className="font-sans text-[0.75rem] text-mauve">
+        <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-mauve">
           {product.rating} · {product.reviews.toLocaleString('en-IN')} reviews
         </span>
       </div>
 
       {/* Sub info */}
-      <p className="font-sans text-[0.8rem] text-mauve">{product.sub}</p>
+      <p className="font-sans text-[0.8rem] lg:text-[0.88rem] text-mauve">{product.sub}</p>
 
       <div className="h-px bg-lm" />
 
       {/* Size selector */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve">Size</p>
+          <p className="font-sans text-[0.72rem] lg:text-[0.76rem] tracking-label uppercase text-mauve">Size</p>
           {selectedSize && (
-            <p className="font-sans text-[0.78rem] font-medium text-deep">{selectedSize}</p>
+            <p className="font-sans text-[0.78rem] lg:text-[0.84rem] font-medium text-deep">{selectedSize}</p>
           )}
         </div>
         <SizeSelector
@@ -123,7 +123,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           onSelect={(s) => { setSelectedSize(s); setError(false) }}
         />
         {error && (
-          <p className="font-sans text-[0.72rem] text-mauve mt-2">
+          <p className="font-sans text-[0.72rem] lg:text-[0.78rem] text-mauve mt-2">
             Please select a size to continue.
           </p>
         )}
@@ -137,12 +137,12 @@ export function ProductDetail({ product }: ProductDetailProps) {
       {/* Fabric + Support */}
       <div className="flex gap-6 pt-2">
         <div>
-          <p className="font-sans text-[0.65rem] tracking-label uppercase text-rose mb-1">Fabric</p>
-          <p className="font-sans text-[0.82rem] text-deep">{product.fabric}</p>
+          <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-rose mb-1">Fabric</p>
+          <p className="font-sans text-[0.82rem] lg:text-[0.9rem] text-deep">{product.fabric}</p>
         </div>
         <div>
-          <p className="font-sans text-[0.65rem] tracking-label uppercase text-rose mb-1">Support</p>
-          <p className="font-sans text-[0.82rem] text-deep">{product.support}</p>
+          <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-rose mb-1">Support</p>
+          <p className="font-sans text-[0.82rem] lg:text-[0.9rem] text-deep">{product.support}</p>
         </div>
       </div>
     </div>

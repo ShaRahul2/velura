@@ -40,9 +40,9 @@ export default async function ProductPage({ params }: PageProps) {
   const related = await getRelatedProducts(product.id, product.cat as ProductCategory)
 
   return (
-    <div className="max-w-6xl mx-auto px-6 md:px-10 py-12">
+    <div className="max-w-6xl xl:max-w-7xl mx-auto px-6 md:px-10 py-12 lg:py-16">
       {/* Product */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 mb-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 xl:gap-20 2xl:gap-24 mb-20">
         <ImageGallery images={product.images} name={product.name} />
         <ProductDetail product={product} />
       </div>
@@ -51,17 +51,17 @@ export default async function ProductPage({ params }: PageProps) {
       {related.length > 0 && (
         <section>
           <div className="mb-8">
-            <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-2">
+            <p className="font-sans text-[0.68rem] lg:text-[0.74rem] tracking-label uppercase text-rose mb-2">
               You may also like
             </p>
             <h2
               className="font-serif font-light text-deep"
-              style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', letterSpacing: '-0.01em' }}
+              style={{ fontSize: 'clamp(1.4rem, 2.8vw, 2.2rem)', letterSpacing: '-0.01em' }}
             >
               More in {product.cat}
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 lg:gap-6">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

@@ -68,7 +68,7 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
       className="p-6 sticky top-24"
       style={{ borderRadius: 4, border: '1px solid #D8D4CE', background: '#FDFBF9' }}
     >
-      <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
+      <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-4">
         Order Summary
       </p>
 
@@ -89,10 +89,10 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-serif text-[0.88rem] text-deep leading-snug line-clamp-1">{item.name}</p>
-              <p className="font-sans text-[0.65rem] text-mauve mt-0.5">Size {item.size} · Qty {item.qty}</p>
+              <p className="font-serif text-[0.88rem] lg:text-[0.95rem] text-deep leading-snug line-clamp-1">{item.name}</p>
+              <p className="font-sans text-[0.65rem] lg:text-[0.7rem] text-mauve mt-0.5">Size {item.size} · Qty {item.qty}</p>
             </div>
-            <span className="font-sans text-[0.8rem] text-deep flex-shrink-0">
+            <span className="font-sans text-[0.8rem] lg:text-[0.88rem] text-deep flex-shrink-0">
               {formatPrice(item.price * item.qty)}
             </span>
           </div>
@@ -102,12 +102,12 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
       {/* Coupon */}
       {appliedCode ? (
         <div className="flex items-center justify-between mb-4 px-3 py-2 bg-blush rounded-[3px]">
-          <span className="font-sans text-[0.72rem] text-deep">
+          <span className="font-sans text-[0.72rem] lg:text-[0.78rem] text-deep">
             <span className="font-medium">{appliedCode}</span> applied — saving {formatPrice(discount)}
           </span>
           <button
             onClick={handleRemove}
-            className="font-sans text-[0.65rem] text-mauve underline underline-offset-2 ml-3"
+            className="font-sans text-[0.65rem] lg:text-[0.7rem] text-mauve underline underline-offset-2 ml-3"
           >
             Remove
           </button>
@@ -121,20 +121,20 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
               onChange={(e) => { setCouponInput(e.target.value); setCouponError('') }}
               onKeyDown={(e) => e.key === 'Enter' && handleApply()}
               placeholder="Coupon code"
-              className="flex-1 h-9 px-3 font-sans text-[0.78rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors"
+              className="flex-1 h-9 px-3 font-sans text-[0.78rem] lg:text-[0.85rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors"
               style={{ borderRadius: 3 }}
             />
             <button
               onClick={handleApply}
               disabled={applying}
-              className="h-9 px-4 font-sans text-[0.7rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200 disabled:opacity-50"
+              className="h-9 px-4 font-sans text-[0.7rem] lg:text-[0.76rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200 disabled:opacity-50"
               style={{ borderRadius: 3 }}
             >
               {applying ? '…' : 'Apply'}
             </button>
           </div>
           {couponError && (
-            <p className="font-sans text-[0.65rem] text-mauve mt-1">{couponError}</p>
+            <p className="font-sans text-[0.65rem] lg:text-[0.7rem] text-mauve mt-1">{couponError}</p>
           )}
         </div>
       )}

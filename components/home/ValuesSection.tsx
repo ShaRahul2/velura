@@ -27,11 +27,11 @@ export function ValuesSection() {
       className="py-20 px-6 md:px-10"
       style={{ background: '#0F0D0B' }}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl xl:max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <p
-            className="font-sans text-[0.68rem] tracking-label uppercase mb-3"
+            className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase mb-3"
             style={{ color: '#B8A898' }}
           >
             Why Velura
@@ -39,7 +39,7 @@ export function ValuesSection() {
           <h2
             className="font-serif font-light"
             style={{
-              fontSize: 'clamp(1.8rem, 4vw, 2.9rem)',
+              fontSize: 'clamp(1.8rem, 3.8vw, 3.1rem)',
               letterSpacing: '-0.01em',
               color: '#EDE9E4',
             }}
@@ -49,7 +49,7 @@ export function ValuesSection() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
           {VALUES.map(({ icon, title, body }) => (
             <div
               key={title}
@@ -64,13 +64,13 @@ export function ValuesSection() {
                 {icon}
               </span>
               <h3
-                className="font-serif text-[1.05rem] font-light"
+                className="font-serif text-[1.05rem] lg:text-[1.15rem] font-light"
                 style={{ color: '#EDE9E4' }}
               >
                 {title}
               </h3>
               <p
-                className="font-sans text-[0.82rem] font-light leading-relaxed"
+                className="font-sans text-[0.82rem] lg:text-[0.88rem] font-light leading-relaxed"
                 style={{ color: 'rgba(237,233,228,0.5)' }}
               >
                 {body}

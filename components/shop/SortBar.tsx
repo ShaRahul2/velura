@@ -15,8 +15,8 @@ const SORT_OPTIONS = [
 
 interface SortBarProps {
   total:         number
-  cols:          2 | 3
-  onColsChange:  (c: 2 | 3) => void
+  cols:          2 | 3 | 4 | 5
+  onColsChange:  (c: 2 | 3 | 4 | 5) => void
 }
 
 export function SortBar({ total, cols, onColsChange }: SortBarProps) {
@@ -41,14 +41,14 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
     <>
       <div className="flex items-center justify-between mb-7 pb-4 border-b border-lm">
         <div className="flex items-center gap-3">
-          <p className="font-sans text-[0.78rem] text-mauve">
+          <p className="font-sans text-[0.78rem] lg:text-[0.84rem] text-mauve">
             {total} {total === 1 ? 'piece' : 'pieces'}
           </p>
 
           {/* Mobile filter button */}
           <button
             onClick={() => setFilterOpen(true)}
-            className="md:hidden flex items-center gap-1.5 font-sans text-[0.72rem] tracking-btn uppercase text-mauve"
+            className="md:hidden flex items-center gap-1.5 font-sans text-[0.72rem] lg:text-[0.76rem] tracking-btn uppercase text-mauve"
           >
             <SlidersHorizontal size={13} />
             Filter
@@ -68,7 +68,7 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
           <select
             value={activeSort}
             onChange={(e) => setSort(e.target.value)}
-            className="font-sans text-[0.78rem] text-deep bg-transparent border-none outline-none cursor-pointer"
+            className="font-sans text-[0.78rem] lg:text-[0.84rem] text-deep bg-transparent border-none outline-none cursor-pointer"
           >
             {SORT_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
@@ -90,6 +90,22 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
               className="p-1.5 rounded transition-colors"
               style={{ color: cols === 3 ? '#0F0D0B' : '#9A8878' }}
               aria-label="3 columns"
+            >
+              <Grid3x3 size={15} />
+            </button>
+            <button
+              onClick={() => onColsChange(4)}
+              className="p-1.5 rounded transition-colors hidden xl:block"
+              style={{ color: cols === 4 ? '#0F0D0B' : '#9A8878' }}
+              aria-label="4 columns"
+            >
+              <Grid3x3 size={15} />
+            </button>
+            <button
+              onClick={() => onColsChange(5)}
+              className="p-1.5 rounded transition-colors hidden 2xl:block"
+              style={{ color: cols === 5 ? '#0F0D0B' : '#9A8878' }}
+              aria-label="5 columns"
             >
               <Grid3x3 size={15} />
             </button>

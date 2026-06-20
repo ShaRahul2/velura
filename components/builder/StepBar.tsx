@@ -45,7 +45,7 @@ export function StepBar({ current, onStepClick }: StepBarProps) {
                 )}
               </div>
               <span
-                className="font-sans text-[0.52rem] tracking-label uppercase hidden sm:block"
+                className="font-sans text-[0.52rem] lg:text-[0.56rem] tracking-label uppercase hidden sm:block"
                 style={{ color: active ? '#0F0D0B' : '#9A8878' }}
               >
                 {label}

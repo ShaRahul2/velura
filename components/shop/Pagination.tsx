@@ -47,14 +47,14 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
       {/* Page numbers */}
       {pages.map((p, i) =>
         p === '…' ? (
-          <span key={`ellipsis-${i}`} className="w-8 h-8 flex items-center justify-center font-sans text-[0.78rem] text-mauve">
+          <span key={`ellipsis-${i}`} className="w-8 h-8 flex items-center justify-center font-sans text-[0.78rem] lg:text-[0.82rem] text-mauve">
             …
           </span>
         ) : (
           <button
             key={p}
             onClick={() => goTo(p)}
-            className="w-8 h-8 flex items-center justify-center font-sans text-[0.78rem] transition-colors"
+            className="w-8 h-8 flex items-center justify-center font-sans text-[0.78rem] lg:text-[0.82rem] transition-colors"
             style={{
               color:      p === currentPage ? '#0F0D0B' : '#6B6058',
               fontWeight: p === currentPage ? 500 : 300,

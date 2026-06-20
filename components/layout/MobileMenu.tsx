@@ -29,7 +29,7 @@ export function MobileMenu() {
         <Link
           href="/"
           onClick={closeMobileMenu}
-          className="font-serif text-[1.1rem] tracking-logo"
+          className="font-serif text-[1.1rem] lg:text-[1.2rem] tracking-logo"
           style={{ color: '#EDE9E4' }}
         >
           VELURA
@@ -51,7 +51,7 @@ export function MobileMenu() {
             key={href}
             href={href}
             onClick={closeMobileMenu}
-            className="py-4 font-sans text-[0.92rem] tracking-[0.12em] uppercase border-b border-[rgba(184,168,152,0.12)] transition-colors"
+            className="py-4 font-sans text-[0.92rem] lg:text-[1rem] tracking-[0.12em] uppercase border-b border-[rgba(184,168,152,0.12)] transition-colors"
             style={{ color: 'rgba(237,233,228,0.55)' }}
           >
             {label}
@@ -64,7 +64,7 @@ export function MobileMenu() {
         <Link
           href="/builder"
           onClick={closeMobileMenu}
-          className="block w-full text-center py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase transition-all"
+          className="block w-full text-center py-3.5 rounded-btn font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase transition-all"
           style={{ background: '#B8A898', color: '#0F0D0B' }}
         >
           Build Yours
