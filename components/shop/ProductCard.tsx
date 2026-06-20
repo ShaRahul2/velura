@@ -40,7 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className={cn(
-            'object-cover transition-opacity duration-500',
+            'object-cover transition-all duration-500 group-hover:scale-[1.02]',
             hasAlt && hovered ? 'opacity-0' : 'opacity-100'
           )}
         />
@@ -53,7 +53,7 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className={cn(
-              'object-cover transition-opacity duration-500',
+              'object-cover transition-all duration-500 group-hover:scale-[1.02]',
               hovered ? 'opacity-100' : 'opacity-0'
             )}
           />
@@ -160,12 +160,12 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Name + price */}
         <div className="flex items-start justify-between gap-2">
           <Link href={`/shop/${product.id}`} className="flex-1 min-w-0">
-            <h3 className="font-serif text-[0.98rem] md:text-[1.02rem] lg:text-[1.1rem] xl:text-[1.15rem] font-[500] tracking-[0.01em] text-deep leading-tight line-clamp-1 hover:opacity-70 transition-opacity">
+            <h3 className="font-serif text-[clamp(0.95rem,0.95vw,1.2rem)] font-[500] tracking-[0.01em] text-deep leading-tight line-clamp-1 hover:opacity-70 transition-opacity">
               {product.name}
             </h3>
           </Link>
           <div className="text-right shrink-0">
-            <span className="font-sans text-[0.98rem] md:text-[1.02rem] lg:text-[1.1rem] xl:text-[1.15rem] font-normal text-deep leading-none">
+            <span className="font-sans text-[clamp(0.95rem,0.95vw,1.2rem)] font-normal text-deep leading-none">
               {formatPrice(product.price)}
             </span>
             {product.oldPrice && (
@@ -177,7 +177,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Story */}
-        <p className="font-sans text-[0.7rem] lg:text-[0.76rem] italic text-mauve leading-snug line-clamp-1">
+        <p className="font-sans text-[clamp(0.68rem,0.7vw,0.82rem)] italic text-mauve leading-snug line-clamp-1">
           {product.story}
         </p>
 

@@ -33,7 +33,7 @@ export function SizeSelector({ available, selected, onSelect }: SizeSelectorProp
             key={size}
             onClick={() => onSelect(size)}
             className={cn(
-              'h-9 lg:h-10 min-w-[52px] lg:min-w-[56px] px-3 rounded-pill font-sans text-[0.76rem] lg:text-[0.8rem] border transition-all duration-150',
+              'h-9 lg:h-10 2xl:h-11 min-w-[52px] lg:min-w-[56px] 2xl:min-w-[60px] px-3 rounded-pill font-sans text-[0.76rem] lg:text-[0.8rem] 2xl:text-[0.85rem] border transition-all duration-150',
               isSelected
                 ? 'border-deep bg-deep text-blush'
                 : 'border-lm bg-transparent text-deep hover:border-mauve'

@@ -80,7 +80,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
       {/* Price */}
       <div className="flex items-baseline gap-3">
-        <span className="font-sans text-[1.3rem] lg:text-[1.45rem] text-deep">{formatPrice(product.price)}</span>
+        <span className="font-sans text-[clamp(1.2rem,1.3vw,1.6rem)] text-deep">{formatPrice(product.price)}</span>
         {product.oldPrice && (
           <span className="font-sans text-[0.9rem] lg:text-[1rem] text-mauve line-through">
             {formatPrice(product.oldPrice)}

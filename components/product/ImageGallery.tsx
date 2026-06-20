@@ -21,7 +21,7 @@ export function ImageGallery({ images, name }: ImageGalleryProps) {
           <button
             key={i}
             onClick={() => setActive(i)}
-            className="shrink-0 w-16 h-20 lg:w-[68px] lg:h-[85px] rounded-card overflow-hidden border-[1.5px] transition-all relative bg-blush"
+            className="shrink-0 w-16 h-20 lg:w-[68px] lg:h-[85px] 2xl:w-20 2xl:h-24 rounded-card overflow-hidden border-[1.5px] transition-all relative bg-blush"
             style={{ borderColor: active === i ? '#0F0D0B' : 'transparent' }}
             aria-label={`View ${labels[i] ?? `image ${i + 1}`}`}
           >

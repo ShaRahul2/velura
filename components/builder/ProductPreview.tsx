@@ -139,7 +139,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
             display:         showAI && aiState === 'success' ? 'none' : undefined,
           }}
         >
-          <div className="w-36 h-24 lg:w-40 lg:h-28">
+          <div className="w-36 h-24 lg:w-40 lg:h-28 2xl:w-44 2xl:h-32">
             <BraSVG spec={spec}/>
           </div>
 
@@ -150,7 +150,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
                 style={{ background: bgColor }}
               />
               <span
-                className="font-sans text-[0.52rem] tracking-label uppercase"
+                className="font-sans text-[0.52rem] lg:text-[0.58rem] tracking-label uppercase"
                 style={{ color: isDark ? bgColor : '#6B6058' }}
               >
                 {selectedColor?.label ?? color}
@@ -163,10 +163,10 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
             <div className="absolute inset-0 rounded-card flex flex-col items-center justify-center gap-3"
                  style={{ background: 'rgba(248,246,243,0.85)', backdropFilter: 'blur(6px)' }}>
               <div className="w-8 h-8 rounded-full border-2 border-lm border-t-mauve animate-spin"/>
-              <p className="font-sans text-[0.7rem] text-mauve tracking-wide">
+              <p className="font-sans text-[0.7rem] lg:text-[0.76rem] text-mauve tracking-wide">
                 Generating your preview…
               </p>
-              <p className="font-sans text-[0.62rem] text-mauve opacity-60">
+              <p className="font-sans text-[0.62rem] lg:text-[0.68rem] text-mauve opacity-60">
                 This can take 20–40 seconds
               </p>
             </div>
@@ -215,7 +215,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
           {aiState === 'idle' && (
             <button
               onClick={handleGenerateAI}
-              className="w-full flex items-center justify-center gap-1.5 h-7 font-sans text-[0.62rem] tracking-btn uppercase border border-lm text-mauve hover:border-deep hover:text-deep transition-all duration-200"
+              className="w-full flex items-center justify-center gap-1.5 h-7 font-sans text-[0.62rem] lg:text-[0.68rem] tracking-btn uppercase border border-lm text-mauve hover:border-deep hover:text-deep transition-all duration-200"
               style={{ borderRadius: 3 }}
             >
               <Sparkles className="w-3 h-3"/>
@@ -224,7 +224,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
           )}
 
           {aiState === 'loading' && (
-            <div className="w-full flex items-center justify-center gap-1.5 h-7 font-sans text-[0.62rem] tracking-btn uppercase text-mauve opacity-60">
+            <div className="w-full flex items-center justify-center gap-1.5 h-7 font-sans text-[0.62rem] lg:text-[0.68rem] tracking-btn uppercase text-mauve opacity-60">
               <div className="w-3 h-3 rounded-full border border-mauve border-t-transparent animate-spin"/>
               Generating…
             </div>
@@ -255,12 +255,12 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
             <div className="space-y-1">
               <div className="flex items-start gap-1 px-0.5">
                 <AlertCircle className="w-3 h-3 text-mauve shrink-0 mt-px"/>
-                <p className="font-sans text-[0.55rem] text-mauve leading-snug">{aiError}</p>
+                <p className="font-sans text-[0.55rem] lg:text-[0.6rem] text-mauve leading-snug">{aiError}</p>
               </div>
               {aiState === 'error' && (
                 <button
                   onClick={handleGenerateAI}
-                  className="w-full flex items-center justify-center gap-1 h-7 font-sans text-[0.62rem] tracking-btn uppercase border border-lm text-mauve hover:border-deep hover:text-deep transition-all duration-200"
+                  className="w-full flex items-center justify-center gap-1 h-7 font-sans text-[0.62rem] lg:text-[0.68rem] tracking-btn uppercase border border-lm text-mauve hover:border-deep hover:text-deep transition-all duration-200"
                   style={{ borderRadius: 3 }}
                 >
                   <RefreshCw className="w-3 h-3"/>
@@ -275,7 +275,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
       {/* ── Spec summary ─────────────────────────────────── */}
       <div className="space-y-1">
         <div className="flex justify-between items-center">
-          <span className="font-sans text-[0.58rem] tracking-label uppercase text-mauve">
+          <span className="font-sans text-[0.58rem] lg:text-[0.64rem] tracking-label uppercase text-mauve">
             Custom Bra
           </span>
           <span className="font-serif text-base font-light text-deep">
@@ -287,7 +287,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
           {primaryDetails.map(({ label, value }) => (
             <div key={label}>
               <p className="font-sans text-[0.5rem] tracking-label uppercase text-mauve">{label}</p>
-              <p className="font-sans text-[0.62rem] text-deep mt-px">{value}</p>
+              <p className="font-sans text-[0.62rem] lg:text-[0.68rem] text-deep mt-px">{value}</p>
             </div>
           ))}
         </div>
@@ -300,7 +300,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
             {articleDetails.map(({ label, value }) => (
               <div key={label}>
                 <p className="font-sans text-[0.48rem] tracking-label uppercase text-mauve opacity-75">{label}</p>
-                <p className="font-sans text-[0.56rem] text-deep truncate" title={value}>{value}</p>
+                <p className="font-sans text-[0.56rem] lg:text-[0.62rem] text-deep truncate" title={value}>{value}</p>
               </div>
             ))}
           </div>

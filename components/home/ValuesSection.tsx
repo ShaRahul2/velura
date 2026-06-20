@@ -27,7 +27,7 @@ export function ValuesSection() {
       className="py-20 px-6 md:px-10"
       style={{ background: '#0F0D0B' }}
     >
-      <div className="max-w-6xl xl:max-w-7xl mx-auto">
+      <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-12">
           <p
@@ -49,11 +49,11 @@ export function ValuesSection() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 2xl:gap-10">
           {VALUES.map(({ icon, title, body }) => (
             <div
               key={title}
-              className="flex flex-col gap-4 p-6 rounded-card"
+              className="flex flex-col gap-4 p-6 lg:p-7 2xl:p-8 rounded-card"
               style={{ border: '1px solid rgba(184,168,152,0.14)' }}
             >
               <span
@@ -64,13 +64,13 @@ export function ValuesSection() {
                 {icon}
               </span>
               <h3
-                className="font-serif text-[1.05rem] lg:text-[1.15rem] font-light"
+                className="font-serif text-[1.05rem] lg:text-[1.15rem] 2xl:text-[1.25rem] font-light"
                 style={{ color: '#EDE9E4' }}
               >
                 {title}
               </h3>
               <p
-                className="font-sans text-[0.82rem] lg:text-[0.88rem] font-light leading-relaxed"
+                className="font-sans text-[0.82rem] lg:text-[0.88rem] 2xl:text-[0.92rem] font-light leading-relaxed"
                 style={{ color: 'rgba(237,233,228,0.5)' }}
               >
                 {body}

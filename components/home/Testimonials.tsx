@@ -36,7 +36,7 @@ function Stars({ count }: { count: number }) {
 export function Testimonials() {
   return (
     <section className="py-20 px-6 md:px-10 bg-blush/40">
-      <div className="max-w-6xl xl:max-w-7xl mx-auto">
+      <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-12 text-center">
           <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-3">
@@ -51,11 +51,11 @@ export function Testimonials() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 2xl:gap-8">
           {REVIEWS.map(({ id, quote, author, location, product, rating }) => (
             <div
               key={id}
-              className="flex flex-col gap-5 bg-cream p-7 lg:p-8 rounded-card shadow-card"
+              className="flex flex-col gap-5 bg-cream p-7 lg:p-8 2xl:p-9 rounded-card shadow-card"
             >
               <p
                 className="font-sans text-[0.68rem] tracking-[0.1em]"
@@ -63,7 +63,7 @@ export function Testimonials() {
               >
                 <Stars count={rating} />
               </p>
-              <p className="font-serif text-[1.08rem] lg:text-[1.2rem] font-light italic text-deep leading-relaxed">
+              <p className="font-serif text-[clamp(1rem,1.1vw,1.25rem)] font-light italic text-deep leading-relaxed">
                 &ldquo;{quote}&rdquo;
               </p>
               <div className="mt-auto pt-4 border-t border-lm flex items-center justify-between">

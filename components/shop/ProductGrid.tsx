@@ -20,7 +20,7 @@ export function ProductGrid({ products, loading = false, cols = 3 }: ProductGrid
 
   if (loading) {
     return (
-      <div className={`grid ${gridClass} gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-10 lg:gap-x-8 xl:gap-x-9 2xl:gap-x-10`}>
+      <div className={`grid ${gridClass} gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-10 lg:gap-x-8 xl:gap-x-9 2xl:gap-x-11`}>
         {Array.from({ length: 8 }).map((_, i) => (
           <ProductCardSkeleton key={i} />
         ))}

@@ -30,7 +30,7 @@ export async function FeaturedProducts() {
   if (sorted.length === 0) return null
 
   return (
-    <section className="py-20 lg:py-24 px-6 md:px-10 max-w-6xl xl:max-w-7xl mx-auto">
+    <section className="py-20 lg:py-24 2xl:py-28 px-6 md:px-10 max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto">
       <div className="flex items-end justify-between mb-10">
         <div>
           <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-3">
@@ -51,7 +51,7 @@ export async function FeaturedProducts() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-10 lg:gap-x-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-10 lg:gap-x-8 2xl:gap-x-10">
         {sorted.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

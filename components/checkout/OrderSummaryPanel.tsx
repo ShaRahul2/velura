@@ -142,29 +142,29 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
       {/* Totals */}
       <div className="space-y-2 pt-4 border-t border-lm">
         <div className="flex justify-between">
-          <span className="font-sans text-[0.75rem] text-mauve">Subtotal</span>
-          <span className="font-sans text-[0.75rem] text-deep">{formatPrice(subtotal)}</span>
+          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-mauve">Subtotal</span>
+          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-deep">{formatPrice(subtotal)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="font-sans text-[0.75rem] text-mauve">Shipping</span>
-          <span className="font-sans text-[0.75rem] text-deep">
+          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-mauve">Shipping</span>
+          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-deep">
             {shipping === 0 ? 'Free' : formatPrice(shipping)}
           </span>
         </div>
         {discount > 0 && (
           <div className="flex justify-between text-rose">
-            <span className="font-sans text-[0.75rem]">Discount</span>
-            <span className="font-sans text-[0.75rem]">−{formatPrice(discount)}</span>
+            <span className="font-sans text-[0.75rem] lg:text-[0.82rem]">Discount</span>
+            <span className="font-sans text-[0.75rem] lg:text-[0.82rem]">−{formatPrice(discount)}</span>
           </div>
         )}
         {subtotal < FREE_SHIPPING_THRESHOLD && (
-          <p className="font-sans text-[0.63rem] text-rose">
+          <p className="font-sans text-[0.63rem] lg:text-[0.68rem] text-rose">
             Add {formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} more for free shipping
           </p>
         )}
         <div className="flex justify-between pt-3 border-t border-lm">
-          <span className="font-sans text-[0.75rem] tracking-label uppercase text-deep">Total</span>
-          <span className="font-serif text-[1.3rem] font-light text-deep">{formatPrice(total)}</span>
+          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] tracking-label uppercase text-deep">Total</span>
+          <span className="font-serif text-[1.3rem] lg:text-[1.4rem] font-light text-deep">{formatPrice(total)}</span>
         </div>
       </div>
     </div>

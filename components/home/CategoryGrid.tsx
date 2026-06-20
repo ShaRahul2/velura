@@ -70,7 +70,7 @@ const CATEGORIES = [
 
 export function CategoryGrid() {
   return (
-    <section className="py-20 lg:py-24 px-6 md:px-10 max-w-6xl xl:max-w-7xl mx-auto">
+    <section className="py-20 lg:py-24 2xl:py-28 px-6 md:px-10 max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="flex items-end justify-between mb-10">
         <div>
@@ -107,7 +107,7 @@ export function CategoryGrid() {
             {/* Top row */}
             <div className="flex items-start justify-between relative z-10">
               <div
-                className="border px-2 py-1 rounded-[2px] font-sans text-[0.62rem] lg:text-[0.68rem] tracking-label uppercase"
+                className="border px-2 py-1 rounded-[2px] font-sans text-[0.62rem] lg:text-[0.68rem] 2xl:text-[0.72rem] tracking-label uppercase"
                 style={{
                   borderColor: isDark ? 'rgba(184,168,152,0.3)' : 'rgba(107,96,88,0.2)',
                   color: isDark ? 'rgba(237,233,228,0.7)' : '#6B6058',
@@ -124,19 +124,19 @@ export function CategoryGrid() {
             {/* Bottom row */}
             <div className="relative z-10">
               <h3
-                className="font-serif font-light text-[1.1rem] lg:text-[1.2rem] leading-tight mb-1"
+                className="font-serif font-light text-[1.1rem] lg:text-[1.2rem] 2xl:text-[1.3rem] leading-tight mb-1"
                 style={{ color: isDark ? '#EDE9E4' : '#0F0D0B' }}
               >
                 {label}
               </h3>
               <p
-                className="font-sans text-[0.72rem] lg:text-[0.78rem] font-light leading-snug mb-2 line-clamp-1"
+                className="font-sans text-[0.72rem] lg:text-[0.78rem] 2xl:text-[0.84rem] font-light leading-snug mb-2 line-clamp-1"
                 style={{ color: isDark ? 'rgba(237,233,228,0.5)' : '#6B6058' }}
               >
                 {sub}
               </p>
               <p
-                className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase"
+                className="font-sans text-[0.65rem] lg:text-[0.7rem] 2xl:text-[0.76rem] tracking-label uppercase"
                 style={{ color: isDark ? accentColor : accentColor }}
               >
                 {range}

@@ -35,7 +35,7 @@ export function ShopContent({ initialProducts, total, currentPage, currentCat }:
   const rest   = initialProducts.slice(6)
 
   return (
-    <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1280px] mx-auto px-6 md:px-10 py-12 lg:py-16">
+    <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto px-6 md:px-10 py-12 lg:py-16 2xl:py-20">
       {/* Page header */}
       <div className="mb-10">
         <p className="font-sans text-[0.68rem] lg:text-[0.74rem] tracking-label uppercase text-rose mb-3">
@@ -43,7 +43,7 @@ export function ShopContent({ initialProducts, total, currentPage, currentCat }:
         </p>
         <h1
           className="font-serif font-light text-deep"
-          style={{ fontSize: 'clamp(1.8rem, 3.8vw, 3.1rem)', letterSpacing: '-0.01em' }}
+          style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3.4rem)', letterSpacing: '-0.01em' }}
         >
           {headingText}
         </h1>
