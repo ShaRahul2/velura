@@ -34,7 +34,7 @@ export function FilterSidebar() {
   return (
     <aside className="hidden md:block w-52 lg:w-56 xl:w-60 2xl:w-64 shrink-0">
       {/* Category */}
-      <div className="mb-8">
+      <div className="mb-8 lg:mb-10">
         <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-4">
           Category
         </p>

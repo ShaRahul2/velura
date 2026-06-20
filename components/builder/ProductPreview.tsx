@@ -132,7 +132,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
       <div className="relative">
         {/* SVG preview — always rendered, hidden when AI image is shown */}
         <div
-          className="rounded-card flex flex-col items-center justify-center p-2 transition-colors duration-500 h-[clamp(145px,24vh,205px)]"
+          className="rounded-card flex flex-col items-center justify-center p-2 transition-colors duration-500 h-[clamp(145px,22vh,220px)]"
           style={{
             background:      `linear-gradient(160deg, ${bgColor}1A 0%, ${bgColor}55 100%)`,
             backgroundColor: `${bgColor}12`,
@@ -146,7 +146,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
           {color && (
             <div className="mt-1.5 flex items-center gap-1.5">
               <span
-                className="w-2.5 h-2.5 rounded-full border border-lm shrink-0"
+                className="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full border border-lm shrink-0"
                 style={{ background: bgColor }}
               />
               <span
@@ -175,12 +175,12 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
 
         {/* AI image — shown on success when toggled on */}
         {showAI && aiState === 'success' && aiUrl && (
-          <div className="relative rounded-card overflow-hidden h-[clamp(145px,24vh,205px)]">
+          <div className="relative rounded-card overflow-hidden h-[clamp(145px,22vh,220px)]">
             <Image
               src={aiUrl}
               alt={`AI preview of custom ${braTypeLabel !== EMPTY_VALUE ? braTypeLabel : 'bra'} in ${selectedColor?.label ?? 'selected colour'}`}
               fill
-              sizes="(max-width: 768px) 100vw, 400px"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 400px, (max-width: 1536px) 500px, 600px"
               className="object-cover"
             />
             {/* Back to SVG button */}
@@ -278,7 +278,7 @@ export function ProductPreview({ currentStep }: ProductPreviewProps) {
           <span className="font-sans text-[0.58rem] lg:text-[0.64rem] tracking-label uppercase text-mauve">
             Custom Bra
           </span>
-          <span className="font-serif text-base font-light text-deep">
+          <span className="font-serif text-[clamp(0.95rem,1vw,1.2rem)] font-light text-deep">
             {formatPrice(price)}
           </span>
         </div>

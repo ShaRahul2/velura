@@ -19,7 +19,7 @@ export function CartItem({ item }: CartItemProps) {
     <div className="flex gap-3 py-4 border-b border-lm last:border-0">
       {/* Image */}
       <div
-        className="w-16 h-20 shrink-0 rounded-card overflow-hidden relative bg-blush flex items-center justify-center"
+        className="w-16 h-20 lg:w-20 lg:h-24 shrink-0 rounded-card overflow-hidden relative bg-blush flex items-center justify-center"
       >
         {item.images?.[0] ? (
           <Image

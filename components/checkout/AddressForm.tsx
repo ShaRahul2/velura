@@ -43,7 +43,7 @@ function Field({
         onBlur={() => setTouched(true)}
         placeholder={placeholder}
         required={required}
-        className="w-full h-11 px-3 font-sans text-[0.85rem] lg:text-[0.92rem] text-deep bg-cream border focus:outline-none transition-colors"
+        className="w-full h-11 lg:h-12 px-3 font-sans text-[0.85rem] lg:text-[0.92rem] text-deep bg-cream border focus:outline-none transition-colors"
         style={{ borderRadius: 3, borderColor: error ? 'var(--rose)' : touched && value ? 'var(--deep)' : 'var(--lm)' }}
       />
       {error && (

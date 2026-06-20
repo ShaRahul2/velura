@@ -77,7 +77,7 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
         {items.map((item) => (
           <div key={`${item.id}-${item.size}`} className="flex gap-3 items-start">
             <div
-              className="w-14 h-16 flex-shrink-0 flex items-center justify-center bg-blush overflow-hidden"
+              className="w-14 h-16 lg:w-16 lg:h-20 flex-shrink-0 flex items-center justify-center bg-blush overflow-hidden"
               style={{ borderRadius: 4 }}
             >
               {item.images[0] ? (

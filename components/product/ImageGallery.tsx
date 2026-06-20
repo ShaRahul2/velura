@@ -29,7 +29,7 @@ export function ImageGallery({ images, name }: ImageGalleryProps) {
               src={src}
               alt={`${name} — ${labels[i] ?? `view ${i + 1}`}`}
               fill
-              sizes="64px"
+              sizes="(max-width: 768px) 64px, 80px"
               className="object-cover"
             />
           </button>
@@ -42,7 +42,7 @@ export function ImageGallery({ images, name }: ImageGalleryProps) {
           src={images[active]}
           alt={name}
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 45vw, 40vw"
           className="object-cover transition-opacity duration-300"
           priority
         />

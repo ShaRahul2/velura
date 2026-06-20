@@ -116,7 +116,7 @@ export function CategoryGrid() {
               >
                 {count} styles
               </div>
-              <span className={`${emojiSize} transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6`} aria-hidden="true">
+              <span className={`${emojiSize} lg:text-[4.5rem] 2xl:text-[5rem] transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6`} aria-hidden="true">
                 {emoji}
               </span>
             </div>

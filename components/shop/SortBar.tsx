@@ -48,7 +48,7 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
           {/* Mobile filter button */}
           <button
             onClick={() => setFilterOpen(true)}
-            className="md:hidden flex items-center gap-1.5 font-sans text-[0.72rem] lg:text-[0.76rem] tracking-btn uppercase text-mauve"
+            className="md:hidden flex items-center gap-1.5 font-sans text-[0.72rem] lg:text-[0.76rem] 2xl:text-[0.8rem] tracking-btn uppercase text-mauve"
           >
             <SlidersHorizontal size={13} />
             Filter

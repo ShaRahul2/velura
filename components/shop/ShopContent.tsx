@@ -37,7 +37,7 @@ export function ShopContent({ initialProducts, total, currentPage, currentCat }:
   return (
     <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto px-6 md:px-10 py-12 lg:py-16 2xl:py-20">
       {/* Page header */}
-      <div className="mb-10">
+      <div className="mb-10 lg:mb-12 2xl:mb-16">
         <p className="font-sans text-[0.68rem] lg:text-[0.74rem] tracking-label uppercase text-rose mb-3">
           {catLabel}
         </p>
@@ -49,7 +49,7 @@ export function ShopContent({ initialProducts, total, currentPage, currentCat }:
         </h1>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex gap-10 lg:gap-12 2xl:gap-16">
         {/* Desktop filter sidebar */}
         <Suspense>
           <FilterSidebar />

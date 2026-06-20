@@ -69,7 +69,7 @@ export function CustomBraBuilder() {
       <div className="flex-1 min-h-0 overflow-hidden max-w-6xl xl:max-w-7xl w-full mx-auto px-3 sm:px-5 md:px-6 py-1.5 lg:py-2 flex flex-col">
         <StepBar current={step} onStepClick={goTo} />
 
-        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.95fr)] gap-3 lg:gap-4 xl:gap-6 flex-1 min-h-0 overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.95fr)] 2xl:grid-cols-[minmax(0,0.95fr)_minmax(360px,1fr)] gap-3 lg:gap-4 xl:gap-6 2xl:gap-8 flex-1 min-h-0 overflow-hidden">
           {/* Left — every step is sized to remain visible as a whole */}
           <div className="flex flex-col min-h-0 overflow-hidden">
             <div className="flex-1 min-h-0 overflow-hidden">
@@ -109,7 +109,7 @@ export function CustomBraBuilder() {
           {/* Right — live preview, fills height */}
           <div className="hidden md:flex flex-col overflow-hidden">
             <div
-              className="flex-1 min-h-0 overflow-hidden p-2 lg:p-2.5"
+              className="flex-1 min-h-0 overflow-hidden p-2 lg:p-2.5 2xl:p-3"
               style={{ borderRadius: 4, border: '1px solid #D8D4CE', background: '#FDFBF9' }}
             >
               <ProductPreview currentStep={step} />

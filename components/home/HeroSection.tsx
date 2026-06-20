@@ -97,7 +97,7 @@ export function HeroSection() {
 
         {/* Tag — top right */}
         <div
-          className="absolute top-8 right-8 border px-3 py-1.5 rounded-[2px]"
+          className="absolute top-8 right-8 border px-3 py-1.5 lg:px-4 lg:py-2 rounded-[2px]"
           style={{
             borderColor: 'rgba(107,96,88,0.25)',
             background: 'rgba(255,255,255,0.55)',
@@ -111,7 +111,7 @@ export function HeroSection() {
 
         {/* Tag — bottom left */}
         <div
-          className="absolute bottom-8 left-8 border px-3 py-1.5 rounded-[2px]"
+          className="absolute bottom-8 left-8 border px-3 py-1.5 lg:px-4 lg:py-2 rounded-[2px]"
           style={{
             borderColor: 'rgba(107,96,88,0.25)',
             background: 'rgba(255,255,255,0.55)',

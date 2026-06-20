@@ -40,7 +40,7 @@ export default async function ProductPage({ params }: PageProps) {
   const related = await getRelatedProducts(product.id, product.cat as ProductCategory)
 
   return (
-    <div className="max-w-6xl xl:max-w-7xl mx-auto px-6 md:px-10 py-12 lg:py-16">
+    <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto px-6 md:px-10 py-12 lg:py-16 2xl:py-20">
       {/* Product */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 xl:gap-20 2xl:gap-24 mb-20">
         <ImageGallery images={product.images} name={product.name} />
@@ -61,7 +61,7 @@ export default async function ProductPage({ params }: PageProps) {
               More in {product.cat}
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 lg:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-5 lg:gap-6 2xl:gap-8">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

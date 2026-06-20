@@ -38,7 +38,7 @@ export function ProductCard({ product }: ProductCardProps) {
           src={product.images[0]}
           alt={product.name}
           fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1536px) 25vw, 20vw"
           className={cn(
             'object-cover transition-all duration-500 group-hover:scale-[1.02]',
             hasAlt && hovered ? 'opacity-0' : 'opacity-100'
@@ -51,7 +51,7 @@ export function ProductCard({ product }: ProductCardProps) {
             src={product.images[1]}
             alt={`${product.name} — back view`}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1536px) 25vw, 20vw"
             className={cn(
               'object-cover transition-all duration-500 group-hover:scale-[1.02]',
               hovered ? 'opacity-100' : 'opacity-0'
