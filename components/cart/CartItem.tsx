@@ -5,6 +5,7 @@ import type { CartItem as CartItemType } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/store/cartStore'
 import { Minus, Plus, X } from 'lucide-react'
+import { CB_COLOR_OPTIONS } from '@/data/builderOptions'
 
 interface CartItemProps {
   item: CartItemType
@@ -51,7 +52,15 @@ export function CartItem({ item }: CartItemProps) {
         <p className="font-sans text-[0.72rem] text-mauve">Size: {item.size}</p>
 
         {item.isCustom && (
-          <p className="font-sans text-[0.68rem] text-rose">Custom Build</p>
+          <div className="flex items-center gap-1.5">
+            <p className="font-sans text-[0.68rem] text-rose">Custom Build</p>
+            {item.customSpec?.color && (
+              <span
+                className="inline-block w-2.5 h-2.5 rounded-full border border-lm"
+                style={{ background: CB_COLOR_OPTIONS.find(c => c.id === item.customSpec!.color)?.color || '#EDE9E4' }}
+              />
+            )}
+          </div>
         )}
 
         <div className="flex items-center justify-between mt-auto pt-1">

@@ -59,7 +59,7 @@ export function HeroSection() {
         >
           {[
             { value: '50,000+', label: 'Women' },
-            { value: '28AA–50H', label: 'Size range' },
+            { value: '26AA–52K', label: 'Size range' },
             { value: '4.8★', label: 'Avg. rating' },
           ].map(({ value, label }) => (
             <div key={label}>

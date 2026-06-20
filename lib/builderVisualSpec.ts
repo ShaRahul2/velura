@@ -7,7 +7,7 @@ import { CB_COLOR_OPTIONS } from '@/data/builderOptions'
  * All nulls are resolved to sensible defaults so downstream code never needs to guard.
  */
 export interface BuilderVisualSpec {
-  braType:    string   // everyday | balconette | padded | sports | lace | wirefree | strapless | bridal
+  braType:    string   // one of the configured custom bra silhouettes
   strapStyle: string   // classic | adjustable | crossback | wide | none
   padding:    string   // none | light | medium | high
   underwire:  string   // wired | wirefree
@@ -74,6 +74,10 @@ export function buildAIPrompt(spec: BuilderVisualSpec): string {
     wirefree:   'wire-free soft-cup bra with gently shaped flexible cups, comfortable wide band, no visible boning',
     strapless:  'strapless bra with silicone non-slip grip at the top edge, boned structured cups, wide supportive under-band',
     bridal:     'bridal bra with ivory lace overlay, hand-stitched satin ribbon bow at centre gore, scalloped trim along cup edge',
+    tshirt:     'T-shirt bra with ultra-smooth moulded cups and invisible bonded edges for a seamless profile',
+    pushup:     'push-up bra with angled contoured cups, graduated padding and a lifted centre silhouette',
+    plunge:     'plunge bra with a very low centre gore, deep V neckline and softly angled cups',
+    minimizer:  'full-coverage minimizer bra with broad side panels, wide cups and a smooth reduced-profile silhouette',
   }
 
   // ── Straps — describe how they look and connect ─────────────────────────────
@@ -147,6 +151,10 @@ export function buildPollinationsPrompt(spec: BuilderVisualSpec): string {
     wirefree:   'wire-free soft-cup bra with flexible band',
     strapless:  'strapless bra with silicone grip band',
     bridal:     'bridal lace bra with satin bow at centre gore',
+    tshirt:     'seamless moulded T-shirt bra',
+    pushup:     'contoured push-up bra with lifted cups',
+    plunge:     'deep V plunge bra with low centre gore',
+    minimizer:  'full-coverage minimizer bra with broad side panels',
   }
 
   const strapShort: Record<string, string> = {

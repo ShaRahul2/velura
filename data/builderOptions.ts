@@ -7,6 +7,10 @@ export const CB_BRA_TYPES = [
   { id: 'wirefree', label: 'Wirefree', price: 100, description: 'Easy comfort with light structure.' },
   { id: 'strapless', label: 'Strapless', price: 250, description: 'Clean lines for off-shoulder looks.' },
   { id: 'bridal', label: 'Bridal', price: 300, description: 'Romantic finishing for special occasions.' },
+  { id: 'tshirt', label: 'T-shirt', price: 100, description: 'Invisible under close-fitting clothes.' },
+  { id: 'pushup', label: 'Push-up', price: 250, description: 'Contoured lift with a fuller shape.' },
+  { id: 'plunge', label: 'Plunge', price: 200, description: 'Low centre for deep necklines.' },
+  { id: 'minimizer', label: 'Minimizer', price: 200, description: 'Full coverage with a smooth profile.' },
 ]
 
 export const CB_STRAP_STYLES = [
@@ -74,4 +78,28 @@ export const CB_COLOR_OPTIONS = [
   { id: 'cobalt',     label: 'Cobalt',        color: '#2555A0' },
   { id: 'sage',       label: 'Sage',          color: '#8DB09A' },
   { id: 'forest',     label: 'Forest',        color: '#2D5C44' },
+
+  // ── Brights & Earth tones ───────────────────────────────────
+  { id: 'sky',        label: 'Powder Blue',   color: '#AFC9DD' },
+  { id: 'teal',       label: 'Deep Teal',     color: '#176B70' },
+  { id: 'mint',       label: 'Soft Mint',     color: '#B9D8CA' },
+  { id: 'olive',      label: 'Olive',         color: '#727A45' },
+  { id: 'lilac',      label: 'Soft Lilac',    color: '#D8C3E5' },
+  { id: 'plum',       label: 'Plum',          color: '#643A5B' },
+  { id: 'coral',      label: 'Coral',         color: '#E67F73' },
+  { id: 'terracotta', label: 'Terracotta',    color: '#B9674E' },
+  { id: 'mustard',    label: 'Golden Ochre',  color: '#C49A3A' },
+  { id: 'chocolate',  label: 'Chocolate',     color: '#5B3828' },
+
+  // Extended — more neutrals & tones
+  { id: 'sand',       label: 'Sand',          color: '#E8D9C8' },
+  { id: 'stone',      label: 'Stone',         color: '#B8AFA5' },
+  { id: 'charcoal',   label: 'Charcoal',      color: '#3C3835' },
+  { id: 'peach',      label: 'Peach',         color: '#F4C3A8' },
+  { id: 'fuchsia',    label: 'Fuchsia',       color: '#C23A6F' },
+  { id: 'rosewood',   label: 'Rosewood',      color: '#8B3A4B' },
+  { id: 'emerald',    label: 'Emerald',       color: '#1F4D3D' },
+  { id: 'amethyst',   label: 'Amethyst',      color: '#6B4E8C' },
+  { id: 'periwinkle', label: 'Periwinkle',    color: '#A3A8D6' },
+  { id: 'mocha',      label: 'Mocha',         color: '#6F5344' },
 ]

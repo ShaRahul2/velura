@@ -12,10 +12,13 @@ const CUP_THRESHOLDS = [
   { maxDiff: 17, cup: 'F'  },
   { maxDiff: 20, cup: 'G'  },
   { maxDiff: 23, cup: 'H'  },
+  { maxDiff: 26, cup: 'I'  },
+  { maxDiff: 29, cup: 'J'  },
+  { maxDiff: 33, cup: 'K'  },
 ]
 
-// US/Indian bra band sizes (inches × 2, even numbers 28–50)
-const BAND_SIZES = [28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50]
+// US/Indian bra band sizes (inches × 2, even numbers 26–52)
+const BAND_SIZES = [26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52]
 
 function toCm(value: number, unit: 'cm' | 'in') {
   return unit === 'in' ? value * 2.54 : value
@@ -26,13 +29,13 @@ function toInches(valueCm: number) {
 }
 
 // Band is derived from underbust measurement converted to inches,
-// then rounded to the nearest standard band size (28–50).
+// then rounded to the nearest standard band size (26–52).
 function normalizeBand(underbustCm: number): number {
   const underbustIn = toInches(underbustCm)
   // Standard rule: band = underbust rounded up to nearest even inch
   const rounded = Math.ceil(underbustIn)
   const even    = rounded % 2 === 0 ? rounded : rounded + 1
-  // Clamp to supported range 28–50
+  // Clamp to supported range 26–52
   const clamped = Math.min(Math.max(even, BAND_SIZES[0]), BAND_SIZES[BAND_SIZES.length - 1])
   // Snap to nearest standard band
   return BAND_SIZES.reduce((prev, curr) =>
@@ -42,7 +45,7 @@ function normalizeBand(underbustCm: number): number {
 
 function getCup(diffCm: number): string {
   const matched = CUP_THRESHOLDS.find((t) => diffCm < t.maxDiff)
-  return matched ? matched.cup : 'H'
+  return matched ? matched.cup : 'K'
 }
 
 function getConfidence(bustCm: number, underbustCm: number): 'high' | 'medium' {

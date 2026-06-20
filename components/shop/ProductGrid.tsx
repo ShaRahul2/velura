@@ -11,12 +11,12 @@ interface ProductGridProps {
 export function ProductGrid({ products, loading = false, cols = 3 }: ProductGridProps) {
   const gridClass = cols === 2
     ? 'grid-cols-2'
-    : 'grid-cols-2 md:grid-cols-3'
+    : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
 
   if (loading) {
     return (
-      <div className={`grid ${gridClass} gap-5 md:gap-6`}>
-        {Array.from({ length: 6 }).map((_, i) => (
+      <div className={`grid ${gridClass} gap-x-4 gap-y-8 md:gap-x-5 md:gap-y-10`}>
+        {Array.from({ length: 8 }).map((_, i) => (
           <ProductCardSkeleton key={i} />
         ))}
       </div>
@@ -37,7 +37,7 @@ export function ProductGrid({ products, loading = false, cols = 3 }: ProductGrid
   }
 
   return (
-    <div className={`grid ${gridClass} gap-5 md:gap-6`}>
+    <div className={`grid ${gridClass} gap-x-4 gap-y-8 md:gap-x-5 md:gap-y-10`}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

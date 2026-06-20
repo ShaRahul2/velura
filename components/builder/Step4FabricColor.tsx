@@ -5,7 +5,14 @@ import { CB_FABRIC_OPTIONS, CB_COLOR_OPTIONS } from '@/data/builderOptions'
 import { formatPrice } from '@/lib/utils'
 
 // IDs where a white outline is needed (fill is too close to page bg)
-const LIGHT_IDS = new Set(['ivory', 'blush', 'cream', 'nude', 'champagne'])
+const LIGHT_IDS = new Set(['ivory', 'blush', 'cream', 'nude', 'champagne', 'sky', 'mint', 'lilac', 'sand', 'peach', 'periwinkle', 'stone'])
+
+const COLOR_GROUPS = [
+  { label: 'Neutrals', ids: ['ivory','blush','nude','cream','champagne','rose','smoke','mauve','slate','deep','black','sand','stone','charcoal','mocha'] },
+  { label: 'Pinks & Reds', ids: ['pink','blushrose','red','burgundy','coral','terracotta','peach','fuchsia','rosewood'] },
+  { label: 'Blues & Greens', ids: ['lavender','navy','cobalt','sage','forest','sky','teal','mint','olive','periwinkle','emerald'] },
+  { label: 'Rich tones', ids: ['lilac','plum','mustard','chocolate','amethyst'] },
+] as const
 
 export function Step4FabricColor() {
   const { fabric, setFabric, color, setColor } = useBuilderStore()
@@ -14,31 +21,31 @@ export function Step4FabricColor() {
 
   return (
     <div>
-      <h3 className="font-serif text-[1.5rem] font-light text-deep mb-1">Fabric & colour</h3>
-      <p className="font-sans text-[0.82rem] text-mauve mb-6">Choose what it feels like and what it looks like.</p>
+      <h3 className="font-serif text-[1.1rem] lg:text-[1.2rem] font-light text-deep mb-px">Fabric &amp; colour</h3>
+      <p className="font-sans text-[0.6rem] text-mauve mb-1.5">Five fabrics. Forty colours.</p>
 
       {/* ── Fabric ─────────────────────────────────────────── */}
-      <div className="mb-7">
-        <p className="font-sans text-[0.65rem] tracking-label uppercase text-mauve mb-3">Fabric</p>
-        <div className="grid grid-cols-1 gap-2">
+      <div className="mb-2">
+        <p className="font-sans text-[0.52rem] tracking-label uppercase text-mauve mb-1">Fabric</p>
+        <div className="grid grid-cols-3 lg:grid-cols-5 gap-1">
           {CB_FABRIC_OPTIONS.map((opt) => {
             const selected = fabric === opt.id
             return (
               <button
                 key={opt.id}
                 onClick={() => setFabric(opt.id)}
-                className="flex items-center justify-between p-3 text-left transition-all duration-150"
+                className="flex items-center justify-between px-2 h-7 text-left transition-all duration-150"
                 style={{
                   borderRadius: 3,
-                  border:      `1.5px solid ${selected ? '#0F0D0B' : '#D8D4CE'}`,
+                  border:      `1px solid ${selected ? '#0F0D0B' : '#D8D4CE'}`,
                   background:   selected ? 'rgba(15,13,11,0.04)' : 'transparent',
                 }}
               >
-                <span className="font-sans text-[0.82rem] text-deep">{opt.label}</span>
+                <span className="font-sans text-[0.6rem] text-deep">{opt.label}</span>
                 {opt.price > 0 ? (
-                  <span className="font-sans text-[0.65rem] text-mauve">+{formatPrice(opt.price)}</span>
+                  <span className="font-sans text-[0.52rem] text-mauve">+{formatPrice(opt.price)}</span>
                 ) : (
-                  <span className="font-sans text-[0.6rem] text-mauve opacity-60">Included</span>
+                  <span className="font-sans text-[0.5rem] text-mauve opacity-60">Inc</span>
                 )}
               </button>
             )
@@ -48,63 +55,31 @@ export function Step4FabricColor() {
 
       {/* ── Colour ─────────────────────────────────────────── */}
       <div>
-        <div className="flex items-center justify-between mb-3">
-          <p className="font-sans text-[0.65rem] tracking-label uppercase text-mauve">Colour</p>
+        <div className="flex items-center justify-between mb-1">
+          <p className="font-sans text-[0.52rem] tracking-label uppercase text-mauve">Colour</p>
           {selectedColor && (
-            <span
-              className="font-sans text-[0.65rem] tracking-label uppercase transition-all duration-200"
-              style={{ color: '#0F0D0B' }}
-            >
+            <span className="font-sans text-[0.55rem] tracking-label uppercase text-deep">
               {selectedColor.label}
             </span>
           )}
         </div>
 
-        {/* ── Neutral row ── */}
-        <p className="font-sans text-[0.55rem] tracking-label uppercase text-mauve opacity-60 mb-2">Neutrals</p>
-        <div className="flex flex-wrap gap-3 mb-4">
-          {CB_COLOR_OPTIONS.filter((c) =>
-            ['ivory','blush','nude','cream','champagne','rose','smoke','mauve','slate','deep','black'].includes(c.id)
-          ).map((opt) => (
-            <ColorSwatch
-              key={opt.id}
-              opt={opt}
-              selected={color === opt.id}
-              isLight={LIGHT_IDS.has(opt.id)}
-              onSelect={setColor}
-            />
-          ))}
-        </div>
-
-        {/* ── Pinks & Reds row ── */}
-        <p className="font-sans text-[0.55rem] tracking-label uppercase text-mauve opacity-60 mb-2">Pinks & Reds</p>
-        <div className="flex flex-wrap gap-3 mb-4">
-          {CB_COLOR_OPTIONS.filter((c) =>
-            ['pink','blushrose','red','burgundy'].includes(c.id)
-          ).map((opt) => (
-            <ColorSwatch
-              key={opt.id}
-              opt={opt}
-              selected={color === opt.id}
-              isLight={LIGHT_IDS.has(opt.id)}
-              onSelect={setColor}
-            />
-          ))}
-        </div>
-
-        {/* ── Blues & Greens row ── */}
-        <p className="font-sans text-[0.55rem] tracking-label uppercase text-mauve opacity-60 mb-2">Blues & Greens</p>
-        <div className="flex flex-wrap gap-3">
-          {CB_COLOR_OPTIONS.filter((c) =>
-            ['lavender','navy','cobalt','sage','forest'].includes(c.id)
-          ).map((opt) => (
-            <ColorSwatch
-              key={opt.id}
-              opt={opt}
-              selected={color === opt.id}
-              isLight={LIGHT_IDS.has(opt.id)}
-              onSelect={setColor}
-            />
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+          {COLOR_GROUPS.map((group) => (
+            <div key={group.label}>
+              <p className="font-sans text-[0.46rem] tracking-label uppercase text-mauve opacity-60 mb-0.5">{group.label}</p>
+              <div className="flex flex-wrap gap-1">
+                {CB_COLOR_OPTIONS.filter((c) => group.ids.includes(c.id as never)).map((opt) => (
+                  <ColorSwatch
+                    key={opt.id}
+                    opt={opt}
+                    selected={color === opt.id}
+                    isLight={LIGHT_IDS.has(opt.id)}
+                    onSelect={setColor}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -126,39 +101,28 @@ function ColorSwatch({ opt, selected, isLight, onSelect }: SwatchProps) {
     <button
       onClick={() => onSelect(opt.id)}
       title={opt.label}
-      className="flex flex-col items-center gap-1 transition-all duration-150"
+      aria-label={opt.label}
+      aria-pressed={selected}
+      className="flex items-center justify-center transition-all duration-150"
     >
       <span
         className="block transition-all duration-150"
         style={{
-          width:         36,
-          height:        36,
+          width:         19,
+          height:        19,
           borderRadius:  '50%',
           background:    opt.color,
-          // Light colors: dark ring for visibility; dark colors: white ring
           border:        selected
-            ? `2.5px solid ${isLight ? '#0F0D0B' : opt.color}`
-            : `2px solid transparent`,
-          outline:       selected
             ? `2px solid ${isLight ? '#0F0D0B' : opt.color}`
-            : `2px solid ${isLight ? '#D8D4CE' : 'transparent'}`,
-          outlineOffset: selected ? '2px' : '0px',
+            : `1.5px solid transparent`,
+          outline:       selected
+            ? `1px solid ${isLight ? '#0F0D0B' : opt.color}`
+            : `1px solid ${isLight ? '#D8D4CE' : 'transparent'}`,
+          outlineOffset: selected ? '1px' : '0px',
           boxShadow:     isLight ? 'inset 0 0 0 1px rgba(0,0,0,0.08)' : 'none',
-          transform:     selected ? 'scale(1.15)' : 'scale(1)',
+          transform:     selected ? 'scale(1.12)' : 'scale(1)',
         }}
       />
-      <span
-        className="font-sans text-[0.55rem] tracking-label uppercase text-center leading-tight"
-        style={{
-          color:      selected ? '#0F0D0B' : '#9A8878',
-          maxWidth:   40,
-          whiteSpace: 'nowrap',
-          overflow:   'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {opt.label}
-      </span>
     </button>
   )
 }

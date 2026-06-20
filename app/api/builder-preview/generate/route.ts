@@ -44,7 +44,7 @@ function checkRateLimit(ip: string): boolean {
 
 // ── Input validation ──────────────────────────────────────────────────────────
 
-const VALID_BRA_TYPES    = new Set(['everyday','balconette','padded','sports','lace','wirefree','strapless','bridal'])
+const VALID_BRA_TYPES    = new Set(['everyday','balconette','padded','sports','lace','wirefree','strapless','bridal','tshirt','pushup','plunge','minimizer'])
 const VALID_STRAP_STYLES = new Set(['classic','adjustable','crossback','wide','none'])
 const VALID_PADDING      = new Set(['none','light','medium','high'])
 const VALID_UNDERWIRE    = new Set(['wired','wirefree'])
@@ -57,7 +57,9 @@ const VALID_COLORS       = new Set([
   // Pinks & Reds
   'pink','blushrose','red','burgundy',
   // Blues & Greens
-  'lavender','navy','cobalt','sage','forest',
+  'lavender','navy','cobalt','sage','forest','sky','teal','mint','olive',
+  // Brights & earth tones
+  'lilac','plum','coral','terracotta','mustard','chocolate',
 ])
 
 function validateSpec(s: unknown): s is BuilderVisualSpec {

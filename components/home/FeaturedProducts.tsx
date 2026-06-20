@@ -1,22 +1,31 @@
 import Link from 'next/link'
 import { db } from '@/lib/db'
+import { products as staticProducts } from '@/data/products'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { mapDbProductToProduct } from '@/lib/products'
+import type { Product } from '@/types'
 
 const FEATURED_IDS = [1, 4, 6, 12]
 
 export async function FeaturedProducts() {
-  const rows = await db.product.findMany({
-    where:   { id: { in: FEATURED_IDS }, isActive: true },
-    include: { category: true, images: { orderBy: { position: 'asc' } } },
-    orderBy: { id: 'asc' },
-  })
+  let sorted: Product[]
 
-  // Preserve the intended curation order
-  const sorted = FEATURED_IDS
-    .map((id) => rows.find((r) => r.id === id))
-    .filter((r): r is NonNullable<typeof r> => r !== undefined)
-    .map(mapDbProductToProduct)
+  try {
+    const rows = await db.product.findMany({
+      where:   { id: { in: FEATURED_IDS }, isActive: true },
+      include: { category: true, images: { orderBy: { position: 'asc' } } },
+      orderBy: { id: 'asc' },
+    })
+    sorted = FEATURED_IDS
+      .map((id) => rows.find((r) => r.id === id))
+      .filter((r): r is NonNullable<typeof r> => r !== undefined)
+      .map(mapDbProductToProduct)
+  } catch {
+    // DB not yet provisioned — fall back to static catalog
+    sorted = FEATURED_IDS
+      .map((id) => staticProducts.find((p) => p.id === id))
+      .filter((p): p is Product => p !== undefined)
+  }
 
   if (sorted.length === 0) return null
 
@@ -42,7 +51,7 @@ export async function FeaturedProducts() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-5 md:gap-y-10">
         {sorted.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

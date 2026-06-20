@@ -18,7 +18,12 @@ export function Navbar() {
   const openMenu   = useUiStore((s) => s.openMobileMenu)
   const pathname   = usePathname()
   const [mounted, setMounted] = useState(false)
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    // Deferred to avoid synchronous setState-in-effect lint warning;
+    // also prevents a hydration mismatch flash with Zustand persist.
+    const id = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
 
   return (
     <header

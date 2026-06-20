@@ -9,6 +9,7 @@ import { Step3Style } from './Step3Style'
 import { Step4FabricColor } from './Step4FabricColor'
 import { Step5Review } from './Step5Review'
 import { ProductPreview } from './ProductPreview'
+import { formatPrice } from '@/lib/utils'
 
 const STEPS = 5
 
@@ -24,65 +25,91 @@ export function CustomBraBuilder() {
   const [step, setStep] = useState(1)
   const store = useBuilderStore()           // reactive — re-renders on every selection
   const ready = canProceed(step, store)
+  const price = store.price
 
   function next() { if (step < STEPS) setStep(step + 1) }
-  function prev() { if (step > 1)     setStep(step - 1) }
+  function goTo(newStep: number) {
+    if (newStep >= 1 && newStep <= STEPS) setStep(newStep)
+  }
+  function resetAll() {
+    store.reset()
+    setStep(1)
+  }
 
   return (
-    <div className="min-h-screen bg-cream">
-      {/* Header */}
-      <div className="border-b border-lm py-10 px-6 md:px-16 text-center">
-        <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-2">
-          Custom Bra Builder
-        </p>
-        <h1
-          className="font-serif font-light text-deep"
-          style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.01em' }}
-        >
-          Built for your body.
-        </h1>
+    <section className="builder-shell h-[calc(100svh-4rem)] min-h-[540px] flex flex-col bg-cream overflow-hidden">
+      {/* Header — compact */}
+      <div className="border-b border-lm py-1.5 lg:py-2 px-5 md:px-10 shrink-0">
+        <div className="flex items-center justify-between max-w-6xl mx-auto">
+          <div className="text-center flex-1">
+            <p className="font-sans text-[0.56rem] tracking-label uppercase text-rose mb-px">
+              Custom Bra Builder
+            </p>
+            <h1
+              className="font-serif font-light text-deep leading-none"
+              style={{ fontSize: 'clamp(1.1rem, 2.6vw, 1.6rem)', letterSpacing: '-0.01em' }}
+            >
+              Built for your body.
+            </h1>
+          </div>
+          <div className="flex items-center gap-3 text-right">
+            <div className="font-sans text-[0.58rem] text-mauve hidden sm:block">Total</div>
+            <div className="font-serif text-[1.05rem] font-light text-deep tabular-nums">{formatPrice(price)}</div>
+            <button
+              onClick={resetAll}
+              className="font-sans text-[0.58rem] tracking-btn uppercase text-mauve hover:text-deep border border-lm px-2 py-0.5 rounded-[2px] transition-colors"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 md:px-10 py-10">
-        <StepBar current={step} />
+      {/* Body — fills remaining viewport height */}
+      <div className="flex-1 min-h-0 overflow-hidden max-w-6xl w-full mx-auto px-3 sm:px-5 md:px-6 py-1.5 lg:py-2 flex flex-col">
+        <StepBar current={step} onStepClick={goTo} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-          {/* Left — step content */}
-          <div>
-            {step === 1 && <Step1Size />}
-            {step === 2 && <Step2BraType />}
-            {step === 3 && <Step3Style />}
-            {step === 4 && <Step4FabricColor />}
-            {step === 5 && <Step5Review />}
+        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] gap-3 lg:gap-4 flex-1 min-h-0 overflow-hidden">
+          {/* Left — every step is sized to remain visible as a whole */}
+          <div className="flex flex-col min-h-0 overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-hidden">
+              {step === 1 && <Step1Size />}
+              {step === 2 && <Step2BraType />}
+              {step === 3 && <Step3Style />}
+              {step === 4 && <Step4FabricColor />}
+              {step === 5 && <Step5Review />}
+            </div>
 
-            {/* Navigation */}
-            {step < STEPS && (
-              <div className="flex gap-3 mt-8">
-                {step > 1 && (
-                  <button
-                    onClick={prev}
-                    className="h-11 px-6 font-sans text-[0.78rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200"
-                    style={{ borderRadius: 3 }}
-                  >
-                    Back
-                  </button>
-                )}
+            {/* Navigation — pinned at bottom of left column */}
+            <div className="flex gap-2 pt-1.5 shrink-0">
+              {step > 1 && (
+                <button
+                  onClick={() => goTo(step - 1)}
+                  className="h-8 px-4 font-sans text-[0.66rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200"
+                  style={{ borderRadius: 3 }}
+                >
+                  Back
+                </button>
+              )}
+              {step < STEPS ? (
                 <button
                   onClick={next}
                   disabled={!ready}
-                  className="flex-1 h-11 font-sans text-[0.78rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-35 hover:tracking-wide transition-all duration-200"
+                  className="flex-1 h-8 font-sans text-[0.66rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-35 hover:tracking-wide transition-all duration-200"
                   style={{ borderRadius: 3 }}
                 >
                   {step === 4 ? 'Review' : 'Continue'}
                 </button>
-              </div>
-            )}
+              ) : (
+                <div className="flex-1" />
+              )}
+            </div>
           </div>
 
-          {/* Right — live preview */}
-          <div className="hidden md:block">
+          {/* Right — live preview, fills height */}
+          <div className="hidden md:flex flex-col overflow-hidden">
             <div
-              className="sticky top-24 p-6"
+              className="flex-1 min-h-0 overflow-hidden p-2 lg:p-2.5"
               style={{ borderRadius: 4, border: '1px solid #D8D4CE', background: '#FDFBF9' }}
             >
               <ProductPreview currentStep={step} />
@@ -90,6 +117,6 @@ export function CustomBraBuilder() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

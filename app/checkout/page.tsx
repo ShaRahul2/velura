@@ -27,7 +27,10 @@ export default function CheckoutPage() {
   const clearCart = useCartStore((s) => s.clear)
   const addToast  = useUiStore((s) => s.addToast)
   const [mounted, setMounted] = useState(false)
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
 
   const [address,    setAddress]    = useState<Address>(EMPTY_ADDRESS)
   const [payment,    setPayment]    = useState('upi')

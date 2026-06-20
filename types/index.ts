@@ -45,8 +45,10 @@ export interface Product {
   fabric: string
   support: SupportLevel
   sizes: string
-  images: string[]
+  images:      string[]
   blurDataURL?: string
+  /** Up to 4 hex colour codes representing available colorways for swatch display */
+  colorways?:  string[]
 }
 
 export interface BuilderState {

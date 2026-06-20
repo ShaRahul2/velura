@@ -25,15 +25,15 @@ function OptionRow<T extends { id: string; label: string; price: number }>({
 }: OptionRowProps<T>) {
   return (
     <div>
-      <p className="font-sans text-[0.65rem] tracking-label uppercase text-mauve mb-2">{label}</p>
-      <div className="flex flex-wrap gap-2">
+      <p className="font-sans text-[0.52rem] tracking-label uppercase text-mauve mb-0.5">{label}</p>
+      <div className="flex flex-wrap gap-1">
         {options.map((opt) => {
           const active = selected === opt.id
           return (
             <button
               key={opt.id}
               onClick={() => onSelect(opt.id)}
-              className="h-8 px-3 font-sans text-[0.72rem] transition-all duration-150 flex items-center gap-1.5"
+              className="h-6 px-2 font-sans text-[0.59rem] transition-all duration-150 flex items-center gap-1"
               style={{
                 borderRadius: 3,
                 background: active ? '#0F0D0B' : 'transparent',
@@ -43,7 +43,7 @@ function OptionRow<T extends { id: string; label: string; price: number }>({
             >
               {opt.label}
               {opt.price > 0 && (
-                <span style={{ color: active ? 'rgba(237,233,228,0.6)' : '#9A8878', fontSize: '0.6rem' }}>
+                <span style={{ color: active ? 'rgba(237,233,228,0.65)' : '#9A8878', fontSize: '0.5rem' }}>
                   +{formatPrice(opt.price)}
                 </span>
               )}
@@ -66,15 +66,15 @@ export function Step3Style() {
 
   return (
     <div>
-      <h3 className="font-serif text-[1.5rem] font-light text-deep mb-1">Style & support</h3>
-      <p className="font-sans text-[0.82rem] text-mauve mb-6">Tailor the fit to exactly how you like it.</p>
+      <h3 className="font-serif text-[1.1rem] lg:text-[1.2rem] font-light text-deep mb-px">Style &amp; support</h3>
+      <p className="font-sans text-[0.6rem] text-mauve mb-1.5">Tailor the fit exactly how you like it.</p>
 
-      <div className="space-y-5">
+      <div className="space-y-1.5">
         <OptionRow label="Straps" options={CB_STRAP_STYLES} selected={strapStyle} onSelect={setStrapStyle} />
         <OptionRow label="Padding" options={CB_PADDING_OPTIONS} selected={padding} onSelect={setPadding} />
         <OptionRow label="Underwire" options={CB_UNDERWIRE_OPTIONS} selected={underwire} onSelect={setUnderwire} />
         <OptionRow label="Closure" options={CB_CLOSURE_OPTIONS} selected={closure} onSelect={setClosure} />
-        <OptionRow label="Support level" options={CB_SUPPORT_OPTIONS} selected={support} onSelect={setSupport} />
+        <OptionRow label="Support" options={CB_SUPPORT_OPTIONS} selected={support} onSelect={setSupport} />
       </div>
     </div>
   )

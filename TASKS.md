@@ -189,6 +189,7 @@ Priority: P0 launch blocker · P1 core feature · P2 polish / growth
 - ⬜ BUILD-16 [P2] Shareable design URL encoding spec params in query string
 - ⬜ BUILD-17 [P2] Mobile builder preview — show compact sticky summary below step on narrow screens
 - ✅ BUILD-18 [P1] Stabilize custom cart item ID — deterministic `specHash`-based ID in 1_000_000+ range; same spec correctly merges in cart
+- ✅ BUILD-19 [P1] Product preview article details — show straps, padding, underwire, closure, and support with human-readable option labels
 
 ---
 

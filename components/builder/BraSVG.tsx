@@ -28,6 +28,27 @@ const FILL_MAP: Record<string, string> = {
   cobalt:    '#2555A0',
   sage:      '#8DB09A',
   forest:    '#2D5C44',
+  sky:       '#AFC9DD',
+  teal:      '#176B70',
+  mint:      '#B9D8CA',
+  olive:     '#727A45',
+  lilac:     '#D8C3E5',
+  plum:      '#643A5B',
+  coral:     '#E67F73',
+  terracotta:'#B9674E',
+  mustard:   '#C49A3A',
+  chocolate: '#5B3828',
+  // Extended
+  sand:       '#E8D9C8',
+  stone:      '#B8AFA5',
+  charcoal:   '#3C3835',
+  peach:      '#F4C3A8',
+  fuchsia:    '#C23A6F',
+  rosewood:   '#8B3A4B',
+  emerald:    '#1F4D3D',
+  amethyst:   '#6B4E8C',
+  periwinkle: '#A3A8D6',
+  mocha:      '#6F5344',
 }
 
 // Stroke is darker on light fills, lighter on dark fills
@@ -55,6 +76,27 @@ const STROKE_MAP: Record<string, string> = {
   cobalt:    '#9AB0D8',
   sage:      '#4A7058',
   forest:    '#90C4A0',
+  sky:       '#54768F',
+  teal:      '#9FD6D2',
+  mint:      '#537967',
+  olive:     '#D1D6A5',
+  lilac:     '#7D6290',
+  plum:      '#D4AFCB',
+  coral:     '#8F3F37',
+  terracotta:'#F0B29C',
+  mustard:   '#6E5319',
+  chocolate: '#D2A98F',
+  // Extended
+  sand:       '#BDA88F',
+  stone:      '#8B8277',
+  charcoal:   '#C2BDB6',
+  peach:      '#C17D5C',
+  fuchsia:    '#6E1F3E',
+  rosewood:   '#E5C3CA',
+  emerald:    '#8BC4A8',
+  amethyst:   '#C4A6E0',
+  periwinkle: '#5E648A',
+  mocha:      '#C4A38E',
 }
 
 // ── Cup geometry ──────────────────────────────────────────────────────────────
@@ -82,6 +124,10 @@ const CUP_PARAMS: Record<string, CupParams> = {
   wirefree:   { goreTopY: 62, outerTopX: 63, outerTopY: 47, outerMidX: 40, outerMidY: 75, goreBottomY: 99, bandEdgeX: 52, strapAttachX: 68, strapAttachY: 49 },
   strapless:  { goreTopY: 65, outerTopX: 58, outerTopY: 54, outerMidX: 37, outerMidY: 75, goreBottomY: 99, bandEdgeX: 48, strapAttachX: 0,  strapAttachY: 0  },
   bridal:     { goreTopY: 58, outerTopX: 61, outerTopY: 43, outerMidX: 38, outerMidY: 72, goreBottomY: 99, bandEdgeX: 52, strapAttachX: 67, strapAttachY: 45 },
+  tshirt:     { goreTopY: 57, outerTopX: 61, outerTopY: 42, outerMidX: 38, outerMidY: 72, goreBottomY: 99, bandEdgeX: 52, strapAttachX: 67, strapAttachY: 44 },
+  pushup:     { goreTopY: 50, outerTopX: 58, outerTopY: 38, outerMidX: 36, outerMidY: 70, goreBottomY: 99, bandEdgeX: 51, strapAttachX: 65, strapAttachY: 40 },
+  plunge:     { goreTopY: 76, outerTopX: 61, outerTopY: 43, outerMidX: 38, outerMidY: 73, goreBottomY: 99, bandEdgeX: 51, strapAttachX: 67, strapAttachY: 45 },
+  minimizer:  { goreTopY: 52, outerTopX: 66, outerTopY: 38, outerMidX: 34, outerMidY: 71, goreBottomY: 99, bandEdgeX: 55, strapAttachX: 71, strapAttachY: 40 },
 }
 
 /**
