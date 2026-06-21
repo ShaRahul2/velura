@@ -11,9 +11,10 @@ import { useWishlistStore } from '@/store/wishlistStore'
 
 interface ProductCardProps {
   product: Product
+  onQuickView?: (product: Product) => void
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, onQuickView }: ProductCardProps) {
   const [hovered, setHovered] = useState(false)
   const toggle       = useWishlistStore((s) => s.toggle)
   const isWishlisted = useWishlistStore((s) => s.isWishlisted)
@@ -89,12 +90,22 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Hover CTA — fades in at bottom */}
         <div
-          className="absolute bottom-0 inset-x-0 pb-3 pt-6 transition-opacity duration-300 pointer-events-none"
+          className="absolute bottom-0 inset-x-0 pb-3 pt-6 transition-opacity duration-300 pointer-events-none flex flex-col items-center gap-1"
           style={{ opacity: hovered ? 1 : 0 }}
         >
           <p className="text-center font-sans text-[0.62rem] lg:text-[0.68rem] tracking-[0.2em] uppercase text-[rgba(237,233,228,0.85)]">
             View Details ↗
           </p>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onQuickView?.(product);
+            }}
+            className="font-sans text-[0.55rem] tracking-btn uppercase px-3 py-0.5 bg-deep/80 text-blush rounded-btn hover:bg-deep transition-all"
+          >
+            Quick View
+          </button>
         </div>
       </Link>
 
