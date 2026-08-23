@@ -53,7 +53,7 @@ export const useCartStore = create<CartStore>()(
 
       clear: () => set({ items: [] }),
       total: () => get().items.reduce((sum, item) => sum + item.price * item.qty, 0),
-      count: () => get().items.length,
+      count: () => get().items.reduce((n, item) => n + item.qty, 0),
     }),
     {
       name: 'velura-cart',

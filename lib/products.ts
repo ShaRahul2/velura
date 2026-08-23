@@ -83,6 +83,7 @@ export interface QueryParams {
   cat?:     string
   support?: string
   sort?:    string
+  q?:       string
   page?:    number
   limit?:   number
 }
@@ -100,12 +101,28 @@ export async function queryProducts(
     ? (params.cat as ProductCategory) : undefined
   const support = VALID_SUPPORT.includes(params.support as SupportLevel)
     ? (params.support as SupportLevel) : undefined
+  const q = params.q?.trim() ?? ''
 
   // cat filter goes through the Category relation (not a direct column)
   const where: Prisma.ProductWhereInput = {
     isActive: true,
     ...(cat     && { category: { slug: cat } }),
     ...(support && { support }),
+  }
+
+  if (q) {
+    const all = await db.product.findMany({
+      where,
+      orderBy: { rating: 'desc' },
+      include: PRODUCT_INCLUDE,
+    })
+    const { searchCatalog } = await import('@/lib/catalogSearch')
+    const filtered = searchCatalog(q, all.map(mapProduct))
+    return {
+      data: filtered.slice(skip, skip + limit),
+      total: filtered.length,
+      page,
+    }
   }
 
   const sort = params.sort ?? ''

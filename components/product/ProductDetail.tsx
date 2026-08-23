@@ -11,28 +11,8 @@ import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { colorLabel } from '@/lib/colorways'
 import { imagesForColor } from '@/lib/productColorImages'
-
-function parseSizes(range: string): string[] {
-  const bands = [28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50]
-  const cups  = ['AA', 'A', 'B', 'C', 'D', 'DD', 'DDD', 'F', 'G', 'H']
-  const sizes: string[] = []
-  const [startStr, endStr] = range.split('–')
-  const startBand = parseInt(startStr)
-  const startCup  = startStr.replace(String(startBand), '')
-  const endBand   = parseInt(endStr)
-  const endCup    = endStr.replace(String(endBand), '')
-
-  let active = false
-  for (const band of bands) {
-    for (const cup of cups) {
-      const key = `${band}${cup}`
-      if (`${startBand}${startCup}` === key) active = true
-      if (active) sizes.push(key)
-      if (`${endBand}${endCup}` === key) return sizes
-    }
-  }
-  return sizes
-}
+import { parseSizeRange } from '@/lib/sizes'
+import { ProductMeta } from './ProductMeta'
 
 interface ProductDetailProps {
   product: Product
@@ -47,7 +27,8 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
   const openCart = useUiStore((s) => s.openCart)
   const addToast = useUiStore((s) => s.addToast)
 
-  const availableSizes = parseSizes(product.sizes)
+  const availableSizes = parseSizeRange(product.sizes)
+  const [guideOpen, setGuideOpen] = useState(false)
   const colors = product.colorways ?? []
   const selectedHex = colors[colorIndex]
   const selectedLabel = selectedHex ? colorLabel(selectedHex) : null
@@ -158,11 +139,23 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
 
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve">Size</p>
-          {selectedSize && (
-            <p className="font-sans text-[0.78rem] font-medium text-deep">{selectedSize}</p>
-          )}
+          <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve">
+            Size{selectedSize ? ` · ${selectedSize}` : ''}
+          </p>
+          <button
+            type="button"
+            onClick={() => setGuideOpen((v) => !v)}
+            className="font-sans text-[0.72rem] text-mauve underline underline-offset-4 hover:text-deep"
+          >
+            {guideOpen ? 'Close guide' : 'Size guide'}
+          </button>
         </div>
+        {guideOpen && (
+          <p className="font-sans text-[0.8rem] font-light text-mauve leading-relaxed mb-3">
+            Band from underbust, rounded up to the even inch. Cup from the difference to the fullest point.
+            This piece: {product.sizes}. Unsure — ask the atelier.
+          </p>
+        )}
         <SizeSelector
           available={availableSizes}
           selected={selectedSize}
@@ -191,6 +184,8 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
           </li>
         ))}
       </ul>
+
+      <ProductMeta product={product} />
     </div>
   )
 }
