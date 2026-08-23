@@ -57,7 +57,7 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
   }
 
   return (
-    <div className="flex flex-col gap-6 lg:sticky lg:top-28">
+    <div className="flex flex-col gap-6 pb-24 md:pb-0">
       <div className="flex flex-col items-start gap-3">
         {product.badge && <Badge type={product.badge} />}
         <h1
@@ -168,7 +168,7 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
         )}
       </div>
 
-      <Button variant="dark" size="lg" onClick={handleAddToBag} className="w-full">
+      <Button variant="dark" size="lg" onClick={handleAddToBag} className="w-full hidden md:inline-flex">
         Add to Bag
       </Button>
 
@@ -179,13 +179,32 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
           `${product.fabric} · ${product.support} support`,
         ].map((line) => (
           <li key={line} className="font-sans text-[0.78rem] text-mauve flex gap-2">
-            <span style={{ color: '#B8A898' }}>✦</span>
+            <span className="text-rose">✦</span>
             {line}
           </li>
         ))}
       </ul>
 
       <ProductMeta product={product} />
+
+      <div
+        className="fixed inset-x-0 bottom-0 z-30 md:hidden border-t border-lm bg-cream/95 backdrop-blur-xl px-4 py-3"
+        style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
+      >
+        <div className="flex items-center gap-3">
+          <div className="min-w-0">
+            <p className="font-sans text-[0.92rem] text-deep tabular-nums leading-none">
+              {formatPrice(product.price)}
+            </p>
+            <p className="font-sans text-[0.62rem] tracking-label uppercase text-mauve mt-1 truncate">
+              {selectedSize ? selectedSize : 'Select a size'}
+            </p>
+          </div>
+          <Button variant="dark" size="lg" onClick={handleAddToBag} className="flex-1">
+            Add to Bag
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

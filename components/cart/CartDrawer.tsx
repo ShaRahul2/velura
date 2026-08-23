@@ -51,7 +51,7 @@ export function CartDrawer() {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 h-16 border-b border-lm shrink-0">
-          <h2 className="font-serif text-[1.2rem] lg:text-[1.35rem] text-deep">Your Bag</h2>
+          <h2 className="font-serif text-[1.25rem] font-light text-deep tracking-[-0.02em]">Your Bag</h2>
           <button
             onClick={closeCart}
             className="p-2 text-mauve hover:text-deep transition-colors"

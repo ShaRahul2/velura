@@ -1,12 +1,10 @@
 import { HeroSection } from '@/components/home/HeroSection'
-import { MarqueeBanner } from '@/components/home/MarqueeBanner'
-import { Lookbook } from '@/components/home/Lookbook'
-import { CategoryGrid } from '@/components/home/CategoryGrid'
+import { TrustStrip } from '@/components/home/TrustStrip'
 import { FeaturedProducts } from '@/components/home/FeaturedProducts'
+import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { AtelierBanner } from '@/components/home/AtelierBanner'
-import { ValuesSection } from '@/components/home/ValuesSection'
-import { Testimonials } from '@/components/home/Testimonials'
-import { Newsletter } from '@/components/home/Newsletter'
+import { Lookbook } from '@/components/home/Lookbook'
+import { EditorialQuote } from '@/components/home/EditorialQuote'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { siteUrl } from '@/lib/site'
 
@@ -25,14 +23,12 @@ export default function HomePage() {
         }}
       />
       <HeroSection />
-      <MarqueeBanner />
-      <Lookbook />
-      <CategoryGrid />
+      <TrustStrip />
       <FeaturedProducts />
+      <CategoryGrid />
       <AtelierBanner />
-      <ValuesSection />
-      <Testimonials />
-      <Newsletter />
+      <Lookbook />
+      <EditorialQuote />
     </>
   )
 }
