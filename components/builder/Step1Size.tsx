@@ -23,15 +23,15 @@ export function Step1Size() {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ bust: Number(bust), underbust: Number(underbust), unit: fitUnit }),
       })
-      const data = await res.json()
+      const data = await res.json() as { data?: { band: string; cup: string; size: string } }
       if (data.data) {
         setBand(data.data.band)
         setCup(data.data.cup)
         setFitResult(data.data.size)
-        setSizeMode('standard')  // switch to pills view so selection is visible
+        setSizeMode('standard')
       }
     } catch {
-      // noop
+      // keep the calculator open
     } finally {
       setLoading(false)
     }
@@ -39,21 +39,19 @@ export function Step1Size() {
 
   return (
     <div>
-      <h3 className="font-serif text-[1.1rem] lg:text-[1.2rem] font-light text-deep mb-px">Choose your size</h3>
-      <p className="font-sans text-[0.65rem] text-mauve mb-2">Inclusive sizing 26AA–52K. Or use the calculator.</p>
+      <h3 className="font-serif text-[1.2rem] font-light text-deep mb-0.5">Choose your size</h3>
+      <p className="font-sans text-[0.75rem] text-mauve mb-3">26AA–52K. Or measure and we&apos;ll place you.</p>
 
-      {/* Mode toggle */}
-      <div className="flex gap-1.5 mb-2">
+      <div className="flex gap-2 mb-5">
         {(['standard', 'fit'] as const).map((mode) => (
           <button
             key={mode}
             onClick={() => setSizeMode(mode)}
-            className="h-7 px-3 font-sans text-[0.6rem] tracking-btn uppercase transition-all duration-200"
+            className="h-9 px-4 font-sans text-[0.72rem] tracking-btn uppercase transition-all duration-200 rounded-btn"
             style={{
-              borderRadius: 3,
               background: sizeMode === mode ? '#0F0D0B' : 'transparent',
-              color:       sizeMode === mode ? '#EDE9E4' : '#6B6058',
-              border:      sizeMode === mode ? 'none'   : '1px solid #D8D4CE',
+              color:      sizeMode === mode ? '#EDE9E4' : '#6B6058',
+              border:     sizeMode === mode ? '1px solid #0F0D0B' : '1px solid #D8D4CE',
             }}
           >
             {mode === 'standard' ? 'Standard' : 'Fit Calculator'}
@@ -62,21 +60,19 @@ export function Step1Size() {
       </div>
 
       {sizeMode === 'standard' ? (
-        <div className="space-y-2">
-          {/* Band */}
+        <div className="space-y-5">
           <div>
-            <p className="font-sans text-[0.55rem] tracking-label uppercase text-mauve mb-1">Band</p>
-            <div className="grid grid-cols-7 sm:grid-cols-8 md:grid-cols-7 lg:grid-cols-8 gap-1">
+            <p className="font-sans text-[0.62rem] tracking-label uppercase text-mauve mb-2">Band</p>
+            <div className="flex flex-wrap gap-2">
               {BANDS.map((b) => (
                 <button
                   key={b}
                   onClick={() => setBand(b)}
-                  className="w-full h-6 lg:h-7 font-sans text-[0.66rem] transition-all duration-150"
+                  className="h-9 min-w-[44px] px-3 font-sans text-[0.76rem] transition-all duration-150 rounded-pill"
                   style={{
-                    borderRadius: 50,
                     background: band === b ? '#0F0D0B' : 'transparent',
-                    color:       band === b ? '#EDE9E4' : '#0F0D0B',
-                    border:      band === b ? 'none'   : '1px solid #D8D4CE',
+                    color:      band === b ? '#EDE9E4' : '#0F0D0B',
+                    border:     band === b ? '1px solid #0F0D0B' : '1px solid #D8D4CE',
                   }}
                 >
                   {b}
@@ -84,21 +80,18 @@ export function Step1Size() {
               ))}
             </div>
           </div>
-
-          {/* Cup */}
           <div>
-            <p className="font-sans text-[0.55rem] tracking-label uppercase text-mauve mb-1">Cup</p>
-            <div className="grid grid-cols-7 sm:grid-cols-8 md:grid-cols-7 lg:grid-cols-9 gap-1">
+            <p className="font-sans text-[0.62rem] tracking-label uppercase text-mauve mb-2">Cup</p>
+            <div className="flex flex-wrap gap-2">
               {CUPS.map((c) => (
                 <button
                   key={c}
                   onClick={() => setCup(c)}
-                  className="w-full h-6 lg:h-7 font-sans text-[0.66rem] transition-all duration-150"
+                  className="h-9 min-w-[44px] px-3 font-sans text-[0.76rem] transition-all duration-150 rounded-pill"
                   style={{
-                    borderRadius: 50,
                     background: cup === c ? '#0F0D0B' : 'transparent',
-                    color:       cup === c ? '#EDE9E4' : '#0F0D0B',
-                    border:      cup === c ? 'none'   : '1px solid #D8D4CE',
+                    color:      cup === c ? '#EDE9E4' : '#0F0D0B',
+                    border:     cup === c ? '1px solid #0F0D0B' : '1px solid #D8D4CE',
                   }}
                 >
                   {c}
@@ -108,19 +101,17 @@ export function Step1Size() {
           </div>
         </div>
       ) : (
-        <div className="space-y-2 max-w-sm">
-          {/* Fit unit */}
-          <div className="flex gap-1.5 mb-1">
+        <div className="space-y-4 max-w-md">
+          <div className="flex gap-2">
             {(['cm', 'in'] as const).map((u) => (
               <button
                 key={u}
                 onClick={() => setFitUnit(u)}
-                className="h-6 px-2.5 font-sans text-[0.58rem] tracking-btn uppercase"
+                className="h-8 px-3 font-sans text-[0.68rem] tracking-btn uppercase rounded-btn"
                 style={{
-                  borderRadius: 3,
                   background: fitUnit === u ? '#0F0D0B' : 'transparent',
-                  color:       fitUnit === u ? '#EDE9E4' : '#6B6058',
-                  border:      `1px solid ${fitUnit === u ? '#0F0D0B' : '#D8D4CE'}`,
+                  color:      fitUnit === u ? '#EDE9E4' : '#6B6058',
+                  border:     `1px solid ${fitUnit === u ? '#0F0D0B' : '#D8D4CE'}`,
                 }}
               >
                 {u}
@@ -128,9 +119,9 @@ export function Step1Size() {
             ))}
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="font-sans text-[0.55rem] tracking-label uppercase text-mauve block mb-0.5">
+              <label className="font-sans text-[0.62rem] tracking-label uppercase text-mauve block mb-1">
                 Bust ({fitUnit})
               </label>
               <input
@@ -138,12 +129,11 @@ export function Step1Size() {
                 value={bust}
                 onChange={(e) => setBust(e.target.value)}
                 placeholder={fitUnit === 'cm' ? '88' : '35'}
-                className="w-full h-7 px-2 font-sans text-[0.75rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors"
-                style={{ borderRadius: 3 }}
+                className="w-full h-10 px-3 font-sans text-[0.86rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none rounded-btn"
               />
             </div>
             <div>
-              <label className="font-sans text-[0.55rem] tracking-label uppercase text-mauve block mb-0.5">
+              <label className="font-sans text-[0.62rem] tracking-label uppercase text-mauve block mb-1">
                 Underbust ({fitUnit})
               </label>
               <input
@@ -151,8 +141,7 @@ export function Step1Size() {
                 value={underbust}
                 onChange={(e) => setUnderbust(e.target.value)}
                 placeholder={fitUnit === 'cm' ? '76' : '30'}
-                className="w-full h-7 px-2 font-sans text-[0.75rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors"
-                style={{ borderRadius: 3 }}
+                className="w-full h-10 px-3 font-sans text-[0.86rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none rounded-btn"
               />
             </div>
           </div>
@@ -160,20 +149,16 @@ export function Step1Size() {
           <button
             onClick={calculate}
             disabled={loading || !bust || !underbust}
-            className="h-7 px-4 font-sans text-[0.62rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-40 transition-all"
-            style={{ borderRadius: 3 }}
+            className="h-10 px-5 font-sans text-[0.72rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-40 rounded-btn"
           >
             {loading ? 'Calculating…' : 'Calculate My Size'}
           </button>
 
           {fitResult && (
-            <div
-              className="px-3 py-1.5"
-              style={{ background: 'rgba(15,13,11,0.04)', borderRadius: 3, border: '1px solid #D8D4CE' }}
-            >
-              <p className="font-sans text-[0.52rem] tracking-label uppercase text-mauve">Recommended</p>
-              <p className="font-serif text-[1.35rem] font-light text-deep leading-none">{fitResult}</p>
-              <p className="font-sans text-[0.58rem] text-mauve">Band {band} · Cup {cup}</p>
+            <div className="px-4 py-3" style={{ background: 'rgba(15,13,11,0.04)', borderRadius: 4, border: '1px solid #D8D4CE' }}>
+              <p className="font-sans text-[0.58rem] tracking-label uppercase text-mauve">Recommended</p>
+              <p className="font-serif text-[1.6rem] font-light text-deep leading-none mt-1">{fitResult}</p>
+              <p className="font-sans text-[0.72rem] text-mauve mt-1">Band {band} · Cup {cup}</p>
             </div>
           )}
         </div>

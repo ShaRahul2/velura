@@ -8,6 +8,7 @@ import {
   CB_SUPPORT_OPTIONS,
   CB_STRAP_STYLES,
   CB_UNDERWIRE_OPTIONS,
+  TYPE_DEFAULTS,
 } from '@/data/builderOptions'
 
 const BASE_PRICE = 999
@@ -78,7 +79,20 @@ export const useBuilderStore = create<BuilderStore>()((set) => ({
   setBand: (band) => set(() => ({ band })),
   setCup: (cup) => set(() => ({ cup })),
   setBraType: (braType) =>
-    set((state) => ({ braType, price: calculatePrice({ ...state, braType }) })),
+    set((state) => {
+      const defaults = braType ? TYPE_DEFAULTS[braType] ?? {} : {}
+      const next: BuilderState = {
+        ...state,
+        braType,
+        strapStyle: defaults.strapStyle ?? state.strapStyle,
+        padding:    defaults.padding    ?? state.padding,
+        underwire:  defaults.underwire  ?? state.underwire,
+        closure:    defaults.closure    ?? state.closure,
+        support:    defaults.support    ?? state.support,
+        fabric:     defaults.fabric     ?? state.fabric,
+      }
+      return { ...next, price: calculatePrice(next) }
+    }),
   setStrapStyle: (strapStyle) =>
     set((state) => ({ strapStyle, price: calculatePrice({ ...state, strapStyle }) })),
   setPadding: (padding) =>
@@ -97,3 +111,4 @@ export const useBuilderStore = create<BuilderStore>()((set) => ({
 }))
 
 export const useBuilder = useBuilderStore
+export { BASE_PRICE }

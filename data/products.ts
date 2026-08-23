@@ -1,13 +1,10 @@
 import type { Product } from '@/types'
 
-const U = (seed: string, w = 800, h = 1066) =>
-  `https://picsum.photos/seed/${seed}/${w}/${h}`
-
-// ─── New Premium Editorial Images (Picsum seeded for variety and quality) ─────
-// Fresh high-res stock images tailored for Onyx & Pearl aesthetic.
-// Neutral tones, soft fabrics, flat lays and lifestyle for shopping page.
-// Replace with Cloudinary/real photography when ready. Minimum 3 per product.
-// ─────────────────────────────────────────────────────────────────────────────
+const img = (slug: string) => [
+  `/images/products/${slug}-1.jpg`,
+  `/images/products/${slug}-2.jpg`,
+  `/images/products/${slug}-3.jpg`,
+]
 
 export const products: Product[] = [
   // ── EVERYDAY ─────────────────────────────────────────────────────────────────
@@ -27,11 +24,7 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '28A–44DD',
     colorways: ['#D4B896', '#1C1C1C', '#8A9090'],  // Nude · Midnight · Stone
-    images: [
-      U('velura-feathersoft-front'),
-      U('velura-feathersoft-flat'),
-      U('velura-feathersoft-lifestyle'),
-    ],
+    images: img('feathersoft'),
   },
   {
     id: 2,
@@ -49,11 +42,7 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–42D',
     colorways: ['#E8C4B8', '#F0EBE0', '#9CAF88'],  // Blush · Ivory · Sage
-    images: [
-      U('velura-morningdew-front'),
-      U('velura-morningdew-flat'),
-      U('velura-morningdew-lifestyle'),
-    ],
+    images: img('morningdew'),
   },
   {
     id: 3,
@@ -71,11 +60,7 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–44DD',
     colorways: ['#D4B896', '#E8C4B8', '#7B5B4E'],  // Nude · Blush · Mocha
-    images: [
-      U('velura-nudesense-front'),
-      U('velura-nudesense-flat'),
-      U('velura-nudesense-lifestyle'),
-    ],
+    images: img('nudesense'),
   },
 
   // ── PUSH-UP ───────────────────────────────────────────────────────────────────
@@ -95,11 +80,7 @@ export const products: Product[] = [
     support: 'High',
     sizes: '30B–38DD',
     colorways: ['#1C1C1C', '#8B1A1A', '#1A3A5C'],  // Midnight · Burgundy · Navy
-    images: [
-      U('velura-velvetplunge-front'),
-      U('velura-velvetplunge-flat'),
-      U('velura-velvetplunge-lifestyle'),
-    ],
+    images: img('velvetplunge'),
   },
   {
     id: 5,
@@ -117,11 +98,7 @@ export const products: Product[] = [
     support: 'High',
     sizes: '32A–40DD',
     colorways: ['#C9A84C', '#E8D5A3', '#1C1C1C'],  // Gold · Champagne · Midnight
-    images: [
-      U('velura-goldenhour-front'),
-      U('velura-goldenhour-flat'),
-      U('velura-goldenhour-lifestyle'),
-    ],
+    images: img('goldenhour'),
   },
 
   // ── LACE ──────────────────────────────────────────────────────────────────────
@@ -141,11 +118,7 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–42DD',
     colorways: ['#F0EBE0', '#1C1C1C', '#E8C4B8'],  // Ivory · Midnight · Blush
-    images: [
-      U('velura-floralluxe-front'),
-      U('velura-floralluxe-flat'),
-      U('velura-floralluxe-lifestyle'),
-    ],
+    images: img('floralluxe'),
   },
   {
     id: 7,
@@ -163,11 +136,7 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '32A–40DD',
     colorways: ['#F0EBE0', '#2A2A2A', '#C4948A'],  // Ivory · Soft Black · Dusty Rose
-    images: [
-      U('velura-silkdream-front'),
-      U('velura-silkdream-flat'),
-      U('velura-silkdream-lifestyle'),
-    ],
+    images: img('silkdream'),
   },
 
   // ── SPORTS ───────────────────────────────────────────────────────────────────
@@ -187,11 +156,7 @@ export const products: Product[] = [
     support: 'High',
     sizes: '30B–42DD',
     colorways: ['#1C1C1C', '#6B7280', '#1A3A5C'],  // Midnight · Slate · Navy
-    images: [
-      U('velura-armorx-front'),
-      U('velura-armorx-flat'),
-      U('velura-armorx-lifestyle'),
-    ],
+    images: img('armorx'),
   },
   {
     id: 9,
@@ -209,11 +174,7 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–38DD',
     colorways: ['#3D3D3D', '#C4948A', '#9CAF88'],  // Charcoal · Dusty Rose · Sage
-    images: [
-      U('velura-zenflow-front'),
-      U('velura-zenflow-flat'),
-      U('velura-zenflow-lifestyle'),
-    ],
+    images: img('zenflow'),
   },
 
   // ── SEAMLESS ──────────────────────────────────────────────────────────────────
@@ -233,11 +194,7 @@ export const products: Product[] = [
     support: 'Light',
     sizes: '28A–40DD',
     colorways: ['#D4B896', '#1C1C1C', '#E8C4B8'],  // Nude · Midnight · Blush
-    images: [
-      U('velura-cloudlift-front'),
-      U('velura-cloudlift-flat'),
-      U('velura-cloudlift-lifestyle'),
-    ],
+    images: img('cloudlift'),
   },
   {
     id: 11,
@@ -255,11 +212,7 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '30B–44DD',
     colorways: ['#D4C4A0', '#B0A8A0', '#D4B896'],  // Sand · Dove Grey · Nude
-    images: [
-      U('velura-bareease-front'),
-      U('velura-bareease-flat'),
-      U('velura-bareease-lifestyle'),
-    ],
+    images: img('bareease'),
   },
 
   // ── PLUS ──────────────────────────────────────────────────────────────────────
@@ -279,11 +232,7 @@ export const products: Product[] = [
     support: 'High',
     sizes: '34C–50H',
     colorways: ['#D4B896', '#1C1C1C', '#B8A0A8'],  // Nude · Midnight · Mauve
-    images: [
-      U('velura-curvelove-front'),
-      U('velura-curvelove-flat'),
-      U('velura-curvelove-lifestyle'),
-    ],
+    images: img('curvelove'),
   },
   {
     id: 13,
@@ -301,11 +250,7 @@ export const products: Product[] = [
     support: 'High',
     sizes: '34B–48G',
     colorways: ['#E8C4B8', '#F0EBE0', '#1C1C1C'],  // Blush · Ivory · Midnight
-    images: [
-      U('velura-softcurve-front'),
-      U('velura-softcurve-flat'),
-      U('velura-softcurve-lifestyle'),
-    ],
+    images: img('softcurve'),
   },
 
   // ── BRIDAL ────────────────────────────────────────────────────────────────────
@@ -325,11 +270,7 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '32A–40DD',
     colorways: ['#F5F0E8', '#F0EBE0', '#E8C4B8'],  // Ivory · Pearl · Blush
-    images: [
-      U('velura-ivorybloom-front'),
-      U('velura-ivorybloom-flat'),
-      U('velura-ivorybloom-lifestyle'),
-    ],
+    images: img('ivorybloom'),
   },
   {
     id: 15,
@@ -347,10 +288,6 @@ export const products: Product[] = [
     support: 'Medium',
     sizes: '32B–40DD',
     colorways: ['#E8C4B8', '#C4948A', '#F5F0E8'],  // Blush · Rose Gold · Ivory
-    images: [
-      U('velura-moonlitrose-front'),
-      U('velura-moonlitrose-flat'),
-      U('velura-moonlitrose-lifestyle'),
-    ],
+    images: img('moonlitrose'),
   },
 ]

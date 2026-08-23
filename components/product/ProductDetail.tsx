@@ -11,8 +11,8 @@ import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 
 function parseSizes(range: string): string[] {
-  const bands = [28,30,32,34,36,38,40,42,44,46,48,50]
-  const cups  = ['AA','A','B','C','D','DD','DDD','F','G','H']
+  const bands = [28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50]
+  const cups  = ['AA', 'A', 'B', 'C', 'D', 'DD', 'DDD', 'F', 'G', 'H']
   const sizes: string[] = []
   const [startStr, endStr] = range.split('–')
   const startBand = parseInt(startStr)
@@ -38,12 +38,14 @@ interface ProductDetailProps {
 
 export function ProductDetail({ product }: ProductDetailProps) {
   const [selectedSize, setSelectedSize] = useState('')
+  const [selectedColor, setSelectedColor] = useState(0)
   const [error, setError] = useState(false)
   const add      = useCartStore((s) => s.add)
   const openCart = useUiStore((s) => s.openCart)
   const addToast = useUiStore((s) => s.addToast)
 
   const availableSizes = parseSizes(product.sizes)
+  const colors = product.colorways ?? []
 
   function handleAddToBag() {
     if (!selectedSize) {
@@ -65,30 +67,32 @@ export function ProductDetail({ product }: ProductDetailProps) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Badge + Name */}
-      <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-6 lg:sticky lg:top-28">
+      <div className="flex flex-col items-start gap-3">
         {product.badge && <Badge type={product.badge} />}
         <h1
           className="font-serif font-light text-deep leading-tight"
-          style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.5rem)', letterSpacing: '-0.01em' }}
+          style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.6rem)', letterSpacing: '-0.01em' }}
         >
           {product.name}
         </h1>
-        <p className="font-sans text-[0.82rem] lg:text-[0.9rem] italic text-mauve">{product.story}</p>
+        <p className="font-sans text-[0.88rem] italic text-mauve">{product.story}</p>
       </div>
 
-      {/* Price */}
       <div className="flex items-baseline gap-3">
-        <span className="font-sans text-[clamp(1.2rem,1.3vw,1.6rem)] text-deep">{formatPrice(product.price)}</span>
+        <span className="font-sans text-[1.25rem] text-deep">{formatPrice(product.price)}</span>
         {product.oldPrice && (
-          <span className="font-sans text-[0.9rem] lg:text-[1rem] text-mauve line-through">
+          <span className="font-sans text-[0.92rem] text-mauve line-through">
             {formatPrice(product.oldPrice)}
+          </span>
+        )}
+        {product.oldPrice && (
+          <span className="font-sans text-[0.68rem] tracking-label uppercase text-gold">
+            Sale
           </span>
         )}
       </div>
 
-      {/* Rating */}
       <div className="flex items-center gap-2">
         <div className="flex gap-0.5">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -99,22 +103,44 @@ export function ProductDetail({ product }: ProductDetailProps) {
             />
           ))}
         </div>
-        <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-mauve">
+        <span className="font-sans text-[0.78rem] text-mauve">
           {product.rating} · {product.reviews.toLocaleString('en-IN')} reviews
         </span>
       </div>
 
-      {/* Sub info */}
-      <p className="font-sans text-[0.8rem] lg:text-[0.88rem] text-mauve">{product.sub}</p>
+      <p className="font-sans text-[0.84rem] text-mauve">{product.sub}</p>
 
       <div className="h-px bg-lm" />
 
-      {/* Size selector */}
+      {colors.length > 0 && (
+        <div>
+          <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve mb-3">
+            Colour
+          </p>
+          <div className="flex gap-2">
+            {colors.map((hex, i) => (
+              <button
+                key={hex}
+                onClick={() => setSelectedColor(i)}
+                className="w-7 h-7 rounded-full transition-transform"
+                style={{
+                  background: hex,
+                  boxShadow: selectedColor === i
+                    ? '0 0 0 1.5px #0F0D0B, 0 0 0 3px #F8F6F3'
+                    : 'inset 0 0 0 1px rgba(15,13,11,0.16)',
+                }}
+                aria-label={`Colour ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="font-sans text-[0.72rem] lg:text-[0.76rem] tracking-label uppercase text-mauve">Size</p>
+          <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve">Size</p>
           {selectedSize && (
-            <p className="font-sans text-[0.78rem] lg:text-[0.84rem] font-medium text-deep">{selectedSize}</p>
+            <p className="font-sans text-[0.78rem] font-medium text-deep">{selectedSize}</p>
           )}
         </div>
         <SizeSelector
@@ -123,28 +149,28 @@ export function ProductDetail({ product }: ProductDetailProps) {
           onSelect={(s) => { setSelectedSize(s); setError(false) }}
         />
         {error && (
-          <p className="font-sans text-[0.72rem] lg:text-[0.78rem] text-mauve mt-2">
+          <p className="font-sans text-[0.72rem] text-mauve mt-2">
             Please select a size to continue.
           </p>
         )}
       </div>
 
-      {/* CTA */}
       <Button variant="dark" size="lg" onClick={handleAddToBag} className="w-full">
         Add to Bag
       </Button>
 
-      {/* Fabric + Support */}
-      <div className="flex gap-6 pt-2">
-        <div>
-          <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-rose mb-1">Fabric</p>
-          <p className="font-sans text-[0.82rem] lg:text-[0.9rem] text-deep">{product.fabric}</p>
-        </div>
-        <div>
-          <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-rose mb-1">Support</p>
-          <p className="font-sans text-[0.82rem] lg:text-[0.9rem] text-deep">{product.support}</p>
-        </div>
-      </div>
+      <ul className="flex flex-col gap-2 pt-1">
+        {[
+          'Free shipping above ₹999',
+          '15-day easy returns',
+          `${product.fabric} · ${product.support} support`,
+        ].map((line) => (
+          <li key={line} className="font-sans text-[0.78rem] text-mauve flex gap-2">
+            <span style={{ color: '#B8A898' }}>✦</span>
+            {line}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

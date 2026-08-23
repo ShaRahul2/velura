@@ -65,7 +65,7 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
 
   return (
     <div
-      className="p-6 sticky top-24"
+      className="p-6 lg:sticky lg:top-28"
       style={{ borderRadius: 4, border: '1px solid #D8D4CE', background: '#FDFBF9' }}
     >
       <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-4">

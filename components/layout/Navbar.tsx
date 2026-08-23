@@ -1,14 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingBag, Menu } from 'lucide-react'
+import { ShoppingBag, Menu, Heart } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
+import { useWishlistStore } from '@/store/wishlistStore'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 const NAV_LINKS = [
-  { href: '/shop',    label: 'Collections' },
+  { href: '/shop',    label: 'Shop' },
   { href: '/builder', label: '✦ Custom Bra' },
 ]
 
@@ -18,33 +19,31 @@ export function Navbar() {
   const openMenu   = useUiStore((s) => s.openMobileMenu)
   const pathname   = usePathname()
   const [mounted, setMounted] = useState(false)
+  const wishCount  = useWishlistStore((s) => s.ids.length)
+
   useEffect(() => {
-    // Deferred to avoid synchronous setState-in-effect lint warning;
-    // also prevents a hydration mismatch flash with Zustand persist.
     const id = requestAnimationFrame(() => setMounted(true))
     return () => cancelAnimationFrame(id)
   }, [])
 
   return (
-    <header
-      className="fixed top-0 inset-x-0 z-40 h-16 flex items-center px-6 md:px-10 border-b"
+    <div
+      className="h-16 flex items-center px-5 md:px-8 lg:px-12"
       style={{
         background:   'rgba(15,13,11,0.96)',
         backdropFilter: 'blur(16px)',
-        borderColor:  'rgba(184,168,152,0.18)',
+        borderBottom: '1px solid rgba(184,168,152,0.18)',
       }}
     >
-      {/* Logo */}
       <Link
         href="/"
-        className="font-serif text-[1.08rem] lg:text-[1.15rem] tracking-logo mr-auto"
+        className="font-serif text-[1.12rem] lg:text-[1.22rem] tracking-logo mr-auto"
         style={{ color: '#EDE9E4' }}
       >
         VELURA
       </Link>
 
-      {/* Desktop nav */}
-      <nav className="hidden md:flex items-center gap-8 mr-8">
+      <nav className="hidden md:flex items-center gap-8 mr-6">
         {NAV_LINKS.map(({ href, label }) => {
           const active = pathname === href || pathname.startsWith(href + '/')
           return (
@@ -60,33 +59,50 @@ export function Navbar() {
         })}
       </nav>
 
-      {/* Cart */}
-      <button
-        onClick={openCart}
-        className="relative p-2 transition-opacity hover:opacity-80"
-        style={{ color: 'rgba(237,233,228,0.55)' }}
-        aria-label="Open cart"
-      >
-        <ShoppingBag size={18} />
-        {mounted && count > 0 && (
-          <span
-            className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[0.55rem] font-sans font-semibold px-1"
-            style={{ background: '#B8A898', color: '#0F0D0B' }}
+      <div className="flex items-center gap-1">
+        {mounted && wishCount > 0 && (
+          <Link
+            href="/shop"
+            className="relative p-2 hidden sm:flex"
+            style={{ color: 'rgba(237,233,228,0.55)' }}
+            aria-label="Wishlist"
           >
-            {count}
-          </span>
+            <Heart size={17} />
+            <span
+              className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[0.55rem] font-sans font-semibold px-1"
+              style={{ background: '#B8A898', color: '#0F0D0B' }}
+            >
+              {wishCount}
+            </span>
+          </Link>
         )}
-      </button>
 
-      {/* Mobile hamburger */}
-      <button
-        onClick={openMenu}
-        className="md:hidden ml-3 p-2"
-        style={{ color: 'rgba(237,233,228,0.55)' }}
-        aria-label="Open menu"
-      >
-        <Menu size={20} />
-      </button>
-    </header>
+        <button
+          onClick={openCart}
+          className="relative p-2 transition-opacity hover:opacity-80"
+          style={{ color: 'rgba(237,233,228,0.55)' }}
+          aria-label="Open bag"
+        >
+          <ShoppingBag size={18} />
+          {mounted && count > 0 && (
+            <span
+              className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[0.55rem] font-sans font-semibold px-1"
+              style={{ background: '#B8A898', color: '#0F0D0B' }}
+            >
+              {count}
+            </span>
+          )}
+        </button>
+
+        <button
+          onClick={openMenu}
+          className="md:hidden ml-1 p-2"
+          style={{ color: 'rgba(237,233,228,0.55)' }}
+          aria-label="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+      </div>
+    </div>
   )
 }

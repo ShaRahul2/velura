@@ -38,23 +38,23 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
       <button
         onClick={() => goTo(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-8 h-8 flex items-center justify-center text-mauve disabled:opacity-30 hover:text-deep transition-colors"
+        className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center text-mauve disabled:opacity-30 hover:text-deep transition-colors"
         aria-label="Previous page"
       >
-        <ChevronLeft size={15} />
+        <ChevronLeft size={18} />
       </button>
 
       {/* Page numbers */}
       {pages.map((p, i) =>
         p === '…' ? (
-          <span key={`ellipsis-${i}`} className="w-8 h-8 flex items-center justify-center font-sans text-[0.78rem] lg:text-[0.82rem] 2xl:text-[0.88rem] text-mauve">
+          <span key={`ellipsis-${i}`} className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center font-sans text-[0.78rem] lg:text-[0.85rem] 2xl:text-[0.95rem] text-mauve">
             …
           </span>
         ) : (
           <button
             key={p}
             onClick={() => goTo(p)}
-            className="w-8 h-8 flex items-center justify-center font-sans text-[0.78rem] lg:text-[0.82rem] 2xl:text-[0.88rem] transition-colors"
+            className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center font-sans text-[0.78rem] lg:text-[0.85rem] 2xl:text-[0.95rem] transition-colors"
             style={{
               color:      p === currentPage ? '#0F0D0B' : '#6B6058',
               fontWeight: p === currentPage ? 500 : 300,
@@ -71,10 +71,10 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
       <button
         onClick={() => goTo(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-8 h-8 flex items-center justify-center text-mauve disabled:opacity-30 hover:text-deep transition-colors"
+        className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center text-mauve disabled:opacity-30 hover:text-deep transition-colors"
         aria-label="Next page"
       >
-        <ChevronRight size={15} />
+        <ChevronRight size={18} />
       </button>
     </div>
   )

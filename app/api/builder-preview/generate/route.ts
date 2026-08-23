@@ -20,6 +20,16 @@ import { HfInference } from '@huggingface/inference'
 import type { BuilderVisualSpec } from '@/lib/builderVisualSpec'
 import { specToHash, buildAIPrompt, buildPollinationsPrompt } from '@/lib/builderVisualSpec'
 import { getCloudinaryUrl, uploadFromUrl } from '@/lib/cloudinary-upload'
+import {
+  CB_BRA_TYPES,
+  CB_STRAP_STYLES,
+  CB_PADDING_OPTIONS,
+  CB_UNDERWIRE_OPTIONS,
+  CB_CLOSURE_OPTIONS,
+  CB_SUPPORT_OPTIONS,
+  CB_FABRIC_OPTIONS,
+  CB_COLOR_OPTIONS,
+} from '@/data/builderOptions'
 
 export const maxDuration = 120  // seconds
 
@@ -44,23 +54,14 @@ function checkRateLimit(ip: string): boolean {
 
 // ── Input validation ──────────────────────────────────────────────────────────
 
-const VALID_BRA_TYPES    = new Set(['everyday','balconette','padded','sports','lace','wirefree','strapless','bridal','tshirt','pushup','plunge','minimizer'])
-const VALID_STRAP_STYLES = new Set(['classic','adjustable','crossback','wide','none'])
-const VALID_PADDING      = new Set(['none','light','medium','high'])
-const VALID_UNDERWIRE    = new Set(['wired','wirefree'])
-const VALID_CLOSURES     = new Set(['back','front','pull-on'])
-const VALID_SUPPORT      = new Set(['light','medium','high'])
-const VALID_FABRICS      = new Set(['cotton','silk','microfiber','lace','smooth'])
-const VALID_COLORS       = new Set([
-  // Neutrals
-  'ivory','blush','nude','cream','champagne','rose','smoke','mauve','slate','deep','black',
-  // Pinks & Reds
-  'pink','blushrose','red','burgundy',
-  // Blues & Greens
-  'lavender','navy','cobalt','sage','forest','sky','teal','mint','olive',
-  // Brights & earth tones
-  'lilac','plum','coral','terracotta','mustard','chocolate',
-])
+const VALID_BRA_TYPES: Set<string>    = new Set(CB_BRA_TYPES.map((o) => o.id))
+const VALID_STRAP_STYLES: Set<string> = new Set([...CB_STRAP_STYLES.map((o) => o.id), 'none'])
+const VALID_PADDING: Set<string>      = new Set(CB_PADDING_OPTIONS.map((o) => o.id))
+const VALID_UNDERWIRE: Set<string>    = new Set(CB_UNDERWIRE_OPTIONS.map((o) => o.id))
+const VALID_CLOSURES: Set<string>     = new Set(CB_CLOSURE_OPTIONS.map((o) => o.id))
+const VALID_SUPPORT: Set<string>      = new Set(CB_SUPPORT_OPTIONS.map((o) => o.id))
+const VALID_FABRICS: Set<string>      = new Set(CB_FABRIC_OPTIONS.map((o) => o.id))
+const VALID_COLORS: Set<string>       = new Set(CB_COLOR_OPTIONS.map((o) => o.id))
 
 function validateSpec(s: unknown): s is BuilderVisualSpec {
   if (!s || typeof s !== 'object') return false
