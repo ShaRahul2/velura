@@ -1,25 +1,12 @@
 'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
-import type { ProductCategory } from '@/types'
-
-const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
-  { id: 'all',      label: 'All' },
-  { id: 'everyday', label: 'Everyday' },
-  { id: 'pushup',   label: 'Push-Up' },
-  { id: 'lace',     label: 'Lace' },
-  { id: 'sports',   label: 'Sports' },
-  { id: 'seamless', label: 'Seamless' },
-  { id: 'plus',     label: 'Plus' },
-  { id: 'bridal',   label: 'Bridal' },
-]
 
 const SUPPORT = ['Light', 'Medium', 'High']
 
 export function FilterSidebar() {
-  const router       = useRouter()
+  const router = useRouter()
   const searchParams = useSearchParams()
-  const activeCat    = searchParams.get('cat') ?? 'all'
   const activeSupport = searchParams.get('support') ?? ''
 
   function setParam(key: string, value: string) {
@@ -32,33 +19,7 @@ export function FilterSidebar() {
   }
 
   return (
-    <aside className="hidden md:block w-44 lg:w-52 shrink-0">
-      <div className="mb-9">
-        <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
-          Category
-        </p>
-        <ul className="flex flex-col">
-          {CATEGORIES.map(({ id, label }) => {
-            const active = activeCat === id
-            return (
-              <li key={id}>
-                <button
-                  onClick={() => setParam('cat', id)}
-                  className="w-full text-left font-sans text-[0.84rem] py-1.5 pl-3 -ml-3 border-l-2 transition-colors"
-                  style={{
-                    color: active ? '#0F0D0B' : '#6B6058',
-                    fontWeight: active ? 500 : 300,
-                    borderColor: active ? '#0F0D0B' : 'transparent',
-                  }}
-                >
-                  {label}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-
+    <aside className="hidden md:block w-40 lg:w-44 shrink-0">
       <div>
         <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
           Support

@@ -6,16 +6,18 @@ import { useUiStore } from '@/store/uiStore'
 import { useEffect } from 'react'
 
 const NAV_LINKS = [
-  { href: '/',        label: 'Home' },
-  { href: '/shop',    label: 'Shop' },
+  { href: '/', label: 'Home' },
+  { href: '/shop', label: 'Shop' },
   { href: '/builder', label: '✦ Custom Bra' },
 ]
 
 const CATS = [
   { href: '/shop?cat=everyday', label: 'Everyday' },
-  { href: '/shop?cat=lace',     label: 'Lace' },
-  { href: '/shop?cat=bridal',   label: 'Bridal' },
-  { href: '/shop?cat=plus',     label: 'Plus' },
+  { href: '/shop?cat=lace', label: 'Lace' },
+  { href: '/shop?cat=bridal', label: 'Bridal' },
+  { href: '/shop?cat=plus', label: 'Plus' },
+  { href: '/shop?cat=seamless', label: 'Seamless' },
+  { href: '/shop?cat=sports', label: 'Sports' },
 ]
 
 export function MobileMenu() {
@@ -24,48 +26,47 @@ export function MobileMenu() {
   useEffect(() => {
     if (mobileMenuOpen) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [mobileMenuOpen])
 
   if (!mobileMenuOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col" style={{ background: 'rgba(15,13,11,0.97)' }}>
-      <div className="flex items-center justify-between px-5 h-16 border-b border-[rgba(184,168,152,0.18)]">
+    <div className="fixed inset-0 z-50 flex flex-col bg-deep">
+      <div className="flex items-center justify-between px-5 h-16 border-b border-white/10">
         <Link
           href="/"
           onClick={closeMobileMenu}
-          className="font-serif text-[1.1rem] tracking-logo"
-          style={{ color: '#EDE9E4' }}
+          className="font-serif text-[1.14rem] tracking-logo text-blush"
         >
           VELURA
         </Link>
         <button
           onClick={closeMobileMenu}
-          className="p-2"
-          style={{ color: 'rgba(237,233,228,0.55)' }}
+          className="p-2.5 text-blush/60 hover:text-blush"
           aria-label="Close menu"
         >
-          <X size={20} />
+          <X size={20} strokeWidth={1.6} />
         </button>
       </div>
 
-      <nav className="flex flex-col px-5 py-6 gap-1">
+      <nav className="flex flex-col px-5 pt-8 pb-4">
         {NAV_LINKS.map(({ href, label }) => (
           <Link
             key={href}
             href={href}
             onClick={closeMobileMenu}
-            className="py-3.5 font-sans text-[0.92rem] tracking-[0.12em] uppercase border-b border-[rgba(184,168,152,0.12)]"
-            style={{ color: 'rgba(237,233,228,0.8)' }}
+            className="py-3 font-serif text-[2rem] font-light text-blush leading-none tracking-[-0.02em]"
           >
             {label}
           </Link>
         ))}
       </nav>
 
-      <div className="px-5">
-        <p className="font-sans text-[0.62rem] tracking-label uppercase mb-3" style={{ color: '#B8A898' }}>
+      <div className="px-5 mt-4">
+        <p className="font-sans text-[0.62rem] tracking-label uppercase text-rose mb-4">
           Collections
         </p>
         <div className="grid grid-cols-2 gap-2">
@@ -74,12 +75,7 @@ export function MobileMenu() {
               key={href}
               href={href}
               onClick={closeMobileMenu}
-              className="py-3 px-3 font-sans text-[0.78rem] tracking-btn uppercase"
-              style={{
-                color: 'rgba(237,233,228,0.7)',
-                border: '1px solid rgba(184,168,152,0.18)',
-                borderRadius: 3,
-              }}
+              className="py-3 px-3 font-sans text-[0.78rem] tracking-btn uppercase text-blush/70 border border-white/12"
             >
               {label}
             </Link>
@@ -87,15 +83,14 @@ export function MobileMenu() {
         </div>
       </div>
 
-      <div className="mt-auto px-5 pb-12 flex flex-col gap-2">
+      <div className="mt-auto px-5 pb-10 flex flex-col gap-2">
         <button
           type="button"
           onClick={() => {
             closeMobileMenu()
             openSearch()
           }}
-          className="w-full py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase"
-          style={{ border: '1px solid rgba(184,168,152,0.35)', color: '#EDE9E4' }}
+          className="w-full py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase border border-white/20 text-blush"
         >
           Search
         </button>
@@ -105,16 +100,14 @@ export function MobileMenu() {
             closeMobileMenu()
             openStylist()
           }}
-          className="w-full py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase"
-          style={{ border: '1px solid rgba(184,168,152,0.35)', color: '#EDE9E4' }}
+          className="w-full py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase border border-white/20 text-blush"
         >
           Ask Atelier
         </button>
         <Link
           href="/builder"
           onClick={closeMobileMenu}
-          className="block w-full text-center py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase"
-          style={{ background: '#B8A898', color: '#0F0D0B' }}
+          className="block w-full text-center py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase bg-rose text-deep"
         >
           Build Yours
         </Link>

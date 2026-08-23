@@ -12,11 +12,17 @@ export async function FeaturedProducts() {
   let sorted: Product[]
 
   try {
-    const rows = await db.product.findMany({
+    const query = db.product.findMany({
       where:   { id: { in: FEATURED_IDS }, isActive: true },
       include: { category: true, images: { orderBy: { position: 'asc' } } },
       orderBy: { id: 'asc' },
     })
+    const rows = await Promise.race([
+      query,
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('featured-timeout')), 2500)
+      ),
+    ])
     sorted = FEATURED_IDS
       .map((id) => rows.find((r) => r.id === id))
       .filter((r): r is NonNullable<typeof r> => r !== undefined)
@@ -30,7 +36,7 @@ export async function FeaturedProducts() {
   if (sorted.length === 0) return null
 
   return (
-    <section className={`py-16 md:py-20 lg:py-24 ${pageWrap}`}>
+    <section className={`py-16 md:py-24 ${pageWrap}`}>
       <div className="flex items-end justify-between mb-8 md:mb-12">
         <div>
           <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-3">
@@ -38,7 +44,7 @@ export async function FeaturedProducts() {
           </p>
           <h2
             className="font-serif font-light text-deep"
-            style={{ fontSize: 'clamp(1.85rem, 3.6vw, 3.1rem)', letterSpacing: '-0.01em' }}
+            style={{ fontSize: 'clamp(1.85rem, 3.6vw, 3.1rem)', letterSpacing: '-0.02em' }}
           >
             The ones they come back for.
           </h2>

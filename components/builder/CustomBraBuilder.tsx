@@ -42,7 +42,7 @@ export function CustomBraBuilder() {
   }
 
   return (
-    <section className="builder-shell h-[calc(100svh-6rem)] w-full max-w-[100vw] overflow-hidden flex flex-col bg-cream">
+    <section className="builder-shell h-[calc(100svh-4rem)] w-full max-w-[100vw] overflow-hidden flex flex-col bg-cream">
       <header className="shrink-0 border-b border-lm px-4 md:px-8 py-2.5">
         <div className="flex items-center justify-between gap-3 max-w-[1400px] mx-auto">
           <div className="min-w-0">

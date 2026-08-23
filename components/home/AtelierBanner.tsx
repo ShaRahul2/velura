@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export function AtelierBanner() {
   return (
-    <section className="relative min-h-[420px] md:min-h-[520px] flex items-center">
+    <section className="relative min-h-[480px] md:min-h-[620px] flex items-center">
       <Image
         src="/images/lookbook/atelier.jpg"
         alt="The Velura atelier"

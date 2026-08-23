@@ -103,7 +103,7 @@ export function SearchOverlay() {
               <li key={hit.id}>
                 <Link href={`/shop/${hit.id}`} onClick={closeSearch} className="group block">
                   <span
-                    className="block aspect-[3/4] rounded-card bg-blush bg-cover bg-center mb-3"
+                    className="block aspect-[3/4] bg-blush bg-cover bg-center mb-3"
                     style={{ backgroundImage: `url(${hit.image})` }}
                   />
                   <span className="block font-serif text-[1.02rem] text-deep group-hover:opacity-70">

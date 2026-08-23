@@ -44,7 +44,7 @@
   --shadow-toast:   0 4px 20px rgba(15,13,11,0.30);
 
   /* ── Letter spacing ───────────────────────────── */
-  --tracking-logo:  0.22em;
+  --tracking-logo:  0.16em;
   --tracking-label: 0.14em;
   --tracking-btn:   0.12em;
   --tracking-wide:  0.18em;
@@ -61,10 +61,24 @@
   --lm:    #D8D4CE;
 }
 
+html {
+  scroll-padding-top: 4.5rem;
+}
+
 body {
   background-color: var(--cream);
   color: var(--deep);
   font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+}
+
+button:not(:disabled),
+[role="button"] {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--deep);
+  outline-offset: 3px;
 }
 
 ::selection {
@@ -113,6 +127,32 @@ body {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ken {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+
+.img-zoom {
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .img-zoom {
+    transform: scale(1.045);
+  }
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
 
 ::-webkit-scrollbar       { width: 4px; }
