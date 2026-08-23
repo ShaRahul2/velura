@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { pageWrap } from '@/lib/utils'
 
 const COLS = [
   {
@@ -18,17 +19,16 @@ const COLS = [
     links: [
       { label: '✦ Build Yours',   href: '/builder' },
       { label: 'Fit Calculator',  href: '/builder' },
-      { label: 'Saved Designs',   href: '/builder' },
+      { label: 'All collections', href: '/shop' },
     ],
   },
   {
     title: 'Help',
     links: [
-      { label: 'Size Guide',      href: '#' },
-      { label: 'Care Guide',      href: '#' },
-      { label: 'Returns',         href: '#' },
-      { label: 'Track Order',     href: '#' },
-      { label: 'Contact',         href: '#' },
+      { label: 'Size Guide',      href: '/builder' },
+      { label: 'Shipping',        href: '/shop' },
+      { label: 'Returns',         href: '/shop' },
+      { label: 'Contact',         href: 'mailto:hello@velura.in' },
     ],
   },
 ]
@@ -36,37 +36,37 @@ const COLS = [
 export function Footer() {
   return (
     <footer className="bg-deep text-blush">
-      <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1280px] mx-auto px-6 md:px-10 pt-16 lg:pt-20 pb-10">
-        {/* Top row */}
+      <div className={`${pageWrap} pt-16 lg:pt-20 pb-10`}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
-          {/* Brand column */}
           <div className="col-span-2 md:col-span-1">
-            <p className="font-serif text-[1.6rem] lg:text-[1.8rem] tracking-logo mb-3" style={{ color: '#EDE9E4' }}>
+            <p className="font-serif text-[1.55rem] tracking-logo mb-3" style={{ color: '#EDE9E4' }}>
               VELURA
             </p>
-            <p className="font-sans text-[0.8rem] lg:text-[0.88rem] font-light leading-relaxed" style={{ color: 'rgba(237,233,228,0.45)' }}>
+            <p className="font-sans text-[0.82rem] font-light leading-relaxed" style={{ color: 'rgba(237,233,228,0.45)' }}>
               Crafted for the woman who knows.
             </p>
-            <p className="font-sans text-[0.72rem] lg:text-[0.78rem] mt-4" style={{ color: 'rgba(237,233,228,0.35)' }}>
+            <p className="font-sans text-[0.72rem] mt-4" style={{ color: 'rgba(237,233,228,0.35)' }}>
               ₹499 – ₹2,499 · XS–4XL · 26AA–52K
+            </p>
+            <p className="font-sans text-[0.72rem] mt-5 leading-relaxed" style={{ color: 'rgba(237,233,228,0.35)' }}>
+              UPI · Cards · Net Banking · COD
             </p>
           </div>
 
-          {/* Nav columns */}
           {COLS.map((col) => (
             <div key={col.title}>
               <p
-                className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase mb-5"
+                className="font-sans text-[0.68rem] tracking-label uppercase mb-5"
                 style={{ color: '#B8A898' }}
               >
                 {col.title}
               </p>
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-2.5">
                 {col.links.map(({ label, href }) => (
                   <li key={label}>
                     <Link
                       href={href}
-                      className="font-sans text-[0.8rem] lg:text-[0.86rem] font-light transition-colors duration-200"
+                      className="font-sans text-[0.82rem] font-light transition-colors duration-200 hover:text-blush"
                       style={{ color: 'rgba(237,233,228,0.45)' }}
                     >
                       {label}
@@ -78,24 +78,21 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Divider */}
         <div className="border-t" style={{ borderColor: 'rgba(184,168,152,0.14)' }} />
 
-        {/* Bottom row */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-7">
-          <p className="font-sans text-[0.7rem] lg:text-[0.74rem]" style={{ color: 'rgba(237,233,228,0.3)' }}>
+          <p className="font-sans text-[0.7rem]" style={{ color: 'rgba(237,233,228,0.3)' }}>
             © {new Date().getFullYear()} Velura. All rights reserved.
           </p>
           <div className="flex gap-6">
             {['Privacy', 'Terms', 'Shipping'].map((label) => (
-              <Link
+              <span
                 key={label}
-                href="#"
-                className="font-sans text-[0.7rem] lg:text-[0.74rem] transition-colors"
+                className="font-sans text-[0.7rem]"
                 style={{ color: 'rgba(237,233,228,0.3)' }}
               >
                 {label}
-              </Link>
+              </span>
             ))}
           </div>
         </div>

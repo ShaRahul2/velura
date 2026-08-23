@@ -1,5 +1,6 @@
 'use client'
 
+import { useId } from 'react'
 import type { BuilderVisualSpec } from '@/lib/builderVisualSpec'
 
 // ── Color system ──────────────────────────────────────────────────────────────
@@ -49,6 +50,21 @@ const FILL_MAP: Record<string, string> = {
   amethyst:   '#6B4E8C',
   periwinkle: '#A3A8D6',
   mocha:      '#6F5344',
+  bone:       '#EFE6D8',
+  camel:      '#C4A574',
+  dove:       '#8A8580',
+  espresso:   '#3E2A22',
+  graphite:   '#2A2826',
+  powder:     '#F3D5D8',
+  merlot:     '#5C1A28',
+  wine:       '#4A1520',
+  ice:        '#D7E4EC',
+  indigo:     '#2C265C',
+  gold:       '#C6A15B',
+  copper:     '#B8734A',
+  caramel:    '#A06B3F',
+  rust:       '#8C3E28',
+  silver:     '#C5C2BC',
 }
 
 // Stroke is darker on light fills, lighter on dark fills
@@ -97,6 +113,21 @@ const STROKE_MAP: Record<string, string> = {
   amethyst:   '#C4A6E0',
   periwinkle: '#5E648A',
   mocha:      '#C4A38E',
+  bone:       '#C9B8A0',
+  camel:      '#8C6E3E',
+  dove:       '#EDE9E4',
+  espresso:   '#D2B09A',
+  graphite:   '#C2BDB6',
+  powder:     '#C4948A',
+  merlot:     '#E0A8B4',
+  wine:       '#D4A0A8',
+  ice:        '#6A8496',
+  indigo:     '#B8B4D8',
+  gold:       '#7A5E28',
+  copper:     '#F0C4A0',
+  caramel:    '#F0D0A8',
+  rust:       '#F0B29C',
+  silver:     '#6B6058',
 }
 
 // ── Cup geometry ──────────────────────────────────────────────────────────────
@@ -128,6 +159,12 @@ const CUP_PARAMS: Record<string, CupParams> = {
   pushup:     { goreTopY: 50, outerTopX: 58, outerTopY: 38, outerMidX: 36, outerMidY: 70, goreBottomY: 99, bandEdgeX: 51, strapAttachX: 65, strapAttachY: 40 },
   plunge:     { goreTopY: 76, outerTopX: 61, outerTopY: 43, outerMidX: 38, outerMidY: 73, goreBottomY: 99, bandEdgeX: 51, strapAttachX: 67, strapAttachY: 45 },
   minimizer:  { goreTopY: 52, outerTopX: 66, outerTopY: 38, outerMidX: 34, outerMidY: 71, goreBottomY: 99, bandEdgeX: 55, strapAttachX: 71, strapAttachY: 40 },
+  bralette:   { goreTopY: 66, outerTopX: 68, outerTopY: 50, outerMidX: 46, outerMidY: 76, goreBottomY: 99, bandEdgeX: 56, strapAttachX: 74, strapAttachY: 52 },
+  triangle:   { goreTopY: 72, outerTopX: 72, outerTopY: 40, outerMidX: 50, outerMidY: 74, goreBottomY: 99, bandEdgeX: 58, strapAttachX: 78, strapAttachY: 42 },
+  longline:   { goreTopY: 56, outerTopX: 60, outerTopY: 42, outerMidX: 38, outerMidY: 72, goreBottomY: 92, bandEdgeX: 50, strapAttachX: 66, strapAttachY: 44 },
+  demi:       { goreTopY: 70, outerTopX: 62, outerTopY: 58, outerMidX: 40, outerMidY: 76, goreBottomY: 99, bandEdgeX: 52, strapAttachX: 68, strapAttachY: 60 },
+  racerback:  { goreTopY: 58, outerTopX: 64, outerTopY: 46, outerMidX: 42, outerMidY: 72, goreBottomY: 99, bandEdgeX: 54, strapAttachX: 70, strapAttachY: 48 },
+  full:       { goreTopY: 50, outerTopX: 64, outerTopY: 36, outerMidX: 34, outerMidY: 70, goreBottomY: 99, bandEdgeX: 54, strapAttachX: 70, strapAttachY: 38 },
 }
 
 /**
@@ -161,6 +198,7 @@ interface BraSVGProps {
 }
 
 export function BraSVG({ spec, className }: BraSVGProps) {
+  const uid    = useId().replace(/:/g, '')
   const params = CUP_PARAMS[spec.braType] ?? CUP_PARAMS.everyday
   const fill   = FILL_MAP[spec.colorId]   ?? '#EDE9E4'
   const stroke = STROKE_MAP[spec.colorId] ?? '#9A8878'
@@ -176,19 +214,25 @@ export function BraSVG({ spec, className }: BraSVGProps) {
   const strapAttachXR = 200 - strapAttachX
 
   // Flags derived from spec
-  const isStrapless  = spec.strapStyle === 'none'
-  const isCrossback  = spec.strapStyle === 'crossback'
-  const isWideStrap  = spec.strapStyle === 'wide'
-  const isAdjustable = spec.strapStyle === 'adjustable'
-  const isWired      = spec.underwire  === 'wired'
-  const isFrontClose = spec.closure    === 'front'
-  const isBackClose  = spec.closure    === 'back'
+  const isStrapless   = spec.strapStyle === 'none' || spec.braType === 'strapless'
+  const isCrossback   = spec.strapStyle === 'crossback'
+  const isRacerback   = spec.strapStyle === 'racerback' || spec.braType === 'racerback'
+  const isHalter      = spec.strapStyle === 'halter'
+  const isConvertible = spec.strapStyle === 'convertible'
+  const isWideStrap   = spec.strapStyle === 'wide'
+  const isAdjustable  = spec.strapStyle === 'adjustable' || isConvertible
+  const isWired       = spec.underwire  === 'wired'
+  const isFrontClose  = spec.closure    === 'front'
+  const isBackClose   = spec.closure    === 'back'
   const isHighSupport = spec.support   === 'high'
   const isMedSupport  = spec.support   === 'medium'
-  const hasLaceOverlay = spec.fabric === 'lace' || spec.braType === 'lace'
-  const hasSilkSheen   = spec.fabric === 'silk'
-  const hasSmoothGrad  = spec.fabric === 'microfiber' || spec.fabric === 'smooth'
+  const hasLaceOverlay = spec.fabric === 'lace' || spec.braType === 'lace' || spec.braType === 'bridal'
+  const hasSilkSheen   = spec.fabric === 'silk' || spec.fabric === 'satin'
+  const hasSmoothGrad  = spec.fabric === 'microfiber' || spec.fabric === 'smooth' || spec.fabric === 'modal'
+  const hasVelvet      = spec.fabric === 'velvet'
+  const hasMesh        = spec.fabric === 'mesh'
   const isBridal       = spec.braType === 'bridal'
+  const isLongline     = spec.braType === 'longline'
 
   const strapWidth = isWideStrap ? 7 : 2
 
@@ -216,28 +260,30 @@ export function BraSVG({ spec, className }: BraSVGProps) {
     >
       <defs>
         {/* Padding depth — radial highlight centred upper-inner portion of cup */}
-        <radialGradient id="svgPadGrad" cx="48%" cy="40%" r="58%" fx="45%" fy="35%">
+        <radialGradient id={`padGrad-${uid}`} cx="48%" cy="40%" r="58%" fx="45%" fy="35%">
           <stop offset="0%"   stopColor="white" stopOpacity={padOpacity}/>
           <stop offset="65%"  stopColor="white" stopOpacity={padOpacity * 0.25}/>
           <stop offset="100%" stopColor="white" stopOpacity={0}/>
         </radialGradient>
-        {/* Padding shadow for high-padding depth illusion */}
-        <linearGradient id="svgPadShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+        <linearGradient id={`padShadow-${uid}`} x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%"   stopColor="black" stopOpacity={0}/>
           <stop offset="100%" stopColor="black" stopOpacity={spec.padding === 'high' ? 0.09 : 0}/>
         </linearGradient>
-        {/* Silk diagonal sheen */}
-        <linearGradient id="svgSilkSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id={`silkSheen-${uid}`} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%"   stopColor="white" stopOpacity={0}/>
           <stop offset="40%"  stopColor="white" stopOpacity={hasSilkSheen ? 0.22 : 0}/>
           <stop offset="52%"  stopColor="white" stopOpacity={hasSilkSheen ? 0.30 : 0}/>
           <stop offset="64%"  stopColor="white" stopOpacity={hasSilkSheen ? 0.22 : 0}/>
           <stop offset="100%" stopColor="white" stopOpacity={0}/>
         </linearGradient>
-        {/* Microfiber / smooth-knit top highlight */}
-        <linearGradient id="svgSmoothGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <linearGradient id={`smoothGrad-${uid}`} x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%"   stopColor="white" stopOpacity={hasSmoothGrad ? 0.14 : 0}/>
           <stop offset="100%" stopColor="white" stopOpacity={0}/>
+        </linearGradient>
+        <linearGradient id={`velvetGrad-${uid}`} x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%"   stopColor="black" stopOpacity={hasVelvet ? 0.18 : 0}/>
+          <stop offset="50%"  stopColor="white" stopOpacity={hasVelvet ? 0.12 : 0}/>
+          <stop offset="100%" stopColor="black" stopOpacity={hasVelvet ? 0.22 : 0}/>
         </linearGradient>
       </defs>
 
@@ -252,12 +298,12 @@ export function BraSVG({ spec, className }: BraSVGProps) {
       {/* ── Padding overlay — both cups ──────────────────── */}
       {spec.padding !== 'none' && (
         <>
-          <path d={cupPath} fill="url(#svgPadGrad)"/>
-          <g transform={mirror}><path d={cupPath} fill="url(#svgPadGrad)"/></g>
+          <path d={cupPath} fill={`url(#padGrad-${uid})`}/>
+          <g transform={mirror}><path d={cupPath} fill={`url(#padGrad-${uid})`}/></g>
           {spec.padding === 'high' && (
             <>
-              <path d={cupPath} fill="url(#svgPadShadow)"/>
-              <g transform={mirror}><path d={cupPath} fill="url(#svgPadShadow)"/></g>
+              <path d={cupPath} fill={`url(#padShadow-${uid})`}/>
+              <g transform={mirror}><path d={cupPath} fill={`url(#padShadow-${uid})`}/></g>
             </>
           )}
         </>
@@ -266,16 +312,31 @@ export function BraSVG({ spec, className }: BraSVGProps) {
       {/* ── Silk sheen ───────────────────────────────────── */}
       {hasSilkSheen && (
         <>
-          <path d={cupPath} fill="url(#svgSilkSheen)"/>
-          <g transform={mirror}><path d={cupPath} fill="url(#svgSilkSheen)"/></g>
+          <path d={cupPath} fill={`url(#silkSheen-${uid})`}/>
+          <g transform={mirror}><path d={cupPath} fill={`url(#silkSheen-${uid})`}/></g>
         </>
       )}
 
-      {/* ── Smooth / microfiber top-edge highlight ─────────── */}
       {hasSmoothGrad && (
         <>
-          <path d={cupPath} fill="url(#svgSmoothGrad)"/>
-          <g transform={mirror}><path d={cupPath} fill="url(#svgSmoothGrad)"/></g>
+          <path d={cupPath} fill={`url(#smoothGrad-${uid})`}/>
+          <g transform={mirror}><path d={cupPath} fill={`url(#smoothGrad-${uid})`}/></g>
+        </>
+      )}
+
+      {hasVelvet && (
+        <>
+          <path d={cupPath} fill={`url(#velvetGrad-${uid})`}/>
+          <g transform={mirror}><path d={cupPath} fill={`url(#velvetGrad-${uid})`}/></g>
+        </>
+      )}
+
+      {hasMesh && (
+        <>
+          <path d={cupPath} fill="none" stroke={stroke} strokeWidth="0.4" strokeDasharray="1.2 1.8" opacity="0.35"/>
+          <g transform={mirror}>
+            <path d={cupPath} fill="none" stroke={stroke} strokeWidth="0.4" strokeDasharray="1.2 1.8" opacity="0.35"/>
+          </g>
         </>
       )}
 
@@ -375,11 +436,17 @@ export function BraSVG({ spec, className }: BraSVGProps) {
         </>
       )}
 
-      {/* ── Band ─────────────────────────────────────────── */}
       <path
-        d={`M ${bandEdgeX} ${goreBottomY} L ${bandEdgeR} ${goreBottomY} L ${bandEdgeR + 2} ${goreBottomY + 18} L ${bandEdgeX - 2} ${goreBottomY + 18} Z`}
+        d={`M ${bandEdgeX} ${goreBottomY} L ${bandEdgeR} ${goreBottomY} L ${bandEdgeR + 2} ${goreBottomY + (isLongline ? 36 : 18)} L ${bandEdgeX - 2} ${goreBottomY + (isLongline ? 36 : 18)} Z`}
         fill={fill} stroke={stroke} strokeWidth="1" opacity="0.72"
       />
+      {isLongline && (
+        <line
+          x1={bandEdgeX} y1={goreBottomY + 18}
+          x2={bandEdgeR} y2={goreBottomY + 18}
+          stroke={stroke} strokeWidth="0.6" opacity="0.32"
+        />
+      )}
       {/* Band channel seam */}
       <line
         x1={bandEdgeX - 1} y1={goreBottomY + 10}
@@ -428,8 +495,32 @@ export function BraSVG({ spec, className }: BraSVGProps) {
         />
       )}
 
-      {/* ── Straps ───────────────────────────────────────── */}
-      {!isStrapless && !isCrossback && (
+      {!isStrapless && isHalter && (
+        <>
+          <path
+            d={`M ${strapAttachX} ${strapAttachY} Q 100 8 ${strapAttachXR} ${strapAttachY}`}
+            stroke={stroke} strokeWidth={strapWidth} strokeLinecap="round" fill="none" opacity="0.80"
+          />
+          <circle cx="100" cy="10" r="2.2" fill={fill} stroke={stroke} strokeWidth="0.8" opacity="0.75"/>
+        </>
+      )}
+      {!isStrapless && isRacerback && !isHalter && (
+        <>
+          <path
+            d={`M ${strapAttachX} ${strapAttachY} L 100 22`}
+            stroke={stroke} strokeWidth={strapWidth} strokeLinecap="round" opacity="0.80"
+          />
+          <path
+            d={`M ${strapAttachXR} ${strapAttachY} L 100 22`}
+            stroke={stroke} strokeWidth={strapWidth} strokeLinecap="round" opacity="0.80"
+          />
+          <path
+            d="M 100 22 L 100 8"
+            stroke={stroke} strokeWidth={strapWidth} strokeLinecap="round" opacity="0.80"
+          />
+        </>
+      )}
+      {!isStrapless && !isCrossback && !isRacerback && !isHalter && (
         <>
           <path
             d={`M ${strapAttachX} ${strapAttachY} L ${strapAttachX + 2} 16`}
@@ -439,7 +530,6 @@ export function BraSVG({ spec, className }: BraSVGProps) {
             d={`M ${strapAttachXR} ${strapAttachY} L ${strapAttachXR - 2} 16`}
             stroke={stroke} strokeWidth={strapWidth} strokeLinecap="round" opacity="0.80"
           />
-          {/* Adjustable slider hardware */}
           {isAdjustable && (
             <>
               <rect x={strapAttachX - 1.5} y={32} width={4} height={5} rx="1"
@@ -448,11 +538,16 @@ export function BraSVG({ spec, className }: BraSVGProps) {
                     fill={fill} stroke={stroke} strokeWidth="0.8" opacity="0.72"/>
             </>
           )}
+          {isConvertible && (
+            <>
+              <circle cx={strapAttachX} cy={strapAttachY} r="2.4" fill={fill} stroke={stroke} strokeWidth="0.8"/>
+              <circle cx={strapAttachXR} cy={strapAttachY} r="2.4" fill={fill} stroke={stroke} strokeWidth="0.8"/>
+            </>
+          )}
         </>
       )}
       {!isStrapless && isCrossback && (
         <>
-          {/* Left cup → right shoulder and right cup → left shoulder */}
           <path
             d={`M ${strapAttachX} ${strapAttachY} L ${strapAttachXR - 2} 16`}
             stroke={stroke} strokeWidth={strapWidth} strokeLinecap="round" opacity="0.80"
@@ -461,7 +556,6 @@ export function BraSVG({ spec, className }: BraSVGProps) {
             d={`M ${strapAttachXR} ${strapAttachY} L ${strapAttachX + 2} 16`}
             stroke={stroke} strokeWidth={strapWidth} strokeLinecap="round" opacity="0.80"
           />
-          {/* Cross-point ring indicator */}
           <circle cx="100" cy="31" r="2.8" fill={fill} stroke={stroke} strokeWidth="0.9" opacity="0.70"/>
         </>
       )}

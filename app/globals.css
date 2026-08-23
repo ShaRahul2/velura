@@ -67,9 +67,22 @@ body {
   font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
 }
 
-/* The configurator is a focused, single-viewport workspace. */
-body:has(.builder-shell) > footer {
-  display: none;
+::selection {
+  background: var(--blush);
+  color: var(--deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.builder-shell {
+  overscroll-behavior: none;
 }
 
 @keyframes fadeUp {
@@ -105,7 +118,4 @@ body:has(.builder-shell) > footer {
 ::-webkit-scrollbar       { width: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--lm); border-radius: 2px; }
 
-/* Builder: ensure the full step + nav + preview area fits without any scrolling */
-.builder-shell .flex-1.min-h-0 {
-  overflow: hidden;
-}
+

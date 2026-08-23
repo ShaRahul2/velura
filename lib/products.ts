@@ -1,6 +1,17 @@
 import { db } from '@/lib/db'
 import { BadgeType as DbBadge, SupportLevel as DbSupportLevel, type Prisma } from '@prisma/client'
+import { products as STATIC } from '@/data/products'
 import type { Product, BadgeType, ProductCategory, SupportLevel } from '@/types'
+
+const STATIC_BY_ID = new Map(STATIC.map((p) => [p.id, p]))
+
+function isPlaceholderUrl(url: string) {
+  return (
+    url.includes('picsum.photos') ||
+    url.includes('images.unsplash.com') ||
+    url.includes('loremflickr.com')
+  )
+}
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -40,6 +51,11 @@ export function mapDbProductToProduct(p: DbProductFull): Product {
 function mapProduct(p: DbProductFull): Product {
   const sortedImages = p.images // already ordered by position from the query
   const primaryImage = sortedImages.find((img) => img.isPrimary) ?? sortedImages[0]
+  const fallback = STATIC_BY_ID.get(p.id)
+  const images = sortedImages.map((img, i) => {
+    if (isPlaceholderUrl(img.url) && fallback?.images[i]) return fallback.images[i]
+    return img.url
+  })
   return {
     id:       p.id,
     name:     p.name,
@@ -55,7 +71,8 @@ function mapProduct(p: DbProductFull): Product {
     fabric:   p.fabric,
     support:  p.support as SupportLevel,
     sizes:    p.sizes,
-    images:   sortedImages.map((img) => img.url),
+    images:   images.length > 0 ? images : (fallback?.images ?? []),
+    colorways: fallback?.colorways,
     ...(primaryImage?.blurDataURL && { blurDataURL: primaryImage.blurDataURL }),
   }
 }
@@ -129,11 +146,16 @@ export async function queryProducts(
 // ── getProductById ────────────────────────────────────────────────────────────
 
 export async function getProductById(id: number): Promise<Product | null> {
-  const p = await db.product.findUnique({
-    where:   { id },
-    include: PRODUCT_INCLUDE,
-  })
-  return p ? mapProduct(p) : null
+  try {
+    const p = await db.product.findUnique({
+      where:   { id },
+      include: PRODUCT_INCLUDE,
+    })
+    if (p) return mapProduct(p)
+  } catch {
+    // fall through to static catalog
+  }
+  return STATIC_BY_ID.get(id) ?? null
 }
 
 // ── getRelatedProducts ────────────────────────────────────────────────────────

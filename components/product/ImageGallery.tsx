@@ -36,14 +36,13 @@ export function ImageGallery({ images, name }: ImageGalleryProps) {
         ))}
       </div>
 
-      {/* Main image */}
       <div className="flex-1 relative aspect-[3/4] rounded-card overflow-hidden bg-blush">
         <Image
           src={images[active]}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 45vw, 40vw"
-          className="object-cover transition-opacity duration-300"
+          className="object-cover scale-[1.08] transition-opacity duration-300"
           priority
         />
       </div>

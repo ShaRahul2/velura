@@ -78,15 +78,24 @@ export function buildAIPrompt(spec: BuilderVisualSpec): string {
     pushup:     'push-up bra with angled contoured cups, graduated padding and a lifted centre silhouette',
     plunge:     'plunge bra with a very low centre gore, deep V neckline and softly angled cups',
     minimizer:  'full-coverage minimizer bra with broad side panels, wide cups and a smooth reduced-profile silhouette',
+    bralette:   'soft unlined bralette with triangle-adjacent cups, fine straps, no underwire, delicate and barely-there',
+    triangle:   'minimal triangle-cup bra with pointed cups, thin spaghetti straps, airy coverage',
+    longline:   'longline bra with an extended ribbed under-band covering the upper torso, structured cups',
+    demi:       'demi-cup bra with a lower cut upper cup, open décolletage, light lift',
+    racerback:  'racerback bra with straps that meet at the spine, open back, secure encapsulation',
+    full:       'full-coverage bra with high-cut cups, wide side wings, maximum containment',
   }
 
   // ── Straps — describe how they look and connect ─────────────────────────────
   const strapDesc: Record<string, string> = {
-    classic:    'thin classic parallel shoulder straps',
-    adjustable: 'adjustable shoulder straps with sliding metal hardware rings',
-    crossback:  'straps that cross diagonally at the back to form a clear X shape, each strap running from the cup on one side to the shoulder on the opposite side',
-    wide:       'broad padded comfort shoulder straps, approximately 3cm wide',
-    none:       'no shoulder straps, fully strapless silhouette',
+    classic:     'thin classic parallel shoulder straps',
+    adjustable:  'adjustable shoulder straps with sliding metal hardware rings',
+    crossback:   'straps that cross diagonally at the back to form a clear X shape',
+    wide:        'broad padded comfort shoulder straps, approximately 3cm wide',
+    none:        'no shoulder straps, fully strapless silhouette',
+    racerback:   'racerback straps that join at the centre of the back',
+    halter:      'halter straps that meet behind the neck',
+    convertible: 'convertible straps with clip hardware at the cup for multiway wear',
   }
 
   // ── Padding — describe the cup profile impact ────────────────────────────────
@@ -104,6 +113,10 @@ export function buildAIPrompt(spec: BuilderVisualSpec): string {
     microfiber: 'ultra-smooth microfiber fabric with a barely-there matte powdery finish',
     lace:       'sheer floral lace with intricate raised motif, semi-transparent and delicate',
     smooth:     'smooth compression knit fabric with a fine matte surface and subtle sheen',
+    mesh:       'fine air-mesh fabric with an open knit and slight sheen through the holes',
+    velvet:     'dense crushed-velvet fabric with a rich pile catching the light',
+    satin:      'high-gloss satin fabric with a liquid highlight along the cup curve',
+    modal:      'soft modal-blend knit with a cool hand and matte drape',
   }
 
   // ── Closure — describe what is visible ──────────────────────────────────────
@@ -155,14 +168,23 @@ export function buildPollinationsPrompt(spec: BuilderVisualSpec): string {
     pushup:     'contoured push-up bra with lifted cups',
     plunge:     'deep V plunge bra with low centre gore',
     minimizer:  'full-coverage minimizer bra with broad side panels',
+    bralette:   'soft unlined bralette',
+    triangle:   'minimal triangle-cup bra',
+    longline:   'longline bra with extended under-band',
+    demi:       'demi-cup bra with open neckline',
+    racerback:  'racerback bra with joined back straps',
+    full:       'full-coverage bra with high cups',
   }
 
   const strapShort: Record<string, string> = {
-    classic:    'parallel shoulder straps',
-    adjustable: 'adjustable straps with metal slider',
-    crossback:  'crossback X-shaped straps',
-    wide:       'wide comfort shoulder straps',
-    none:       'no straps strapless',
+    classic:     'parallel shoulder straps',
+    adjustable:  'adjustable straps with metal slider',
+    crossback:   'crossback X-shaped straps',
+    wide:        'wide comfort shoulder straps',
+    none:        'no straps strapless',
+    racerback:   'racerback joined straps',
+    halter:      'halter neck straps',
+    convertible: 'convertible clip straps',
   }
 
   const fabricShort: Record<string, string> = {
@@ -171,6 +193,10 @@ export function buildPollinationsPrompt(spec: BuilderVisualSpec): string {
     microfiber: 'matte microfiber',
     lace:       'sheer lace overlay',
     smooth:     'smooth knit',
+    mesh:       'air mesh',
+    velvet:     'velvet pile',
+    satin:      'glossy satin',
+    modal:      'soft modal knit',
   }
 
   const wireShort  = spec.underwire === 'wired' ? 'underwired' : 'wire-free'

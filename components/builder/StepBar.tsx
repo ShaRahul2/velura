@@ -9,7 +9,7 @@ interface StepBarProps {
 
 export function StepBar({ current, onStepClick }: StepBarProps) {
   return (
-    <div className="flex items-center gap-0 mb-2 lg:mb-2.5 shrink-0">
+    <div className="flex items-center gap-0 mb-2 shrink-0">
       {STEPS.map((label, i) => {
         const step   = i + 1
         const done   = step < current
@@ -25,7 +25,7 @@ export function StepBar({ current, onStepClick }: StepBarProps) {
               className="flex flex-col items-center gap-1 disabled:cursor-default"
             >
               <div
-                className="w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200"
+                className="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200"
                 style={{
                   background: done ? '#0F0D0B' : active ? '#0F0D0B' : 'transparent',
                   border: done || active ? 'none' : '1px solid #D8D4CE',

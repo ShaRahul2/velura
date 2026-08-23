@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { LayoutGrid, Grid3x3, SlidersHorizontal } from 'lucide-react'
+import { LayoutGrid, Grid3x3, Square, SlidersHorizontal } from 'lucide-react'
 import { FilterDrawer } from './FilterDrawer'
 
 const SORT_OPTIONS = [
@@ -14,9 +14,9 @@ const SORT_OPTIONS = [
 ]
 
 interface SortBarProps {
-  total:         number
-  cols:          2 | 3 | 4 | 5
-  onColsChange:  (c: 2 | 3 | 4 | 5) => void
+  total:        number
+  cols:         2 | 3 | 4
+  onColsChange: (c: 2 | 3 | 4) => void
 }
 
 export function SortBar({ total, cols, onColsChange }: SortBarProps) {
@@ -39,16 +39,15 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-7 pb-4 border-b border-lm">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 mb-7 pb-4 border-b border-lm">
         <div className="flex items-center gap-3">
-          <p className="font-sans text-[0.78rem] lg:text-[0.84rem] text-mauve">
+          <p className="font-sans text-[0.78rem] text-mauve">
             {total} {total === 1 ? 'piece' : 'pieces'}
           </p>
 
-          {/* Mobile filter button */}
           <button
             onClick={() => setFilterOpen(true)}
-            className="md:hidden flex items-center gap-1.5 font-sans text-[0.72rem] lg:text-[0.76rem] 2xl:text-[0.8rem] tracking-btn uppercase text-mauve"
+            className="md:hidden flex items-center gap-1.5 font-sans text-[0.72rem] tracking-btn uppercase text-mauve"
           >
             <SlidersHorizontal size={13} />
             Filter
@@ -64,50 +63,41 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Sort select */}
           <select
             value={activeSort}
             onChange={(e) => setSort(e.target.value)}
-            className="font-sans text-[0.78rem] lg:text-[0.84rem] text-deep bg-transparent border-none outline-none cursor-pointer"
+            aria-label="Sort products"
+            className="font-sans text-[0.72rem] sm:text-[0.78rem] text-deep bg-transparent border-none outline-none cursor-pointer w-[7.2rem] sm:w-auto"
           >
             {SORT_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
 
-          {/* Col toggle — desktop only */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-0.5">
             <button
               onClick={() => onColsChange(2)}
-              className="p-1.5 rounded transition-colors"
+              className="p-1.5"
               style={{ color: cols === 2 ? '#0F0D0B' : '#9A8878' }}
               aria-label="2 columns"
             >
-              <LayoutGrid size={15} />
+              <Square size={15} />
             </button>
             <button
               onClick={() => onColsChange(3)}
-              className="p-1.5 rounded transition-colors"
+              className="p-1.5"
               style={{ color: cols === 3 ? '#0F0D0B' : '#9A8878' }}
               aria-label="3 columns"
             >
-              <Grid3x3 size={15} />
+              <Grid3x3 size={16} />
             </button>
             <button
               onClick={() => onColsChange(4)}
-              className="p-1.5 rounded transition-colors hidden xl:block"
+              className="p-1.5 hidden lg:block"
               style={{ color: cols === 4 ? '#0F0D0B' : '#9A8878' }}
               aria-label="4 columns"
             >
-              <Grid3x3 size={15} />
-            </button>
-            <button
-              onClick={() => onColsChange(5)}
-              className="p-1.5 rounded transition-colors hidden 2xl:block"
-              style={{ color: cols === 5 ? '#0F0D0B' : '#9A8878' }}
-              aria-label="5 columns"
-            >
-              <Grid3x3 size={15} />
+              <LayoutGrid size={16} />
             </button>
           </div>
         </div>

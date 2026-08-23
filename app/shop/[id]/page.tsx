@@ -4,6 +4,7 @@ import { getProductById, getRelatedProducts, getAllProductIds } from '@/lib/prod
 import { ImageGallery } from '@/components/product/ImageGallery'
 import { ProductDetail } from '@/components/product/ProductDetail'
 import { ProductCard } from '@/components/shop/ProductCard'
+import { pageWrap } from '@/lib/utils'
 import type { ProductCategory } from '@/types'
 
 interface PageProps {
@@ -40,28 +41,26 @@ export default async function ProductPage({ params }: PageProps) {
   const related = await getRelatedProducts(product.id, product.cat as ProductCategory)
 
   return (
-    <div className="max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] mx-auto px-6 md:px-10 py-12 lg:py-16 2xl:py-20">
-      {/* Product */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 xl:gap-20 2xl:gap-24 mb-20">
+    <div className={`${pageWrap} py-10 md:py-14 lg:py-16`}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-14 mb-20">
         <ImageGallery images={product.images} name={product.name} />
         <ProductDetail product={product} />
       </div>
 
-      {/* Related */}
       {related.length > 0 && (
         <section>
           <div className="mb-8">
-            <p className="font-sans text-[0.68rem] lg:text-[0.74rem] tracking-label uppercase text-rose mb-2">
+            <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-2">
               You may also like
             </p>
             <h2
               className="font-serif font-light text-deep"
               style={{ fontSize: 'clamp(1.4rem, 2.8vw, 2.2rem)', letterSpacing: '-0.01em' }}
             >
-              More in {product.cat}
+              More in {product.cat.charAt(0).toUpperCase() + product.cat.slice(1)}
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-5 lg:gap-6 2xl:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

@@ -110,7 +110,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto px-6 md:px-10 py-12 lg:py-16">
+    <div className="mx-auto w-full max-w-[1100px] px-5 md:px-8 lg:px-12 py-10 md:py-14">
       <div className="mb-8">
         <p className="font-sans text-[0.68rem] lg:text-[0.74rem] tracking-label uppercase text-rose mb-2">Checkout</p>
         <h1
@@ -122,7 +122,7 @@ export default function CheckoutPage() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_380px] lg:grid-cols-[1fr_420px] xl:gap-14 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-14">
           {/* Left — forms */}
           <div className="space-y-8">
             <AddressForm value={address} onChange={setAddress} />
