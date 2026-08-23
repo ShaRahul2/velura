@@ -1,6 +1,7 @@
+import { Suspense } from 'react'
 import { HeroSection } from '@/components/home/HeroSection'
 import { TrustStrip } from '@/components/home/TrustStrip'
-import { FeaturedProducts } from '@/components/home/FeaturedProducts'
+import { FeaturedProducts, FeaturedProductsSkeleton } from '@/components/home/FeaturedProducts'
 import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { AtelierBanner } from '@/components/home/AtelierBanner'
 import { Lookbook } from '@/components/home/Lookbook'
@@ -24,7 +25,9 @@ export default function HomePage() {
       />
       <HeroSection />
       <TrustStrip />
-      <FeaturedProducts />
+      <Suspense fallback={<FeaturedProductsSkeleton />}>
+        <FeaturedProducts />
+      </Suspense>
       <CategoryGrid />
       <AtelierBanner />
       <Lookbook />

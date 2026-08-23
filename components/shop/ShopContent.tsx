@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useRef, useState, Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Product, ProductCategory } from '@/types'
 import { formatPrice, pageWrap } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import { ProductGrid } from './ProductGrid'
 import { FilterSidebar } from './FilterSidebar'
 import { SortBar } from './SortBar'
@@ -41,6 +42,8 @@ export function ShopContent({
 }: ShopContentProps) {
   const [cols, setCols] = useState<2 | 3 | 4>(3)
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
+  const quickViewRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(Boolean(quickViewProduct), quickViewRef, () => setQuickViewProduct(null))
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
   const cat = currentCat as ProductCategory | undefined
@@ -156,13 +159,14 @@ export function ShopContent({
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-deep/55 p-4"
           onClick={() => setQuickViewProduct(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Quick view: ${quickViewProduct.name}`}
         >
           <div
+            ref={quickViewRef}
             className="bg-cream max-w-2xl w-full overflow-hidden shadow-overlay grid md:grid-cols-2"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Quick view: ${quickViewProduct.name}`}
           >
             <div className="relative aspect-[3/4] bg-blush">
               <Image
@@ -179,9 +183,10 @@ export function ShopContent({
                   {quickViewProduct.name}
                 </h3>
                 <button
+                  type="button"
                   onClick={() => setQuickViewProduct(null)}
-                  className="text-mauve hover:text-deep text-xl leading-none p-1"
-                  aria-label="Close"
+                  className="text-mauve hover:text-deep text-xl leading-none p-3"
+                  aria-label="Close quick view"
                 >
                   ×
                 </button>

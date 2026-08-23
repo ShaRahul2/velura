@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import Link from 'next/link'
 import { Heart } from 'lucide-react'
 import type { Product } from '@/types'
@@ -15,7 +15,7 @@ interface ProductCardProps {
   onQuickView?: (product: Product) => void
 }
 
-export function ProductCard({ product, onQuickView }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product, onQuickView }: ProductCardProps) {
   const [hovered, setHovered] = useState(false)
   const [colorIndex, setColorIndex] = useState(0)
   const toggle = useWishlistStore((s) => s.toggle)
@@ -31,37 +31,36 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <Link
-        href={`/shop/${product.id}`}
-        className="block relative aspect-[3/4] overflow-hidden bg-blush"
-      >
-        <div
-          className={cn(
-            'absolute inset-0 transition-opacity duration-500',
-            hasAlt && hovered && colorIndex === 0 ? 'opacity-0' : 'opacity-100'
-          )}
-        >
-          <ProductPhoto
-            src={colorImages[0]}
-            alt={product.name}
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
-        </div>
-
-        {hasAlt && colorIndex === 0 && (
+      <div className="relative aspect-[3/4] overflow-hidden bg-blush">
+        <Link href={`/shop/${product.id}`} className="absolute inset-0 block">
           <div
             className={cn(
               'absolute inset-0 transition-opacity duration-500',
-              hovered ? 'opacity-100' : 'opacity-0'
+              hasAlt && hovered && colorIndex === 0 ? 'opacity-0' : 'opacity-100'
             )}
           >
             <ProductPhoto
-              src={product.images[1]}
-              alt=""
+              src={colorImages[0]}
+              alt={product.name}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           </div>
-        )}
+
+          {hasAlt && colorIndex === 0 && (
+            <div
+              className={cn(
+                'absolute inset-0 transition-opacity duration-500',
+                hovered ? 'opacity-100' : 'opacity-0'
+              )}
+            >
+              <ProductPhoto
+                src={product.images[1]}
+                alt=""
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              />
+            </div>
+          )}
+        </Link>
 
         {product.badge && (
           <div className="absolute top-3 left-3 z-10">
@@ -70,40 +69,37 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
         )}
 
         {onQuickView && (
-          <span
+          <button
+            type="button"
+            onClick={() => onQuickView(product)}
             className={cn(
-              'absolute inset-x-0 bottom-0 z-10 hidden md:flex items-center justify-center h-11 font-sans text-[0.68rem] tracking-btn uppercase bg-deep/92 text-blush backdrop-blur-sm transition-all duration-200',
+              'absolute inset-x-0 bottom-0 z-10 hidden md:flex items-center justify-center h-11 font-sans text-[0.68rem] tracking-btn uppercase bg-deep/92 text-blush backdrop-blur-sm transition-[opacity,transform] duration-200',
               hovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'
             )}
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              onQuickView(product)
-            }}
-            role="button"
-            tabIndex={-1}
           >
             Quick view
-          </span>
+          </button>
         )}
-      </Link>
 
-      <button
-        onClick={() => toggle(product.id)}
-        aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
-        className={cn(
-          'absolute top-3 right-3 z-20 w-10 h-10 flex items-center justify-center transition-all duration-200',
-          wishlisted ? 'bg-deep text-blush' : 'bg-cream/90 text-mauve hover:text-deep',
-          !hovered && !wishlisted && 'md:opacity-0 md:group-hover:opacity-100'
-        )}
-        style={{ backdropFilter: 'blur(6px)' }}
-      >
-        <Heart size={15} strokeWidth={1.7} fill={wishlisted ? 'currentColor' : 'none'} />
-      </button>
+        <button
+          type="button"
+          onClick={() => toggle(product.id)}
+          aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+          aria-pressed={wishlisted}
+          className={cn(
+            'absolute top-3 right-3 z-20 w-11 h-11 flex items-center justify-center transition-opacity duration-200',
+            wishlisted ? 'bg-deep text-blush' : 'bg-cream/90 text-mauve hover:text-deep',
+            !hovered && !wishlisted && 'md:opacity-0 md:group-hover:opacity-100'
+          )}
+          style={{ backdropFilter: 'blur(6px)' }}
+        >
+          <Heart size={15} strokeWidth={1.7} fill={wishlisted ? 'currentColor' : 'none'} aria-hidden="true" />
+        </button>
+      </div>
 
       <div className="mt-3.5 flex flex-col gap-1.5">
         {colors.length > 0 && (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-0.5 -ml-1.5">
             {colors.slice(0, 5).map((hex, i) => {
               const selected = i === colorIndex
               return (
@@ -111,16 +107,20 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
                   key={`${hex}-${i}`}
                   type="button"
                   onClick={() => setColorIndex(i)}
-                  aria-label={`Show ${hex} colour`}
+                  aria-label={`Show colour ${i + 1}`}
                   aria-pressed={selected}
-                  className="w-[15px] h-[15px] rounded-full"
-                  style={{
-                    background: hex,
-                    boxShadow: selected
-                      ? '0 0 0 1.5px #0F0D0B, 0 0 0 3px #F8F6F3'
-                      : 'inset 0 0 0 1px rgba(15,13,11,0.14)',
-                  }}
-                />
+                  className="w-11 h-11 flex items-center justify-center"
+                >
+                  <span
+                    className="w-[15px] h-[15px] rounded-full"
+                    style={{
+                      background: hex,
+                      boxShadow: selected
+                        ? '0 0 0 1.5px #0F0D0B, 0 0 0 3px #F8F6F3'
+                        : 'inset 0 0 0 1px rgba(15,13,11,0.14)',
+                    }}
+                  />
+                </button>
               )
             })}
           </div>
@@ -150,4 +150,4 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
       </div>
     </article>
   )
-}
+})

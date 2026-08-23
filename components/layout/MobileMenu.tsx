@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { X } from 'lucide-react'
 import { useUiStore } from '@/store/uiStore'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -22,6 +23,8 @@ const CATS = [
 
 export function MobileMenu() {
   const { mobileMenuOpen, closeMobileMenu, openSearch, openStylist } = useUiStore()
+  const rootRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(mobileMenuOpen, rootRef, closeMobileMenu)
 
   useEffect(() => {
     if (mobileMenuOpen) document.body.style.overflow = 'hidden'
@@ -34,7 +37,14 @@ export function MobileMenu() {
   if (!mobileMenuOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-deep">
+    <div
+      id="mobile-menu"
+      ref={rootRef}
+      className="fixed inset-0 z-50 flex flex-col bg-deep"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menu"
+    >
       <div className="flex items-center justify-between px-5 h-16 border-b border-white/10">
         <Link
           href="/"
@@ -48,7 +58,7 @@ export function MobileMenu() {
           className="p-2.5 text-blush/60 hover:text-blush"
           aria-label="Close menu"
         >
-          <X size={20} strokeWidth={1.6} />
+          <X size={20} strokeWidth={1.6} aria-hidden="true" />
         </button>
       </div>
 

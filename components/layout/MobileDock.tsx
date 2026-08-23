@@ -54,7 +54,7 @@ export function MobileDock() {
             shopActive ? 'text-deep' : 'text-mauve'
           )}
         >
-          <LayoutGrid size={18} strokeWidth={1.6} />
+          <LayoutGrid size={18} strokeWidth={1.6} aria-hidden="true" />
           Shop
         </Link>
         <button
@@ -62,7 +62,7 @@ export function MobileDock() {
           onClick={openSearch}
           className="flex flex-col items-center justify-center gap-0.5 font-sans text-[0.58rem] tracking-[0.12em] uppercase text-mauve"
         >
-          <Search size={18} strokeWidth={1.6} />
+          <Search size={18} strokeWidth={1.6} aria-hidden="true" />
           Search
         </button>
         <Link
@@ -72,7 +72,7 @@ export function MobileDock() {
             builderActive ? 'text-deep' : 'text-mauve'
           )}
         >
-          <Sparkles size={18} strokeWidth={1.6} />
+          <Sparkles size={18} strokeWidth={1.6} aria-hidden="true" />
           Custom
         </Link>
         <button
@@ -81,11 +81,16 @@ export function MobileDock() {
           className="relative flex flex-col items-center justify-center gap-0.5 font-sans text-[0.58rem] tracking-[0.12em] uppercase text-mauve"
         >
           <span className="relative">
-            <ShoppingBag size={18} strokeWidth={1.6} />
+            <ShoppingBag size={18} strokeWidth={1.6} aria-hidden="true" />
             {mounted && count > 0 && (
-              <span className="absolute -top-1.5 -right-2 min-w-[14px] h-3.5 flex items-center justify-center rounded-full text-[0.5rem] font-sans font-medium px-0.5 bg-deep text-blush">
-                {count}
-              </span>
+              <>
+                <span className="absolute -top-1.5 -right-2 min-w-[14px] h-3.5 flex items-center justify-center rounded-full text-[0.5rem] font-sans font-medium px-0.5 bg-deep text-blush" aria-hidden="true">
+                  {count}
+                </span>
+                <span className="sr-only" role="status" aria-atomic="true">
+                  {count} {count === 1 ? 'item' : 'items'} in bag
+                </span>
+              </>
             )}
           </span>
           Bag

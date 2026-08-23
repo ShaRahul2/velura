@@ -162,7 +162,7 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
           onSelect={(s) => { setSelectedSize(s); setError(false) }}
         />
         {error && (
-          <p className="font-sans text-[0.72rem] text-mauve mt-2">
+          <p role="alert" className="font-sans text-[0.72rem] text-mauve mt-2">
             Please select a size to continue.
           </p>
         )}

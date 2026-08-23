@@ -40,7 +40,7 @@ export function CollectionChips() {
               type="button"
               onClick={() => setCat(id)}
               className={cn(
-                'h-9 px-4 rounded-pill font-sans text-[0.72rem] tracking-btn uppercase border transition-colors duration-150',
+                'h-11 px-4 rounded-pill font-sans text-[0.72rem] tracking-btn uppercase border transition-colors duration-150',
                 active
                   ? 'bg-deep text-blush border-deep'
                   : 'bg-transparent text-mauve border-lm hover:border-deep hover:text-deep'
