@@ -22,7 +22,7 @@ export function HeroSection() {
         }}
       />
 
-      <div className="relative z-10 w-full px-5 md:px-10 lg:px-16 xl:px-20 pb-16 md:pb-20 lg:pb-24 pt-32">
+      <div className="relative z-10 w-full px-5 md:px-10 lg:px-16 xl:px-20 pb-28 md:pb-20 lg:pb-24 pt-32">
         <div className="max-w-xl" style={{ animation: 'fadeUp 0.8s ease both' }}>
           <p className="font-sans text-[0.68rem] tracking-label uppercase mb-4 text-blush/80">
             New season · Made in India

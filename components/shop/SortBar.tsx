@@ -67,7 +67,7 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
             value={activeSort}
             onChange={(e) => setSort(e.target.value)}
             aria-label="Sort products"
-            className="font-sans text-[0.72rem] sm:text-[0.78rem] text-deep bg-transparent border-none outline-none cursor-pointer w-[7.2rem] sm:w-auto"
+            className="font-sans text-[0.72rem] sm:text-[0.78rem] text-deep bg-transparent border-none outline-none cursor-pointer max-w-[7.5rem] sm:max-w-none text-right"
           >
             {SORT_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>

@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutGrid, Search, Sparkles, ShoppingBag } from 'lucide-react'
@@ -10,6 +11,12 @@ import { cn } from '@/lib/utils'
 export function MobileDock() {
   const pathname = usePathname()
   const count = useCartStore((s) => s.count())
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
   const openSearch = useUiStore((s) => s.openSearch)
   const openCart = useUiStore((s) => s.openCart)
   const cartOpen = useUiStore((s) => s.cartOpen)
@@ -75,7 +82,7 @@ export function MobileDock() {
         >
           <span className="relative">
             <ShoppingBag size={18} strokeWidth={1.6} />
-            {count > 0 && (
+            {mounted && count > 0 && (
               <span className="absolute -top-1.5 -right-2 min-w-[14px] h-3.5 flex items-center justify-center rounded-full text-[0.5rem] font-sans font-medium px-0.5 bg-deep text-blush">
                 {count}
               </span>
