@@ -47,7 +47,7 @@ export interface Product {
   sizes: string
   images:      string[]
   blurDataURL?: string
-  /** Up to 4 hex colour codes representing available colorways for swatch display */
+  /** Hex codes for available colourways. First entry is the photographed colour. */
   colorways?:  string[]
 }
 
@@ -74,6 +74,8 @@ export interface CartItem {
   size: string
   emoji: string
   images: string[]
+  color?: string
+  colorLabel?: string
   isCustom?: boolean
   customSpec?: BuilderState
   customGrad?: string

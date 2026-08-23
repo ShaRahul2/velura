@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Heart, Star } from 'lucide-react'
 import type { Product } from '@/types'
 import { formatPrice, cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 import { useWishlistStore } from '@/store/wishlistStore'
+import { ProductPhoto } from '@/components/product/ProductPhoto'
+import { imagesForColor } from '@/lib/productColorImages'
 
 interface ProductCardProps {
   product: Product
@@ -16,10 +17,13 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onQuickView }: ProductCardProps) {
   const [hovered, setHovered] = useState(false)
+  const [colorIndex, setColorIndex] = useState(0)
   const toggle       = useWishlistStore((s) => s.toggle)
   const isWishlisted = useWishlistStore((s) => s.isWishlisted)
   const wishlisted   = isWishlisted(product.id)
   const hasAlt = product.images.length > 1
+  const colors = product.colorways ?? []
+  const colorImages = imagesForColor(product, colorIndex)
 
   return (
     <article
@@ -31,28 +35,22 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
         href={`/shop/${product.id}`}
         className="block relative aspect-[3/4] rounded-card overflow-hidden bg-blush"
       >
-        <Image
-          src={product.images[0]}
-          alt={product.name}
-          fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className={cn(
-            'object-cover scale-[1.08] transition-all duration-500',
-            hasAlt && hovered ? 'opacity-0' : 'opacity-100'
-          )}
-        />
-
-        {hasAlt && (
-          <Image
-            src={product.images[1]}
-            alt=""
-            fill
+        <div className={cn('absolute inset-0 transition-opacity duration-500', hasAlt && hovered && colorIndex === 0 ? 'opacity-0' : 'opacity-100')}>
+          <ProductPhoto
+            src={colorImages[0]}
+            alt={product.name}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className={cn(
-              'object-cover scale-[1.08] transition-all duration-500',
-              hovered ? 'opacity-100' : 'opacity-0'
-            )}
           />
+        </div>
+
+        {hasAlt && colorIndex === 0 && (
+          <div className={cn('absolute inset-0 transition-opacity duration-500', hovered ? 'opacity-100' : 'opacity-0')}>
+            <ProductPhoto
+              src={product.images[1]}
+              alt=""
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          </div>
         )}
 
         {product.badge && (
@@ -97,18 +95,27 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
 
       <div className="mt-3.5 flex flex-col gap-1.5">
         <div className="flex items-center justify-between gap-2">
-          {product.colorways && product.colorways.length > 0 ? (
+          {colors.length > 0 ? (
             <div className="flex items-center gap-1.5">
-              {product.colorways.slice(0, 4).map((hex, i) => (
-                <span
-                  key={i}
-                  className="inline-block w-3 h-3 rounded-full"
-                  style={{
-                    background: hex,
-                    boxShadow: 'inset 0 0 0 1px rgba(15,13,11,0.14)',
-                  }}
-                />
-              ))}
+              {colors.slice(0, 4).map((hex, i) => {
+                const selected = i === colorIndex
+                return (
+                  <button
+                    key={`${hex}-${i}`}
+                    type="button"
+                    onClick={() => setColorIndex(i)}
+                    aria-label={`Show ${hex} colour`}
+                    aria-pressed={selected}
+                    className="w-4 h-4 rounded-full cursor-pointer"
+                    style={{
+                      background: hex,
+                      boxShadow: selected
+                        ? '0 0 0 1.5px #0F0D0B, 0 0 0 3px #F8F6F3'
+                        : 'inset 0 0 0 1px rgba(15,13,11,0.14)',
+                    }}
+                  />
+                )
+              })}
             </div>
           ) : (
             <span />

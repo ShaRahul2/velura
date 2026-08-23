@@ -9,7 +9,7 @@ interface StepBarProps {
 
 export function StepBar({ current, onStepClick }: StepBarProps) {
   return (
-    <div className="flex items-center gap-0 mb-2 shrink-0">
+    <div className="flex items-center gap-0 mb-2 shrink-0 w-full min-w-0 overflow-hidden">
       {STEPS.map((label, i) => {
         const step   = i + 1
         const done   = step < current
@@ -18,7 +18,7 @@ export function StepBar({ current, onStepClick }: StepBarProps) {
         const canClick = onStepClick && step <= current
 
         return (
-          <div key={label} className="flex items-center flex-1 last:flex-none">
+          <div key={label} className="flex items-center flex-1 min-w-0">
             <button
               onClick={() => canClick && onStepClick(step)}
               disabled={!canClick}
@@ -54,7 +54,7 @@ export function StepBar({ current, onStepClick }: StepBarProps) {
 
             {i < STEPS.length - 1 && (
               <div
-                className="flex-1 h-px mx-2 mb-3 transition-colors duration-200"
+                className="flex-1 h-px mx-1 sm:mx-2 mb-3 min-w-2 transition-colors duration-200"
                 style={{ background: done ? '#0F0D0B' : '#D8D4CE' }}
               />
             )}

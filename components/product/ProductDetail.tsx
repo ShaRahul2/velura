@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/Button'
 import { SizeSelector } from './SizeSelector'
 import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
+import { colorLabel } from '@/lib/colorways'
+import { imagesForColor } from '@/lib/productColorImages'
 
 function parseSizes(range: string): string[] {
   const bands = [28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50]
@@ -34,11 +36,12 @@ function parseSizes(range: string): string[] {
 
 interface ProductDetailProps {
   product: Product
+  colorIndex?: number
+  onColorChange?: (index: number) => void
 }
 
-export function ProductDetail({ product }: ProductDetailProps) {
+export function ProductDetail({ product, colorIndex = 0, onColorChange }: ProductDetailProps) {
   const [selectedSize, setSelectedSize] = useState('')
-  const [selectedColor, setSelectedColor] = useState(0)
   const [error, setError] = useState(false)
   const add      = useCartStore((s) => s.add)
   const openCart = useUiStore((s) => s.openCart)
@@ -46,6 +49,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
   const availableSizes = parseSizes(product.sizes)
   const colors = product.colorways ?? []
+  const selectedHex = colors[colorIndex]
+  const selectedLabel = selectedHex ? colorLabel(selectedHex) : null
 
   function handleAddToBag() {
     if (!selectedSize) {
@@ -60,9 +65,13 @@ export function ProductDetail({ product }: ProductDetailProps) {
       qty: 1,
       size: selectedSize,
       emoji: product.emoji,
-      images: product.images,
+      images: imagesForColor(product, colorIndex),
+      color: selectedHex,
+      colorLabel: selectedLabel ?? undefined,
     })
-    addToast(`${product.name} (${selectedSize}) added to bag`)
+    addToast(
+      `${product.name} (${selectedSize}${selectedLabel ? ` · ${selectedLabel}` : ''}) added to bag`
+    )
     openCart()
   }
 
@@ -114,24 +123,35 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
       {colors.length > 0 && (
         <div>
-          <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve mb-3">
-            Colour
-          </p>
-          <div className="flex gap-2">
-            {colors.map((hex, i) => (
-              <button
-                key={hex}
-                onClick={() => setSelectedColor(i)}
-                className="w-7 h-7 rounded-full transition-transform"
-                style={{
-                  background: hex,
-                  boxShadow: selectedColor === i
-                    ? '0 0 0 1.5px #0F0D0B, 0 0 0 3px #F8F6F3'
-                    : 'inset 0 0 0 1px rgba(15,13,11,0.16)',
-                }}
-                aria-label={`Colour ${i + 1}`}
-              />
-            ))}
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve">
+              Colour
+            </p>
+            {selectedLabel && (
+              <p className="font-sans text-[0.78rem] font-medium text-deep">{selectedLabel}</p>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {colors.map((hex, i) => {
+              const selected = i === colorIndex
+              return (
+                <button
+                  key={`${hex}-${i}`}
+                  type="button"
+                  onClick={() => onColorChange?.(i)}
+                  aria-label={colorLabel(hex)}
+                  aria-pressed={selected}
+                  className="w-7 h-7 rounded-full cursor-pointer transition-transform"
+                  style={{
+                    background: hex,
+                    boxShadow: selected
+                      ? '0 0 0 1.5px #0F0D0B, 0 0 0 3px #F8F6F3'
+                      : 'inset 0 0 0 1px rgba(15,13,11,0.16)',
+                    transform: selected ? 'scale(1.06)' : 'scale(1)',
+                  }}
+                />
+              )
+            })}
           </div>
         </div>
       )}

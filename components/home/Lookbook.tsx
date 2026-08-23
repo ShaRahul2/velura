@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { pageWrap } from '@/lib/utils'
 
 const PLATES = [
-  { src: '/images/lookbook/01.jpg', alt: 'Champagne silk, morning light', caption: 'Silk' },
-  { src: '/images/lookbook/02.jpg', alt: 'Black lace on linen', caption: 'Lace' },
-  { src: '/images/lookbook/03.jpg', alt: 'Velvet in low light', caption: 'Velvet' },
-  { src: '/images/lookbook/04.jpg', alt: 'Ivory embroidered bridal', caption: 'Bridal' },
+  { src: '/images/lookbook/01.jpg', alt: 'Champagne silk, morning light', caption: 'Silk', href: '/shop?cat=everyday' },
+  { src: '/images/lookbook/02.jpg', alt: 'Black lace on linen', caption: 'Lace', href: '/shop?cat=lace' },
+  { src: '/images/lookbook/03.jpg', alt: 'Velvet in low light', caption: 'Velvet', href: '/shop?cat=pushup' },
+  { src: '/images/lookbook/04.jpg', alt: 'Ivory embroidered bridal', caption: 'Bridal', href: '/shop?cat=bridal' },
 ]
 
 export function Lookbook() {
@@ -36,7 +36,7 @@ export function Lookbook() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2 px-1.5 md:px-2">
         {PLATES.map((plate) => (
-          <Link key={plate.src} href="/shop" className="group relative aspect-[3/4] overflow-hidden bg-blush">
+          <Link key={plate.src} href={plate.href} className="group relative aspect-[3/4] overflow-hidden bg-blush">
             <Image
               src={plate.src}
               alt={plate.alt}
@@ -45,10 +45,10 @@ export function Lookbook() {
               className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
             />
             <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              style={{ background: 'linear-gradient(to top, rgba(15,13,11,0.45) 0%, transparent 50%)' }}
+              className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+              style={{ background: 'linear-gradient(to top, rgba(15,13,11,0.5) 0%, transparent 100%)' }}
             />
-            <p className="absolute bottom-4 left-4 font-serif italic text-blush text-[1.05rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <p className="absolute bottom-3 left-3 font-serif italic text-blush text-[1.02rem]">
               {plate.caption}
             </p>
           </Link>

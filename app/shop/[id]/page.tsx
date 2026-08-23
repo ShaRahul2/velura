@@ -1,8 +1,7 @@
 import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import { getProductById, getRelatedProducts, getAllProductIds } from '@/lib/products'
-import { ImageGallery } from '@/components/product/ImageGallery'
-import { ProductDetail } from '@/components/product/ProductDetail'
+import { ProductView } from '@/components/product/ProductView'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { pageWrap } from '@/lib/utils'
 import type { ProductCategory } from '@/types'
@@ -43,8 +42,7 @@ export default async function ProductPage({ params }: PageProps) {
   return (
     <div className={`${pageWrap} py-10 md:py-14 lg:py-16`}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-14 mb-20">
-        <ImageGallery images={product.images} name={product.name} />
-        <ProductDetail product={product} />
+        <ProductView product={product} />
       </div>
 
       {related.length > 0 && (

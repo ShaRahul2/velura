@@ -46,22 +46,6 @@ export function HeroSection() {
             </Link>
           </div>
         </div>
-
-        <div
-          className="flex gap-8 mt-12 pt-7 border-t border-lm max-w-xl"
-          style={{ animation: 'fadeUp 0.9s 0.15s ease both' }}
-        >
-          {[
-            { value: '50,000+', label: 'Women' },
-            { value: '26AA–52K', label: 'Size range' },
-            { value: '4.8★', label: 'Avg. rating' },
-          ].map(({ value, label }) => (
-            <div key={label}>
-              <p className="font-serif text-[1.35rem] lg:text-[1.5rem] font-light text-deep">{value}</p>
-              <p className="font-sans text-[0.65rem] tracking-label uppercase text-mauve mt-0.5">{label}</p>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Campaign photograph */}
@@ -73,10 +57,6 @@ export function HeroSection() {
           priority
           sizes="(max-width: 1024px) 100vw, 52vw"
           className="object-cover object-[center_18%]"
-        />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(15,13,11,0.28) 0%, transparent 42%)' }}
         />
 
         <div
