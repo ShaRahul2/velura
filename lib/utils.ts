@@ -17,6 +17,15 @@ export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+export function withTimeout<T>(promise: Promise<T>, ms: number, label = 'timeout'): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error(label)), ms)
+    }),
+  ])
+}
+
 /** Shared page container — keeps type and product grids from stretching too wide. */
 export const pageWrap =
   'mx-auto w-full max-w-[1280px] px-5 md:px-8 lg:px-12 xl:max-w-[1360px] xl:px-16'

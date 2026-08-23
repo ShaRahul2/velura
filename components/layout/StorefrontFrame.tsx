@@ -36,11 +36,20 @@ export function StorefrontFrame({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:z-[70] focus:top-3 focus:left-3 focus:bg-deep focus:text-blush focus:px-4 focus:py-2 focus:font-sans focus:text-[0.8rem] focus:tracking-btn focus:uppercase"
+      >
+        Skip to content
+      </a>
       <header className="fixed top-0 inset-x-0 z-40">
         <Navbar />
       </header>
       <main
+        id="main-content"
+        tabIndex={-1}
         className={cn(
+          'outline-none',
           isHome ? 'pt-0' : 'pt-16',
           showDock && 'pb-16 md:pb-0'
         )}

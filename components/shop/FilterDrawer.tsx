@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { X } from 'lucide-react'
 import type { ProductCategory } from '@/types'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
   { id: 'all',      label: 'All' },
@@ -28,6 +29,8 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
   const searchParams  = useSearchParams()
   const activeCat     = searchParams.get('cat') ?? 'all'
   const activeSupport = searchParams.get('support') ?? ''
+  const panelRef = useRef<HTMLElement>(null)
+  useFocusTrap(open, panelRef, onClose)
 
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden'
@@ -60,7 +63,13 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
       )}
 
       <aside
+        ref={panelRef}
         className="fixed top-0 left-0 h-full w-72 z-50 flex flex-col bg-cream md:hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Filters"
+        aria-hidden={!open}
+        inert={!open || undefined}
         style={{
           transform:  open ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.32s cubic-bezier(0.23,1,0.32,1)',
@@ -86,7 +95,8 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
                   <li key={id}>
                     <button
                       onClick={() => { setParam('cat', id); onClose() }}
-                      className="w-full text-left font-sans text-[0.85rem] lg:text-[0.9rem] py-2 transition-colors"
+                      className="w-full text-left font-sans text-[0.85rem] lg:text-[0.9rem] py-2.5 transition-colors"
+                      aria-pressed={active}
                       style={{ color: active ? '#0F0D0B' : '#6B6058', fontWeight: active ? 500 : 300 }}
                     >
                       {label}

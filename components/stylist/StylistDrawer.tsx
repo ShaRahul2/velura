@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { X } from 'lucide-react'
 import { useUiStore } from '@/store/uiStore'
 import { formatPrice } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import type { SearchHit } from '@/lib/catalogSearch'
 import type { StylistMessage } from '@/lib/stylist'
 
@@ -29,21 +30,16 @@ export function StylistDrawer() {
   const [error, setError] = useState('')
   const listRef = useRef<HTMLDivElement>(null)
   const fieldRef = useRef<HTMLInputElement>(null)
+  const panelRef = useRef<HTMLElement>(null)
+  useFocusTrap(stylistOpen, panelRef, closeStylist)
 
   useEffect(() => {
     if (!stylistOpen) return
     document.body.style.overflow = 'hidden'
-    const t = window.setTimeout(() => fieldRef.current?.focus(), 80)
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') closeStylist()
-    }
-    window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = ''
-      window.clearTimeout(t)
-      window.removeEventListener('keydown', onKey)
     }
-  }, [stylistOpen, closeStylist])
+  }, [stylistOpen])
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
@@ -98,6 +94,7 @@ export function StylistDrawer() {
         onClick={closeStylist}
       />
       <aside
+        ref={panelRef}
         className="fixed top-0 right-0 h-full w-full max-w-[420px] z-50 flex flex-col bg-cream"
         style={{ boxShadow: '-6px 0 32px rgba(15,13,11,0.18)' }}
         role="dialog"

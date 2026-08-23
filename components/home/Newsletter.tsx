@@ -67,6 +67,8 @@ export function Newsletter() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email"
                 required
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? 'newsletter-error' : undefined}
                 className="flex-1 h-12 px-4 rounded-btn font-sans text-[0.86rem] outline-none text-blush placeholder:text-blush/35 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose"
                 style={{
                   background: 'rgba(237,233,228,0.08)',
@@ -82,7 +84,9 @@ export function Newsletter() {
               </button>
             </div>
             {error && (
-              <p className="mt-3 font-sans text-[0.78rem] text-blush/70">{error}</p>
+              <p id="newsletter-error" role="alert" className="mt-3 font-sans text-[0.78rem] text-blush/70">
+                {error}
+              </p>
             )}
           </form>
         )}

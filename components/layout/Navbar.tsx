@@ -6,7 +6,7 @@ import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const NAV_LINKS = [
@@ -20,6 +20,7 @@ export function Navbar() {
   const count = useCartStore((s) => s.count())
   const openCart = useUiStore((s) => s.openCart)
   const openMenu = useUiStore((s) => s.openMobileMenu)
+  const mobileMenuOpen = useUiStore((s) => s.mobileMenuOpen)
   const openSearch = useUiStore((s) => s.openSearch)
   const openStylist = useUiStore((s) => s.openStylist)
   const pathname = usePathname()
@@ -34,7 +35,9 @@ export function Navbar() {
   }, [])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16)
+    const onScroll = () => {
+      startTransition(() => setScrolled(window.scrollY > 16))
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -86,10 +89,10 @@ export function Navbar() {
       <div className="flex items-center gap-0.5 text-deep">
         <button
           onClick={openSearch}
-          className="p-2.5 text-deep/70 hover:text-deep transition-colors"
+          className="p-3 text-deep/70 hover:text-deep transition-colors"
           aria-label="Search collection"
         >
-          <Search size={17} strokeWidth={1.6} />
+          <Search size={17} strokeWidth={1.6} aria-hidden="true" />
         </button>
         <button
           onClick={openStylist}
@@ -103,8 +106,8 @@ export function Navbar() {
             className="relative p-2.5 hidden sm:flex text-deep/70 hover:text-deep transition-colors"
             aria-label="Wishlist"
           >
-            <Heart size={17} strokeWidth={1.6} />
-            <span className="absolute top-1 right-1 min-w-[15px] h-3.5 flex items-center justify-center rounded-full text-[0.52rem] font-sans font-medium px-1 bg-deep text-blush">
+            <Heart size={17} strokeWidth={1.6} aria-hidden="true" />
+            <span className="absolute top-1 right-1 min-w-[15px] h-3.5 flex items-center justify-center rounded-full text-[0.52rem] font-sans font-medium px-1 bg-deep text-blush" aria-hidden="true">
               {wishCount}
             </span>
           </Link>
@@ -112,23 +115,30 @@ export function Navbar() {
 
         <button
           onClick={openCart}
-          className="relative hidden md:flex p-2.5 text-deep/70 hover:text-deep transition-colors"
+          className="relative hidden md:flex p-3 text-deep/70 hover:text-deep transition-colors"
           aria-label="Open bag"
         >
-          <ShoppingBag size={18} strokeWidth={1.6} />
+          <ShoppingBag size={18} strokeWidth={1.6} aria-hidden="true" />
           {mounted && count > 0 && (
-            <span className="absolute top-1 right-1 min-w-[15px] h-3.5 flex items-center justify-center rounded-full text-[0.52rem] font-sans font-medium px-1 bg-deep text-blush">
-              {count}
-            </span>
+            <>
+              <span className="absolute top-1 right-1 min-w-[15px] h-3.5 flex items-center justify-center rounded-full text-[0.52rem] font-sans font-medium px-1 bg-deep text-blush" aria-hidden="true">
+                {count}
+              </span>
+              <span className="sr-only" role="status" aria-atomic="true">
+                {count} {count === 1 ? 'item' : 'items'} in bag
+              </span>
+            </>
           )}
         </button>
 
         <button
           onClick={openMenu}
-          className="flex md:hidden ml-0.5 p-2.5 text-deep hover:text-deep/70 transition-colors"
+          className="flex md:hidden ml-0.5 p-3 text-deep hover:text-deep/70 transition-colors"
           aria-label="Open menu"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
         >
-          <Menu size={22} strokeWidth={1.75} />
+          <Menu size={22} strokeWidth={1.75} aria-hidden="true" />
         </button>
       </div>
     </div>
