@@ -19,7 +19,7 @@ const CATS = [
 ]
 
 export function MobileMenu() {
-  const { mobileMenuOpen, closeMobileMenu } = useUiStore()
+  const { mobileMenuOpen, closeMobileMenu, openSearch, openStylist } = useUiStore()
 
   useEffect(() => {
     if (mobileMenuOpen) document.body.style.overflow = 'hidden'
@@ -87,7 +87,29 @@ export function MobileMenu() {
         </div>
       </div>
 
-      <div className="mt-auto px-5 pb-12">
+      <div className="mt-auto px-5 pb-12 flex flex-col gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            closeMobileMenu()
+            openSearch()
+          }}
+          className="w-full py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase"
+          style={{ border: '1px solid rgba(184,168,152,0.35)', color: '#EDE9E4' }}
+        >
+          Search
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            closeMobileMenu()
+            openStylist()
+          }}
+          className="w-full py-3.5 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase"
+          style={{ border: '1px solid rgba(184,168,152,0.35)', color: '#EDE9E4' }}
+        >
+          Ask Atelier
+        </button>
         <Link
           href="/builder"
           onClick={closeMobileMenu}

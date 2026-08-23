@@ -3,7 +3,10 @@ import { notFound } from 'next/navigation'
 import { getProductById, getRelatedProducts, getAllProductIds } from '@/lib/products'
 import { ProductView } from '@/components/product/ProductView'
 import { ProductCard } from '@/components/shop/ProductCard'
+import { RecentlyViewed, RecentlyViewedTracker } from '@/components/product/RecentlyViewed'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { pageWrap } from '@/lib/utils'
+import { siteUrl } from '@/lib/site'
 import type { ProductCategory } from '@/types'
 
 interface PageProps {
@@ -24,8 +27,13 @@ export async function generateMetadata({ params }: PageProps) {
   const product = await getCachedProduct(Number(id))
   if (!product) return {}
   return {
-    title:       `${product.name} — VELURA`,
+    title: product.name,
     description: product.story,
+    openGraph: {
+      title: `${product.name} — VELURA`,
+      description: product.story,
+      images: product.images[0] ? [{ url: product.images[0], alt: product.name }] : undefined,
+    },
   }
 }
 
@@ -39,8 +47,32 @@ export default async function ProductPage({ params }: PageProps) {
 
   const related = await getRelatedProducts(product.id, product.cat as ProductCategory)
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.story,
+    image: product.images,
+    brand: { '@type': 'Brand', name: 'VELURA' },
+    sku: String(product.id),
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'INR',
+      price: product.price,
+      availability: 'https://schema.org/InStock',
+      url: `${siteUrl()}/shop/${product.id}`,
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: product.rating,
+      reviewCount: product.reviews,
+    },
+  }
+
   return (
     <div className={`${pageWrap} py-10 md:py-14 lg:py-16`}>
+      <JsonLd data={jsonLd} />
+      <RecentlyViewedTracker id={product.id} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-14 mb-20">
         <ProductView product={product} />
       </div>
@@ -65,6 +97,8 @@ export default async function ProductPage({ params }: PageProps) {
           </div>
         </section>
       )}
+
+      <RecentlyViewed currentId={product.id} />
     </div>
   )
 }

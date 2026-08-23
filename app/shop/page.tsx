@@ -8,7 +8,7 @@ import type { Product, ProductCategory } from '@/types'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Shop — VELURA',
+  title: 'Shop',
   description: 'Explore the full Velura collection. 26AA–52K. Everyday, sports, lace, bridal, and more.',
 }
 
@@ -21,19 +21,24 @@ export default async function ShopPage({ searchParams }: PageProps) {
   const cat     = typeof sp.cat     === 'string' ? sp.cat     : undefined
   const support = typeof sp.support === 'string' ? sp.support : undefined
   const sort    = typeof sp.sort    === 'string' ? sp.sort    : undefined
+  const q       = typeof sp.q       === 'string' ? sp.q.trim() : undefined
   const page    = typeof sp.page    === 'string' ? Number(sp.page) : 1
 
   let products
   let total
 
   try {
-    const result = await queryProducts({ cat, support, sort, page })
+    const result = await queryProducts({ cat, support, sort, q, page })
     products = result.data
     total = result.total
   } catch {
     let fallback: Product[] = staticProducts
     if (cat) fallback = fallback.filter((p) => p.cat === (cat as ProductCategory))
     if (support) fallback = fallback.filter((p) => p.support === support)
+    if (q) {
+      const { searchCatalog } = await import('@/lib/catalogSearch')
+      fallback = searchCatalog(q, fallback)
+    }
     products = fallback
     total = fallback.length
   }
@@ -45,6 +50,7 @@ export default async function ShopPage({ searchParams }: PageProps) {
         total={total}
         currentPage={page}
         currentCat={cat}
+        query={q}
       />
     </Suspense>
   )

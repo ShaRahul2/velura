@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingBag, Menu, Heart } from 'lucide-react'
+import { ShoppingBag, Menu, Heart, Search } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { useWishlistStore } from '@/store/wishlistStore'
@@ -17,6 +17,8 @@ export function Navbar() {
   const count      = useCartStore((s) => s.count())
   const openCart   = useUiStore((s) => s.openCart)
   const openMenu   = useUiStore((s) => s.openMobileMenu)
+  const openSearch = useUiStore((s) => s.openSearch)
+  const openStylist = useUiStore((s) => s.openStylist)
   const pathname   = usePathname()
   const [mounted, setMounted] = useState(false)
   const wishCount  = useWishlistStore((s) => s.ids.length)
@@ -60,6 +62,21 @@ export function Navbar() {
       </nav>
 
       <div className="flex items-center gap-1">
+        <button
+          onClick={openSearch}
+          className="p-2 transition-opacity hover:opacity-80"
+          style={{ color: 'rgba(237,233,228,0.55)' }}
+          aria-label="Search collection"
+        >
+          <Search size={17} />
+        </button>
+        <button
+          onClick={openStylist}
+          className="hidden sm:flex items-center px-2 py-2 font-sans text-[0.68rem] tracking-btn uppercase transition-opacity hover:opacity-80"
+          style={{ color: 'rgba(237,233,228,0.55)' }}
+        >
+          Atelier
+        </button>
         {mounted && wishCount > 0 && (
           <Link
             href="/shop"

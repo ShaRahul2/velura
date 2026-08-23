@@ -16,8 +16,15 @@ export function CartDrawer() {
   useEffect(() => {
     if (cartOpen) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
-    return () => { document.body.style.overflow = '' }
-  }, [cartOpen])
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') closeCart()
+    }
+    if (cartOpen) window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [cartOpen, closeCart])
 
   return (
     <>
@@ -33,6 +40,9 @@ export function CartDrawer() {
       {/* Drawer */}
       <aside
         className="fixed top-0 right-0 h-full w-full max-w-[420px] z-50 flex flex-col bg-cream"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Your bag"
         style={{
           transform: cartOpen ? 'translateX(0)' : 'translateX(100%)',
           transition: 'transform 0.38s cubic-bezier(0.23,1,0.32,1)',
@@ -59,15 +69,18 @@ export function CartDrawer() {
               <p className="font-sans text-[0.82rem] lg:text-[0.9rem] text-mauve">
                 Invisible, weightless, unforgettable.
               </p>
-              <button
+              <Link
+                href="/shop"
                 onClick={closeCart}
                 className="mt-2 font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase underline underline-offset-4 text-mauve hover:text-deep transition-colors"
               >
                 Explore Collection
-              </button>
+              </Link>
             </div>
           ) : (
-            items.map((item) => <CartItem key={`${item.id}-${item.size}`} item={item} />)
+            items.map((item) => (
+              <CartItem key={`${item.id}-${item.size}-${item.color ?? ''}`} item={item} />
+            ))
           )}
         </div>
 
