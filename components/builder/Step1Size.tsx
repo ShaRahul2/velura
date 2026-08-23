@@ -63,12 +63,12 @@ export function Step1Size() {
         <div className="space-y-5">
           <div>
             <p className="font-sans text-[0.62rem] tracking-label uppercase text-mauve mb-2">Band</p>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
               {BANDS.map((b) => (
                 <button
                   key={b}
                   onClick={() => setBand(b)}
-                  className="h-9 min-w-[44px] px-3 font-sans text-[0.76rem] transition-all duration-150 rounded-pill"
+                  className="h-9 w-full font-sans text-[0.76rem] transition-all duration-150 rounded-pill"
                   style={{
                     background: band === b ? '#0F0D0B' : 'transparent',
                     color:      band === b ? '#EDE9E4' : '#0F0D0B',
@@ -82,12 +82,12 @@ export function Step1Size() {
           </div>
           <div>
             <p className="font-sans text-[0.62rem] tracking-label uppercase text-mauve mb-2">Cup</p>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
               {CUPS.map((c) => (
                 <button
                   key={c}
                   onClick={() => setCup(c)}
-                  className="h-9 min-w-[44px] px-3 font-sans text-[0.76rem] transition-all duration-150 rounded-pill"
+                  className="h-9 w-full font-sans text-[0.76rem] transition-all duration-150 rounded-pill"
                   style={{
                     background: cup === c ? '#0F0D0B' : 'transparent',
                     color:      cup === c ? '#EDE9E4' : '#0F0D0B',

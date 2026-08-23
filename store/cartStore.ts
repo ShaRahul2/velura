@@ -3,15 +3,15 @@ import { persist } from 'zustand/middleware'
 import type { CartItem } from '@/types'
 
 // Stable cart-line key: same product in different sizes = different lines
-function lineKey(item: Pick<CartItem, 'id' | 'size'>) {
-  return `${item.id}::${item.size}`
+function lineKey(item: Pick<CartItem, 'id' | 'size' | 'color'>) {
+  return `${item.id}::${item.size}::${item.color ?? ''}`
 }
 
 interface CartStore {
   items:     CartItem[]
   add:       (item: CartItem) => void
-  remove:    (id: number, size: string) => void
-  updateQty: (id: number, size: string, delta: number) => void
+  remove:    (id: number, size: string, color?: string) => void
+  updateQty: (id: number, size: string, delta: number, color?: string) => void
   clear:     () => void
   total:     () => number
   count:     () => number
@@ -37,15 +37,15 @@ export const useCartStore = create<CartStore>()(
           return { items: [...state.items, item] }
         }),
 
-      remove: (id, size) =>
+      remove: (id, size, color) =>
         set((state) => ({
-          items: state.items.filter((item) => lineKey(item) !== lineKey({ id, size })),
+          items: state.items.filter((item) => lineKey(item) !== lineKey({ id, size, color })),
         })),
 
-      updateQty: (id, size, delta) =>
+      updateQty: (id, size, delta, color) =>
         set((state) => ({
           items: state.items.map((item) =>
-            lineKey(item) === lineKey({ id, size })
+            lineKey(item) === lineKey({ id, size, color })
               ? { ...item, qty: Math.max(1, item.qty + delta) }
               : item
           ),
