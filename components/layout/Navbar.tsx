@@ -74,7 +74,7 @@ export function Navbar() {
                   ? 'text-rose hover:text-deep'
                   : active
                     ? 'text-deep'
-                    : 'text-mauve hover:text-deep'
+                    : 'text-deep/55 hover:text-deep'
               )}
             >
               {label}
@@ -83,24 +83,24 @@ export function Navbar() {
         })}
       </nav>
 
-      <div className="flex items-center gap-0.5">
+      <div className="flex items-center gap-0.5 text-deep">
         <button
           onClick={openSearch}
-          className="p-2.5 text-mauve hover:text-deep transition-colors"
+          className="p-2.5 text-deep/70 hover:text-deep transition-colors"
           aria-label="Search collection"
         >
           <Search size={17} strokeWidth={1.6} />
         </button>
         <button
           onClick={openStylist}
-          className="hidden sm:flex items-center px-2 py-2 font-sans text-[0.68rem] tracking-btn uppercase text-mauve hover:text-deep transition-colors"
+          className="hidden sm:flex items-center px-2 py-2 font-sans text-[0.68rem] tracking-btn uppercase text-deep/70 hover:text-deep transition-colors"
         >
           Atelier
         </button>
         {mounted && wishCount > 0 && (
           <Link
             href="/shop"
-            className="relative p-2.5 hidden sm:flex text-mauve hover:text-deep transition-colors"
+            className="relative p-2.5 hidden sm:flex text-deep/70 hover:text-deep transition-colors"
             aria-label="Wishlist"
           >
             <Heart size={17} strokeWidth={1.6} />
@@ -112,7 +112,7 @@ export function Navbar() {
 
         <button
           onClick={openCart}
-          className="relative p-2.5 text-mauve hover:text-deep transition-colors"
+          className="relative hidden md:flex p-2.5 text-deep/70 hover:text-deep transition-colors"
           aria-label="Open bag"
         >
           <ShoppingBag size={18} strokeWidth={1.6} />
@@ -125,10 +125,10 @@ export function Navbar() {
 
         <button
           onClick={openMenu}
-          className="md:hidden ml-0.5 p-2.5 text-mauve hover:text-deep transition-colors"
+          className="flex md:hidden ml-0.5 p-2.5 text-deep hover:text-deep/70 transition-colors"
           aria-label="Open menu"
         >
-          <Menu size={20} strokeWidth={1.6} />
+          <Menu size={22} strokeWidth={1.75} />
         </button>
       </div>
     </div>
