@@ -11,7 +11,7 @@ export function HeroSection() {
         priority
         sizes="100vw"
         className="object-cover object-[center_18%]"
-        style={{ animation: 'ken 18s ease-out both' }}
+        style={{ animation: 'ken 18s cubic-bezier(0.23, 1, 0.32, 1) both' }}
       />
 
       <div
@@ -23,7 +23,10 @@ export function HeroSection() {
       />
 
       <div className="relative z-10 w-full px-5 md:px-10 lg:px-16 xl:px-20 pb-28 md:pb-20 lg:pb-24 pt-32">
-        <div className="max-w-xl" style={{ animation: 'fadeUp 0.8s ease both' }}>
+        <div
+          className="max-w-xl"
+          style={{ animation: 'fadeUp 0.55s cubic-bezier(0.23, 1, 0.32, 1) both' }}
+        >
           <p className="font-sans text-[0.68rem] tracking-label uppercase mb-4 text-blush/80">
             New season · Made in India
           </p>
@@ -51,13 +54,13 @@ export function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/shop"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase bg-blush text-deep hover:tracking-wide transition-[letter-spacing,background-color,color,transform] duration-200 active:scale-[0.98]"
+              className="pressable pressable-track inline-flex items-center justify-center h-12 px-8 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase bg-blush text-deep"
             >
               Explore Collection
             </Link>
             <Link
               href="/builder"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase border border-blush/70 text-blush hover:bg-blush hover:text-deep transition-[letter-spacing,background-color,color,transform] duration-200 active:scale-[0.98]"
+              className="pressable pressable-track inline-flex items-center justify-center h-12 px-8 rounded-btn font-sans text-[0.8rem] tracking-btn uppercase border border-blush/70 text-blush hover:bg-blush hover:text-deep"
             >
               ✦ Build Yours
             </Link>

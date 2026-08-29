@@ -48,6 +48,11 @@
   --tracking-label: 0.14em;
   --tracking-btn:   0.12em;
   --tracking-wide:  0.18em;
+
+  /* ── Motion ───────────────────────────────────── */
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 /* CSS custom properties for direct var() use in arbitrary values */
@@ -59,6 +64,10 @@
   --mauve: #6B6058;
   --gold:  #9A8878;
   --lm:    #D8D4CE;
+
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 html {
@@ -77,6 +86,80 @@ button:not(:disabled),
   cursor: pointer;
 }
 
+.pressable {
+  transition:
+    transform 140ms var(--ease-out),
+    letter-spacing 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+.pressable:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pressable-track:hover {
+    letter-spacing: 0.16em;
+  }
+}
+
+.scrim {
+  background: rgba(15, 13, 11, 0.55);
+  opacity: 1;
+  transition: opacity 180ms var(--ease-out);
+}
+.scrim[data-open='false'] {
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: 160ms;
+}
+
+.drawer-panel {
+  transition: transform 380ms var(--ease-drawer);
+}
+.drawer-panel[data-open='false'] {
+  transition-duration: 220ms;
+  transition-timing-function: var(--ease-out);
+}
+
+.drawer-mount-right {
+  transform: translateX(0);
+  transition: transform 380ms var(--ease-drawer);
+}
+@starting-style {
+  .scrim[data-open='true'] {
+    opacity: 0;
+  }
+  .drawer-mount-right {
+    transform: translateX(100%);
+  }
+}
+
+.modal-panel {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+@starting-style {
+  .modal-panel {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.toast-item {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+@starting-style {
+  .toast-item {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+
 :focus-visible {
   outline: 2px solid var(--deep);
   outline-offset: 3px;
@@ -88,11 +171,12 @@ button:not(:disabled),
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    animation: none !important;
+    transition-property: color, background-color, border-color, opacity, box-shadow, outline-color !important;
   }
 }
 
@@ -101,13 +185,13 @@ button:not(:disabled),
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes popIn {
-  from { transform: scale(0.5); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }
 
 @keyframes marquee {
@@ -140,7 +224,7 @@ button:not(:disabled),
 }
 
 .img-zoom {
-  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.7s var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {

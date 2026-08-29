@@ -54,26 +54,24 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
 
   return (
     <>
-      {open && (
-        <div
-          className="fixed inset-0 z-40 md:hidden"
-          style={{ background: 'rgba(15,13,11,0.55)' }}
-          onClick={onClose}
-        />
-      )}
+      <div
+        className="scrim fixed inset-0 z-40 md:hidden"
+        data-open={open}
+        onClick={onClose}
+      />
 
       <aside
         ref={panelRef}
-        className="fixed top-0 left-0 h-full w-72 z-50 flex flex-col bg-cream md:hidden"
+        className="drawer-panel fixed top-0 left-0 h-full w-72 z-50 flex flex-col bg-cream md:hidden"
         role="dialog"
         aria-modal="true"
         aria-label="Filters"
         aria-hidden={!open}
         inert={!open || undefined}
+        data-open={open}
         style={{
-          transform:  open ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.32s cubic-bezier(0.23,1,0.32,1)',
-          boxShadow:  open ? '6px 0 32px rgba(15,13,11,0.14)' : 'none',
+          transform: open ? 'translateX(0)' : 'translateX(-100%)',
+          boxShadow: open ? '6px 0 32px rgba(15,13,11,0.14)' : 'none',
         }}
       >
         {/* Header */}
@@ -133,7 +131,7 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
         <div className="px-6 py-5 border-t border-lm shrink-0">
           <button
             onClick={clearAll}
-            className="w-full h-10 font-sans text-[0.75rem] lg:text-[0.8rem] tracking-btn uppercase border border-lm text-mauve hover:border-deep hover:text-deep transition-all duration-200"
+            className="pressable w-full h-10 font-sans text-[0.75rem] lg:text-[0.8rem] tracking-btn uppercase border border-lm text-mauve hover:border-deep hover:text-deep"
             style={{ borderRadius: 3 }}
           >
             Clear all filters

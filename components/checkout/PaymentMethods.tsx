@@ -29,7 +29,7 @@ export function PaymentMethods({ selected, onSelect, orderTotal }: PaymentMethod
               key={method.id}
               onClick={() => !disabled && onSelect(method.id)}
               disabled={disabled}
-              className="w-full flex items-center gap-4 p-4 text-left transition-all duration-150 disabled:opacity-40"
+              className="w-full flex items-center gap-4 p-4 text-left transition-[background-color,border-color] duration-150 ease-out disabled:opacity-40"
               style={{
                 borderRadius: 3,
                 border:      `1.5px solid ${active ? '#0F0D0B' : '#D8D4CE'}`,
@@ -38,7 +38,7 @@ export function PaymentMethods({ selected, onSelect, orderTotal }: PaymentMethod
             >
               {/* Radio */}
               <span
-                className="w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center border transition-all"
+                className="w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center border transition-[background-color,border-color] duration-150 ease-out"
                 style={{
                   borderColor: active ? '#0F0D0B' : '#D8D4CE',
                   background:  active ? '#0F0D0B' : 'transparent',

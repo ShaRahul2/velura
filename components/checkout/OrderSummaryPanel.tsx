@@ -127,7 +127,7 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
             <button
               onClick={handleApply}
               disabled={applying}
-              className="h-9 px-4 font-sans text-[0.7rem] lg:text-[0.76rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all duration-200 disabled:opacity-50"
+              className="pressable pressable-track h-9 px-4 font-sans text-[0.7rem] lg:text-[0.76rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush disabled:opacity-50"
               style={{ borderRadius: 3 }}
             >
               {applying ? '…' : 'Apply'}

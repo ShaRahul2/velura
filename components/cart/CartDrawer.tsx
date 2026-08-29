@@ -27,25 +27,23 @@ export function CartDrawer() {
 
   return (
     <>
-      {cartOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          style={{ background: 'rgba(15,13,11,0.55)' }}
-          onClick={closeCart}
-        />
-      )}
+      <div
+        className="scrim fixed inset-0 z-40"
+        data-open={cartOpen}
+        onClick={closeCart}
+      />
 
       <aside
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full max-w-[420px] z-50 flex flex-col bg-cream"
+        className="drawer-panel fixed top-0 right-0 h-full w-full max-w-[420px] z-50 flex flex-col bg-cream"
         role="dialog"
         aria-modal="true"
         aria-label="Your bag"
         aria-hidden={!cartOpen}
         inert={!cartOpen || undefined}
+        data-open={cartOpen}
         style={{
           transform: cartOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.38s cubic-bezier(0.23,1,0.32,1)',
           boxShadow: cartOpen ? '-6px 0 32px rgba(15,13,11,0.18)' : 'none',
         }}
       >

@@ -16,7 +16,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const base =
-    'inline-flex items-center justify-center rounded-btn font-sans font-normal tracking-btn uppercase transition-[letter-spacing,background-color,color,border-color,transform] duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100'
+    'pressable pressable-track inline-flex items-center justify-center rounded-btn font-sans font-normal tracking-btn uppercase cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100'
 
   const sizes: Record<string, string> = {
     sm: 'h-8 px-4 text-[0.72rem] lg:text-[0.76rem]',
@@ -25,9 +25,9 @@ export function Button({
   }
 
   const variants: Record<string, string> = {
-    dark:    'bg-deep text-blush hover:tracking-wide',
-    rose:    'bg-rose text-deep font-medium hover:tracking-wide',
-    outline: 'bg-transparent border border-deep text-deep hover:bg-deep hover:text-blush hover:tracking-wide',
+    dark:    'bg-deep text-blush',
+    rose:    'bg-rose text-deep font-medium',
+    outline: 'bg-transparent border border-deep text-deep hover:bg-deep hover:text-blush',
   }
 
   return (

@@ -74,7 +74,7 @@ export function SizeSelector({ available, selected, onSelect }: SizeSelectorProp
                 type="button"
                 onClick={() => pickBand(b)}
                 className={cn(
-                  'h-9 min-w-[44px] px-3 rounded-pill font-sans text-[0.76rem] border transition-all duration-150',
+                  'h-9 min-w-[44px] px-3 rounded-pill font-sans text-[0.76rem] border transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.97]',
                   locked
                     ? 'border-deep bg-deep text-blush'
                     : viewing
@@ -101,7 +101,7 @@ export function SizeSelector({ available, selected, onSelect }: SizeSelectorProp
                 type="button"
                 onClick={() => onSelect(size)}
                 className={cn(
-                  'h-9 min-w-[44px] px-3 rounded-pill font-sans text-[0.76rem] border transition-all duration-150',
+                  'h-9 min-w-[44px] px-3 rounded-pill font-sans text-[0.76rem] border transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.97]',
                   isSelected
                     ? 'border-deep bg-deep text-blush'
                     : 'border-lm bg-transparent text-deep hover:border-mauve'

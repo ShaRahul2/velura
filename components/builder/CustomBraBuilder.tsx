@@ -112,7 +112,7 @@ export function CustomBraBuilder() {
           {step > 1 && (
             <button
               onClick={() => goTo(step - 1)}
-              className="h-11 px-6 font-sans text-[0.76rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all rounded-btn"
+              className="pressable pressable-track h-11 px-6 font-sans text-[0.76rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush rounded-btn"
             >
               Back
             </button>
@@ -122,7 +122,7 @@ export function CustomBraBuilder() {
               <button
                 onClick={next}
                 disabled={!ready}
-                className="flex-1 lg:flex-none lg:min-w-[240px] h-11 font-sans text-[0.76rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-35 hover:tracking-wide transition-all rounded-btn"
+                className="pressable pressable-track flex-1 lg:flex-none lg:min-w-[240px] h-11 font-sans text-[0.76rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-35 rounded-btn"
               >
                 {step === 4 ? 'Review' : 'Continue'}
               </button>
