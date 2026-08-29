@@ -28,28 +28,45 @@ function Toast({
   onDismiss: (id: string) => void
 }) {
   useEffect(() => {
-    const timer = setTimeout(() => onDismiss(id), DURATION)
-    return () => clearTimeout(timer)
+    let remaining = DURATION
+    let started = Date.now()
+    let timer = window.setTimeout(() => onDismiss(id), remaining)
+
+    function onVisibility() {
+      if (document.hidden) {
+        window.clearTimeout(timer)
+        remaining -= Date.now() - started
+      } else {
+        started = Date.now()
+        timer = window.setTimeout(() => onDismiss(id), Math.max(0, remaining))
+      }
+    }
+
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      window.clearTimeout(timer)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
   }, [id, onDismiss])
 
   return (
     <div
-      className="pointer-events-auto flex items-center gap-3 rounded-btn px-4 py-3 shadow-toast"
+      className="toast-item pointer-events-auto flex items-center gap-3 rounded-btn px-4 py-3 shadow-toast"
       style={{
         background: '#0F0D0B',
         color: '#EDE9E4',
-        animation: 'slideUp 0.22s ease',
         minWidth: '240px',
         maxWidth: '340px',
       }}
+      role="status"
     >
       <span className="font-sans text-[0.8rem] lg:text-[0.86rem] font-light flex-1">{message}</span>
       <button
         onClick={() => onDismiss(id)}
-        className="shrink-0 opacity-50 hover:opacity-100 transition-opacity"
+        className="shrink-0 p-1 opacity-50 hover:opacity-100 transition-opacity duration-150 ease-out"
         aria-label="Dismiss"
       >
-        <X size={14} />
+        <X size={14} aria-hidden="true" />
       </button>
     </div>
   )

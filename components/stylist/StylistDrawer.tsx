@@ -89,17 +89,18 @@ export function StylistDrawer() {
   return (
     <>
       <div
-        className="fixed inset-0 z-40"
-        style={{ background: 'rgba(15,13,11,0.55)' }}
+        className="scrim fixed inset-0 z-40"
+        data-open="true"
         onClick={closeStylist}
       />
       <aside
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full max-w-[420px] z-50 flex flex-col bg-cream"
+        className="drawer-mount-right fixed top-0 right-0 h-full w-full max-w-[420px] z-50 flex flex-col bg-cream"
         style={{ boxShadow: '-6px 0 32px rgba(15,13,11,0.18)' }}
         role="dialog"
         aria-modal="true"
         aria-label="Atelier"
+        data-open="true"
       >
         <div className="flex items-center justify-between px-6 h-16 border-b border-lm shrink-0">
           <div>

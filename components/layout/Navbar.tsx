@@ -48,7 +48,7 @@ export function Navbar() {
   return (
     <div
       className={cn(
-        'h-16 flex items-center px-5 md:px-8 lg:px-12 transition-[background-color,border-color,box-shadow] duration-300',
+        'h-16 flex items-center px-5 md:px-8 lg:px-12 transition-[background-color,border-color,box-shadow] duration-200 ease-out',
         solid
           ? 'bg-cream/92 backdrop-blur-xl border-b border-lm/80 shadow-[0_1px_0_rgba(15,13,11,0.04)]'
           : 'bg-transparent border-b border-transparent'

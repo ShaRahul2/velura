@@ -25,7 +25,7 @@ export function BuilderPromoBanner() {
         </div>
         <Link
           href="/builder"
-          className="shrink-0 inline-flex items-center h-10 px-6 rounded-btn font-sans text-[0.78rem] tracking-btn uppercase transition-all duration-200 hover:tracking-wide"
+          className="pressable pressable-track shrink-0 inline-flex items-center h-10 px-6 rounded-btn font-sans text-[0.78rem] tracking-btn uppercase"
           style={{ background: '#B8A898', color: '#0F0D0B' }}
         >
           Build Yours

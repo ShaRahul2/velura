@@ -10,7 +10,7 @@ function ConfirmedContent() {
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center px-6 max-w-xl mx-auto text-center">
-      <div style={{ animation: 'popIn 0.4s ease' }}>
+      <div style={{ animation: 'popIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) both' }}>
         <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-5">
           Order confirmed
         </p>
@@ -35,7 +35,7 @@ function ConfirmedContent() {
         </p>
         <Link
           href="/shop"
-          className="inline-flex items-center h-11 px-8 rounded-btn font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase bg-deep text-blush hover:tracking-wide transition-all"
+          className="pressable pressable-track inline-flex items-center h-11 px-8 rounded-btn font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase bg-deep text-blush"
         >
           Continue Shopping
         </Link>

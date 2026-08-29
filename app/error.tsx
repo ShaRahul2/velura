@@ -30,14 +30,14 @@ export default function Error({ error, reset }: ErrorProps) {
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={reset}
-          className="inline-flex items-center justify-center h-11 px-8 font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase bg-deep text-blush hover:tracking-wide transition-all"
+          className="pressable pressable-track inline-flex items-center justify-center h-11 px-8 font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase bg-deep text-blush"
           style={{ borderRadius: 3 }}
         >
           Try Again
         </button>
         <Link
           href="/shop"
-          className="inline-flex items-center justify-center h-11 px-8 font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush transition-all"
+          className="pressable pressable-track inline-flex items-center justify-center h-11 px-8 font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush"
           style={{ borderRadius: 3 }}
         >
           Explore Collection

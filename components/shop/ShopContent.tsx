@@ -162,7 +162,7 @@ export function ShopContent({
         >
           <div
             ref={quickViewRef}
-            className="bg-cream max-w-2xl w-full overflow-hidden shadow-overlay grid md:grid-cols-2"
+            className="modal-panel bg-cream max-w-2xl w-full overflow-hidden shadow-overlay grid md:grid-cols-2"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -198,7 +198,7 @@ export function ShopContent({
               <Link
                 href={`/shop/${quickViewProduct.id}`}
                 onClick={() => setQuickViewProduct(null)}
-                className="w-full h-11 flex items-center justify-center font-sans text-sm tracking-btn uppercase bg-deep text-blush rounded-btn hover:tracking-wide transition-all"
+                className="pressable pressable-track w-full h-11 flex items-center justify-center font-sans text-sm tracking-btn uppercase bg-deep text-blush rounded-btn"
               >
                 Choose size
               </Link>

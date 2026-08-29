@@ -78,7 +78,7 @@ export function Newsletter() {
               <button
                 type="submit"
                 disabled={loading}
-                className="h-12 px-6 rounded-btn font-sans text-[0.78rem] tracking-btn uppercase bg-rose text-deep hover:tracking-wide transition-all duration-200 shrink-0 disabled:opacity-50"
+                className="pressable pressable-track h-12 px-6 rounded-btn font-sans text-[0.78rem] tracking-btn uppercase bg-rose text-deep shrink-0 disabled:opacity-50"
               >
                 {loading ? 'Joining' : 'Join'}
               </button>

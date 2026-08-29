@@ -172,7 +172,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-12 font-sans text-[0.8rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-40 hover:tracking-wide transition-all duration-200"
+              className="pressable pressable-track w-full h-12 font-sans text-[0.8rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-40"
               style={{ borderRadius: 3 }}
             >
               {loading
