@@ -154,6 +154,8 @@ enum PaymentStatus {
 
 model Order {
   id            String        @id
+  profileId     String?
+  profile       Profile?      @relation(fields: [profileId], references: [id], onDelete: SetNull)
   status        OrderStatus   @default(pending)
   paymentMethod PaymentMethod
   paymentStatus PaymentStatus @default(unpaid)
@@ -193,6 +195,7 @@ model Order {
   updatedAt     DateTime      @updatedAt
 
   @@index([email])
+  @@index([profileId])
   @@index([status])
   @@index([paymentStatus])
   @@index([createdAt])
@@ -234,4 +237,89 @@ model NewsletterSubscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
+}
+
+// ── Customer accounts (Clerk user id = Profile.id) ────────────────────────────
+
+enum ProfileRole {
+  customer
+  manager
+  admin
+}
+
+model Profile {
+  id        String      @id
+  email     String
+  fullName  String?
+  phone     String?
+  role      ProfileRole @default(customer)
+  avatarUrl String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  addresses Address[]
+  cart      Cart?
+  wishlist  WishlistItem[]
+  orders    Order[]
+
+  @@index([email])
+  @@index([role])
+  @@map("profiles")
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  profileId  String
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  label      String   @default("Home")
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  postalCode String
+  country    String   @default("IN")
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([profileId])
+  @@map("addresses")
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  profileId String     @unique
+  profile   Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  updatedAt DateTime   @updatedAt
+  items     CartLine[]
+
+  @@map("carts")
+}
+
+model CartLine {
+  id         String   @id @default(cuid())
+  cartId     String
+  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId  Int
+  variant    Json
+  variantKey String
+  quantity   Int
+  snapshot   Json
+  createdAt  DateTime @default(now())
+
+  @@unique([cartId, productId, variantKey])
+  @@index([cartId])
+  @@map("cart_items")
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  productId Int
+  createdAt DateTime @default(now())
+
+  @@unique([profileId, productId])
+  @@index([profileId])
+  @@map("wishlist_items")
 }

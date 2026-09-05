@@ -7,6 +7,7 @@ import { useUiStore } from '@/store/uiStore'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { usePathname } from 'next/navigation'
 import { startTransition, useEffect, useState } from 'react'
+import { AccountNavLink } from '@/components/account/AccountNavLink'
 import { cn } from '@/lib/utils'
 
 const NAV_LINKS = [
@@ -100,6 +101,7 @@ export function Navbar() {
         >
           Atelier
         </button>
+        <AccountNavLink />
         <Link
           href="/wishlist"
           className="relative hidden p-2.5 text-blush/70 transition-colors hover:text-blush sm:flex"

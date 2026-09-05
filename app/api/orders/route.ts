@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { type PaymentMethod, Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
 import { calcShipping, calcDiscount, BUILDER_BASE_PRICE, COD_LIMIT } from '@/lib/coupons'
+import { getOptionalProfile } from '@/lib/customerAuth'
+import { clearCart } from '@/lib/cartServer'
 
 // ── Zod schemas ───────────────────────────────────────────────────────────────
 
@@ -106,12 +108,14 @@ export async function POST(req: NextRequest) {
     }
 
     const orderId = `VLR-${Date.now()}-${Math.floor(Math.random() * 10000)}`
+    const profile = await getOptionalProfile()
 
     // Persist to DB
     try {
       await db.order.create({
         data: {
           id:            orderId,
+          profileId:     profile?.id ?? null,
           status:        paymentMethod === 'cod' ? 'confirmed' : 'pending',
           paymentMethod: paymentMethod as PaymentMethod,
           paymentStatus: paymentMethod === 'cod' ? 'pending' : 'unpaid',
@@ -152,6 +156,14 @@ export async function POST(req: NextRequest) {
       } else {
         console.error('[orders] DB write failed:', dbErr)
         return NextResponse.json({ error: 'Order could not be saved. Please try again.' }, { status: 503 })
+      }
+    }
+
+    if (profile) {
+      try {
+        await clearCart(profile.id)
+      } catch {
+        /* guest bag still clears on the client */
       }
     }
 

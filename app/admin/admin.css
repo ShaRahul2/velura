@@ -13,4 +13,7 @@
 .admin-table :is(th,td) { padding: 16px; border-bottom: 1px solid #332c26; }
 .admin-table td { vertical-align: top; }
 .admin-shell [class*='text-[rgba(237,233,228,0.'] { color: #B8A898; }
+.admin-section-title { margin: 28px 0 12px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: #B8A898; }
+.admin-select { min-height: 40px; border: 1px solid #65574b; border-radius: 4px; background: #1b1714; color: #EDE9E4; padding: 8px 10px; }
+.admin-muted { margin-top: 6px; font-size: 12px; color: #B8A898; }
 @media(max-width:767px) { .admin-shell .p-8 { padding: 20px; } }

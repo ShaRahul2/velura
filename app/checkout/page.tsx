@@ -98,6 +98,52 @@ export default function CheckoutPage() {
     }
   }, [payment, totals.total, onlinePay])
 
+  useEffect(() => {
+    let cancelled = false
+    void (async () => {
+      try {
+        const [profileRes, addressRes] = await Promise.all([
+          fetch('/api/account/profile'),
+          fetch('/api/account/addresses'),
+        ])
+        if (cancelled) return
+        const profileJson = profileRes.ok
+          ? ((await profileRes.json()) as { data?: { email?: string; fullName?: string | null; phone?: string | null } })
+          : {}
+        const addressJson = addressRes.ok
+          ? ((await addressRes.json()) as {
+              data?: Array<{
+                line1: string
+                line2: string | null
+                city: string
+                state: string
+                postalCode: string
+                isDefault: boolean
+              }>
+            })
+          : {}
+        const saved = addressJson.data?.find((row) => row.isDefault) ?? addressJson.data?.[0]
+        const name = profileJson.data?.fullName?.trim().split(/\s+/) ?? []
+        setAddress((current) => ({
+          ...current,
+          firstName: current.firstName || name[0] || '',
+          lastName: current.lastName || name.slice(1).join(' ') || '',
+          email: current.email || profileJson.data?.email || '',
+          phone: current.phone || profileJson.data?.phone || '',
+          addressLine: current.addressLine || [saved?.line1, saved?.line2].filter(Boolean).join(', '),
+          city: current.city || saved?.city || '',
+          state: current.state || saved?.state || '',
+          pinCode: current.pinCode || saved?.postalCode || '',
+        }))
+      } catch {
+        /* guest checkout */
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   function missingAddressFields() {
     const fields: { id: string; label: string; ok: boolean }[] = [
       { id: 'checkout-firstName', label: 'First name', ok: Boolean(address.firstName.trim()) },
