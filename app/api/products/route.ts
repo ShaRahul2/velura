@@ -1,3 +1,6 @@
+import { productSchema, validPrice } from '@/lib/adminValidation'
+import { Prisma } from '@prisma/client'
+import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { queryProducts, createProduct } from '@/lib/products'
 import { auth } from '@/auth'
@@ -14,6 +17,7 @@ export async function GET(req: NextRequest) {
     })
     return NextResponse.json(result)
   } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     console.error('[GET /api/products]', err)
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
   }
@@ -22,12 +26,16 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await auth()
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const body = await req.json()
+    const parsed = productSchema.safeParse(await req.json().catch(() => null))
+    if (!parsed.success || !validPrice(parsed.data)) return NextResponse.json({ error: 'Check product fields. Prices must be positive whole rupees and old price cannot be below price.' }, { status: 400 })
+    const body = parsed.data
     const product = await createProduct(body)
+    revalidatePath('/shop'); revalidatePath('/'); revalidatePath('/admin/products')
     return NextResponse.json({ data: product }, { status: 201 })
   } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     console.error('[POST /api/products]', err)
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 })
   }

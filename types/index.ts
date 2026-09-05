@@ -31,6 +31,7 @@ export type BadgeType =
 export type SupportLevel = 'Light' | 'Medium' | 'High'
 
 export interface Product {
+  isActive?: boolean
   id: number
   name: string
   story: string

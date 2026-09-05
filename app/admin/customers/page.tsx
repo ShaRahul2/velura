@@ -1,0 +1,16 @@
+import Link from 'next/link'
+import { Prisma } from '@prisma/client'
+import { requireAdmin } from '@/lib/adminSession'
+import { db } from '@/lib/db'
+import { formatPrice } from '@/lib/utils'
+import { formatAdminDate } from '@/lib/adminOrders'
+import { AdminHeader, SearchForm, Pagination, Empty, param, pageNumber, type AdminParams } from '@/components/admin/AdminUI'
+export const dynamic='force-dynamic'
+export default async function Customers({searchParams}:{searchParams:Promise<AdminParams>}){
+ await requireAdmin();const params=await searchParams;const q=param(params,'q');const page=pageNumber(params)
+ const where={email:{contains:q,mode:'insensitive' as const}}
+ const rows=await db.order.groupBy({by:['email'],where,_count:true,_sum:{total:true},_max:{createdAt:true},orderBy:{email:'asc'},skip:(page-1)*25,take:26})
+ const counts = await db.$queryRaw<{count: bigint}[]>(Prisma.sql`SELECT COUNT(DISTINCT email) AS count FROM "Order" WHERE POSITION(LOWER(${q}) IN LOWER(email)) > 0`)
+ const total=Number(counts[0]?.count ?? 0); const shown=rows.slice(0,25)
+ return <div className="admin-page"><AdminHeader title="Customers" description="Customer history grouped by checkout email. Order value includes unpaid and cancelled orders."/><SearchForm q={q} placeholder="Search customer email"/>{shown.length?<div className="admin-table-wrap"><table className="admin-table"><thead><tr>{['Customer email','Orders','Order value','Latest order','History'].map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{shown.map(r=><tr key={r.email}><td>{r.email}</td><td>{r._count}</td><td>{formatPrice(r._sum.total??0)}</td><td>{formatAdminDate(r._max.createdAt)}</td><td><Link className="admin-link" href={`/admin/orders?email=${encodeURIComponent(r.email)}`}>View orders</Link></td></tr>)}</tbody></table></div>:<Empty>No customers match these filters.</Empty>}<Pagination page={page} total={total} params={params}/></div>
+}

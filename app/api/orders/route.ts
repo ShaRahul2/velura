@@ -155,6 +155,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    if (paymentMethod === 'cod') {
+      const { notifyOrder } = await import('@/lib/orderMail')
+      void notifyOrder(orderId, 'placed')
+    }
+
     return NextResponse.json({ data: { orderId, total } }, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

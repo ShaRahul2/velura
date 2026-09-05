@@ -24,6 +24,7 @@ export function EditImagePanel({ productId, initialImages }: Props) {
 
   const refresh = useCallback(async () => {
     const res  = await fetch(`/api/products/${productId}/images`)
+    if (!res.ok) throw new Error('Images could not refresh. Reload the page.')
     const json = await res.json() as { data: AdminImage[] }
     setImages(json.data)
   }, [productId])

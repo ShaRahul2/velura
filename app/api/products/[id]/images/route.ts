@@ -1,3 +1,5 @@
+import { z } from 'zod'
+import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
@@ -6,9 +8,11 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await auth()
+  if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({error:'Unauthorized'},{status:401})
   const { id } = await params
-  const productId = parseInt(id, 10)
-  if (isNaN(productId)) {
+  const productId = Number(id)
+  if (!Number.isSafeInteger(productId) || productId < 1) {
     return NextResponse.json({ error: 'Invalid product id' }, { status: 400 })
   }
 
@@ -24,30 +28,25 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth()
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await params
-  const productId = parseInt(id, 10)
-  if (isNaN(productId)) {
+  const productId = Number(id)
+  if (!Number.isSafeInteger(productId) || productId < 1) {
     return NextResponse.json({ error: 'Invalid product id' }, { status: 400 })
   }
 
-  const body = await req.json() as {
-    key?:       unknown
-    url?:       unknown
-    alt?:       unknown
-    position?:  unknown
-    type?:      unknown
-    isPrimary?: unknown
-  }
-  const { key, url, alt, position, type, isPrimary } = body
-
-  if (typeof url !== 'string') {
-    return NextResponse.json({ error: 'url is required' }, { status: 400 })
-  }
+  const parsed = z.object({
+    key: z.string().max(500).optional(), url: z.url().startsWith('https://'), alt: z.string().max(500).optional(),
+    position: z.number().int().min(0).max(10000).optional(), type: z.enum(['front','back','lifestyle','detail']).optional(), isPrimary: z.boolean().optional(),
+  }).strict().safeParse(await req.json().catch(()=>null))
+  if (!parsed.success) return NextResponse.json({error:'Invalid image metadata'},{status:400})
+  const {key,url,alt,position,type,isPrimary} = parsed.data
+  if (!await db.product.findUnique({where:{id:productId},select:{id:true}})) return NextResponse.json({error:'Product not found'},{status:404})
 
   await db.$transaction(async (tx) => {
-    if (isPrimary === true) {
+    const primary = isPrimary === true || await tx.productImage.count({where:{productId}}) === 0
+    if (primary) {
       await tx.productImage.updateMany({
         where: { productId },
         data:  { isPrimary: false },
@@ -61,7 +60,7 @@ export async function POST(
         alt:       typeof alt      === 'string'  ? alt       : null,
         position:  typeof position === 'number'  ? position  : 0,
         type:      typeof type     === 'string'  ? (type as import('@prisma/client').ImageType) : 'front',
-        isPrimary: isPrimary === true,
+        isPrimary: primary,
       },
     })
   })
@@ -70,5 +69,6 @@ export async function POST(
     where:   { productId, url },
     orderBy: { id: 'desc' },
   })
+  revalidatePath('/shop', 'layout'); revalidatePath('/')
   return NextResponse.json({ data: image }, { status: 201 })
 }

@@ -1,6 +1,14 @@
 import { formatOrderDate, formatOrderMoney, type PublicOrder } from '@/lib/orderPublic'
 
-export function OrderStatusView({ order }: { order: PublicOrder }) {
+export function OrderStatusView({
+  order,
+  onCancel,
+  cancelling,
+}: {
+  order: PublicOrder
+  onCancel?: () => void
+  cancelling?: boolean
+}) {
   return (
     <div className="w-full text-left">
       <div className="mb-8 grid grid-cols-2 gap-px bg-lm md:grid-cols-4">
@@ -13,6 +21,16 @@ export function OrderStatusView({ order }: { order: PublicOrder }) {
       <p className="mb-8 font-sans text-[0.84rem] font-light leading-relaxed text-mauve">
         {order.note}
       </p>
+
+      {(order.trackingNumber || order.carrier) && (
+        <div className="mb-8 border border-lm px-4 py-4">
+          <p className="mb-1 font-sans text-[0.62rem] tracking-label uppercase text-rose">Tracking</p>
+          <p className="font-sans text-[0.88rem] text-deep">
+            {order.carrier ? `${order.carrier} · ` : ''}
+            {order.trackingNumber ?? '—'}
+          </p>
+        </div>
+      )}
 
       <div className="border-t border-lm">
         {order.items.map((item) => (
@@ -53,6 +71,17 @@ export function OrderStatusView({ order }: { order: PublicOrder }) {
           {order.shipTo.city}, {order.shipTo.state} {order.shipTo.pinCode}
         </p>
       </div>
+
+      {order.canCancel && onCancel && (
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={cancelling}
+          className="mt-10 font-sans text-[0.72rem] tracking-btn uppercase text-mauve underline underline-offset-4 disabled:opacity-40"
+        >
+          {cancelling ? 'Cancelling…' : 'Cancel this order'}
+        </button>
+      )}
     </div>
   )
 }

@@ -8,24 +8,20 @@ import { Pencil, Trash2 } from 'lucide-react'
 
 export function AdminProductRow({ product }: { product: Product }) {
   const router   = useRouter()
-  const [active, setActive] = useState(true) // products from queryAllProducts are always returned
-
-  async function toggleActive() {
-    const next = !active
-    setActive(next)
-    await fetch(`/api/products/${product.id}`, {
-      method:  'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ isActive: next }),
-    })
-    router.refresh()
+  const active = product.isActive ?? false
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  async function mutate(method: string, body?: object) {
+    setBusy(true); setError('')
+    try {
+      const res = await fetch(`/api/products/${product.id}`, {method,headers:{'Content-Type':'application/json'}, ...(body && {body:JSON.stringify(body)})})
+      if (!res.ok) { const data = await res.json().catch(()=>({})); throw new Error(data.error || 'Could not save product.') }
+      router.refresh()
+    } catch(e) { setError(e instanceof Error ? e.message : 'Request failed.') }
+    finally { setBusy(false) }
   }
-
-  async function handleDelete() {
-    if (!confirm(`Delete "${product.name}"? This is permanent.`)) return
-    await fetch(`/api/products/${product.id}`, { method: 'DELETE' })
-    router.refresh()
-  }
+  async function toggleActive() { await mutate('PUT', {isActive: !active}) }
+  async function handleDelete() { if (confirm(`Delete "${product.name}" and all its images and reviews? This is permanent.`)) await mutate('DELETE') }
 
   return (
     <tr className="border-b border-[rgba(184,168,152,0.07)] hover:bg-[rgba(237,233,228,0.02)] transition-colors">
@@ -37,6 +33,7 @@ export function AdminProductRow({ product }: { product: Product }) {
             <p className="text-[0.84rem] text-[#EDE9E4]">{product.name}</p>
             <p className="text-[0.68rem] text-[rgba(237,233,228,0.3)] mt-0.5">
               {product.badge ?? ''}
+              {error && <span role="alert" className="block text-red-300">{error}</span>}
             </p>
           </div>
         </div>
@@ -62,6 +59,8 @@ export function AdminProductRow({ product }: { product: Product }) {
       {/* Active toggle */}
       <td className="px-4 py-3">
         <button
+          disabled={busy}
+          aria-label={`${active ? 'Unpublish' : 'Publish'} ${product.name}`}
           onClick={toggleActive}
           className="flex items-center gap-2 group"
           type="button"
@@ -95,7 +94,8 @@ export function AdminProductRow({ product }: { product: Product }) {
             <Pencil size={13} />
           </Link>
           <button
-            onClick={handleDelete}
+            disabled={busy}
+          onClick={handleDelete}
             className="p-1.5 rounded-[3px] text-[rgba(154,136,120,0.4)] hover:text-[#9A8878] hover:bg-[rgba(154,136,120,0.08)] transition-colors"
             type="button"
           >

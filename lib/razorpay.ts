@@ -49,6 +49,26 @@ export type StoredPaymentDetails = {
   wallet?: string
   cardLast4?: string
   cardNetwork?: string
+  refundId?: string
+  refundStatus?: string
+  refundedAt?: string
+}
+
+export async function refundRazorpayPayment(params: {
+  paymentId: string
+  amountRupees: number
+  orderId: string
+}): Promise<{ id: string; status: string }> {
+  const razorpay = getRazorpay()
+  if (!razorpay) throw new Error('Razorpay is not configured')
+  const refund = await razorpay.payments.refund(params.paymentId, {
+    amount: rupeesToPaise(params.amountRupees),
+    notes: { veluraOrderId: params.orderId },
+  })
+  return {
+    id: String(refund.id),
+    status: String(refund.status ?? 'processed'),
+  }
 }
 
 export function summarizeRazorpayPayment(

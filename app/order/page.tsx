@@ -14,6 +14,7 @@ function LookupForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [order, setOrder] = useState<PublicOrder | null>(null)
+  const [cancelling, setCancelling] = useState(false)
 
   useEffect(() => {
     const fromQuery = searchParams.get('id')
@@ -104,7 +105,34 @@ function LookupForm() {
           <p className="mb-2 font-sans text-[0.68rem] tracking-label uppercase text-rose">
             {order.id}
           </p>
-          <OrderStatusView order={order} />
+          <OrderStatusView
+            order={order}
+            cancelling={cancelling}
+            onCancel={() => {
+              if (!window.confirm('Cancel this order? Paid orders are refunded to the original method.')) return
+              void (async () => {
+                setCancelling(true)
+                setError('')
+                try {
+                  const res = await fetch('/api/orders/cancel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId: order.id, email: email.trim() }),
+                  })
+                  const json = (await res.json()) as { data?: PublicOrder; error?: string }
+                  if (!res.ok || !json.data) {
+                    setError(json.error ?? 'Could not cancel.')
+                    return
+                  }
+                  setOrder(json.data)
+                } catch {
+                  setError('Could not cancel.')
+                } finally {
+                  setCancelling(false)
+                }
+              })()
+            }}
+          />
         </div>
       )}
 

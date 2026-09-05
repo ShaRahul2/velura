@@ -1,8 +1,10 @@
+import { requireAdmin } from '@/lib/adminSession'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 import { formatPrice } from '@/lib/utils'
-import { OrderStatusForm } from '@/components/admin/OrderStatusForm'
+import { OrderActions } from '@/components/admin/OrderActions'
+import { OrderTrackingForm } from '@/components/admin/OrderTrackingForm'
 import { ORDER_LABEL, PAYMENT_LABEL, adminTone, formatAdminDate } from '@/lib/adminOrders'
 import type { StoredPaymentDetails } from '@/lib/razorpay'
 
@@ -43,6 +45,7 @@ function asSpec(value: unknown): Record<string, string> | null {
 }
 
 export default async function AdminOrderDetailPage({ params }: PageProps) {
+  await requireAdmin()
   const { id } = await params
   const order = await db.order.findUnique({
     where: { id },
@@ -70,7 +73,14 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
             Placed {formatAdminDate(order.createdAt)}
           </p>
         </div>
-        <OrderStatusForm orderId={order.id} status={order.status} />
+        <OrderActions
+          orderId={order.id}
+          status={order.status}
+          paymentStatus={order.paymentStatus}
+          paymentMethod={order.paymentMethod}
+          razorpayPaymentId={order.razorpayPaymentId}
+          total={order.total}
+        />
       </div>
 
       <div className="mb-8 grid grid-cols-2 gap-px bg-[rgba(184,168,152,0.12)] lg:grid-cols-4">
@@ -211,6 +221,12 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
             )}
           </section>
 
+          <OrderTrackingForm
+            orderId={order.id}
+            carrier={order.carrier}
+            trackingNumber={order.trackingNumber}
+          />
+
           <section>
             <h2 className="mb-4 font-sans text-[0.62rem] uppercase tracking-[0.12em] text-[#B8A898]">
               Deliver to
@@ -243,6 +259,9 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
               )}
               {pay?.bank && <Row label="Bank" value={pay.bank} />}
               {pay?.wallet && <Row label="Wallet" value={pay.wallet} />}
+              {pay?.refundId && <Row label="Refund id" value={pay.refundId} />}
+              {pay?.refundStatus && <Row label="Refund" value={pay.refundStatus} />}
+              {pay?.refundedAt && <Row label="Refunded at" value={pay.refundedAt} />}
             </dl>
           </section>
         </aside>

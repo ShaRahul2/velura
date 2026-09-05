@@ -102,7 +102,7 @@ export function ProductImageUploader({ productId, onUploaded }: Props) {
 
       setProgress(null)
       if (inputRef.current) inputRef.current.value = ''
-      onUploaded()
+      await onUploaded()
     } catch (err) {
       setProgress(null)
       setError(err instanceof Error ? err.message : 'Upload failed.')

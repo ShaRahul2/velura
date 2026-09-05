@@ -13,6 +13,7 @@ export const ORDER_LABEL: Record<OrderStatus, string> = {
   confirmed: 'Confirmed',
   shipped: 'Shipped',
   delivered: 'Delivered',
+  returned: 'Returned',
   cancelled: 'Cancelled',
 }
 
@@ -22,7 +23,7 @@ export function adminTone(status: string) {
   if (status === 'paid' || status === 'delivered' || status === 'confirmed' || status === 'shipped') {
     return 'text-[#EDE9E4]'
   }
-  if (status === 'failed' || status === 'cancelled') {
+  if (status === 'failed' || status === 'cancelled' || status === 'returned' || status === 'refunded') {
     return 'text-[#C4A090]'
   }
   return 'text-[rgba(237,233,228,0.55)]'

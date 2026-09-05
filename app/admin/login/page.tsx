@@ -22,19 +22,13 @@ function LoginForm() {
     setError('')
     setLoading(true)
 
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
+    try {
+      const res = await signIn('credentials', { email, password, redirect: false })
+      if (res?.ok) { router.replace(callbackUrl); router.refresh() }
+      else setError('Invalid credentials or too many attempts. Please try again.')
+    } catch { setError('Could not sign in. Check your connection and try again.') }
+    finally { setLoading(false) }
 
-    setLoading(false)
-
-    if (res?.ok) {
-      router.push(callbackUrl)
-    } else {
-      setError('Invalid credentials.')
-    }
   }
 
   return (
@@ -55,10 +49,11 @@ function LoginForm() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[0.65rem] tracking-[0.12em] text-[rgba(237,233,228,0.45)] uppercase mb-1.5">
+            <label htmlFor="email" className="block text-[0.65rem] tracking-[0.12em] text-[rgba(237,233,228,0.45)] uppercase mb-1.5">
               Email
             </label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -70,10 +65,11 @@ function LoginForm() {
           </div>
 
           <div>
-            <label className="block text-[0.65rem] tracking-[0.12em] text-[rgba(237,233,228,0.45)] uppercase mb-1.5">
+            <label htmlFor="password" className="block text-[0.65rem] tracking-[0.12em] text-[rgba(237,233,228,0.45)] uppercase mb-1.5">
               Password
             </label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -85,7 +81,7 @@ function LoginForm() {
           </div>
 
           {error && (
-            <p className="text-[0.75rem] text-[#9A8878] tracking-[0.04em]">{error}</p>
+            <p role="alert" className="text-[0.75rem] text-[#9A8878] tracking-[0.04em]">{error}</p>
           )}
 
           <button
