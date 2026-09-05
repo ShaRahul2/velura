@@ -1,0 +1,104 @@
+- generic [active] [ref=f4e1]:
+  - link "Skip to content" [ref=f4e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f4e3]:
+    - generic [ref=f4e4]:
+      - link "VELURA" [ref=f4e5] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=f4e6]:
+        - link "Shop" [ref=f4e7] [cursor=pointer]:
+          - /url: /shop
+        - link "Everyday" [ref=f4e8] [cursor=pointer]:
+          - /url: /shop?cat=everyday
+        - link "Bridal" [ref=f4e9] [cursor=pointer]:
+          - /url: /shop?cat=bridal
+        - link "✦ Custom Bra" [ref=f4e10] [cursor=pointer]:
+          - /url: /builder
+      - generic [ref=f4e11]:
+        - button "Search collection" [ref=f4e12] [cursor=pointer]
+        - button "Atelier" [ref=f4e16] [cursor=pointer]
+        - link "Saved pieces" [ref=f4e17] [cursor=pointer]:
+          - /url: /wishlist
+        - button "Open bag" [ref=f4e20] [cursor=pointer]
+  - main [ref=f4e24]:
+    - paragraph [ref=f4e28]: Loading
+  - contentinfo [ref=f4e29]:
+    - generic [ref=f4e31]:
+      - generic [ref=f4e32]:
+        - paragraph [ref=f4e33]: Stay close
+        - heading "For the nights that begin at 9 PM." [level=2] [ref=f4e34]
+        - paragraph [ref=f4e35]: New arrivals. Nothing else.
+      - generic [ref=f4e37]:
+        - textbox "Your email" [ref=f4e38]
+        - button "Join" [ref=f4e39] [cursor=pointer]
+    - generic [ref=f4e40]:
+      - generic [ref=f4e41]:
+        - generic [ref=f4e42]:
+          - paragraph [ref=f4e43]: VELURA
+          - paragraph [ref=f4e44]: Crafted for the woman who knows.
+          - paragraph [ref=f4e45]: 26AA–52K · XS–4XL
+        - generic [ref=f4e46]:
+          - paragraph [ref=f4e47]: Collections
+          - list [ref=f4e48]:
+            - listitem [ref=f4e49]:
+              - link "Everyday" [ref=f4e50] [cursor=pointer]:
+                - /url: /shop?cat=everyday
+            - listitem [ref=f4e51]:
+              - link "Push-Up" [ref=f4e52] [cursor=pointer]:
+                - /url: /shop?cat=pushup
+            - listitem [ref=f4e53]:
+              - link "Lace" [ref=f4e54] [cursor=pointer]:
+                - /url: /shop?cat=lace
+            - listitem [ref=f4e55]:
+              - link "Sports" [ref=f4e56] [cursor=pointer]:
+                - /url: /shop?cat=sports
+            - listitem [ref=f4e57]:
+              - link "Seamless" [ref=f4e58] [cursor=pointer]:
+                - /url: /shop?cat=seamless
+            - listitem [ref=f4e59]:
+              - link "Plus" [ref=f4e60] [cursor=pointer]:
+                - /url: /shop?cat=plus
+            - listitem [ref=f4e61]:
+              - link "Bridal" [ref=f4e62] [cursor=pointer]:
+                - /url: /shop?cat=bridal
+        - generic [ref=f4e63]:
+          - paragraph [ref=f4e64]: Custom
+          - list [ref=f4e65]:
+            - listitem [ref=f4e66]:
+              - link "Build Yours" [ref=f4e67] [cursor=pointer]:
+                - /url: /builder
+            - listitem [ref=f4e68]:
+              - link "Fit Calculator" [ref=f4e69] [cursor=pointer]:
+                - /url: /builder
+            - listitem [ref=f4e70]:
+              - link "All collections" [ref=f4e71] [cursor=pointer]:
+                - /url: /shop
+        - generic [ref=f4e72]:
+          - paragraph [ref=f4e73]: Help
+          - list [ref=f4e74]:
+            - listitem [ref=f4e75]:
+              - link "Size Guide" [ref=f4e76] [cursor=pointer]:
+                - /url: /size-guide
+            - listitem [ref=f4e77]:
+              - link "Shipping" [ref=f4e78] [cursor=pointer]:
+                - /url: /shipping
+            - listitem [ref=f4e79]:
+              - link "Returns" [ref=f4e80] [cursor=pointer]:
+                - /url: /returns
+            - listitem [ref=f4e81]:
+              - link "Contact" [ref=f4e82] [cursor=pointer]:
+                - /url: /contact
+      - generic [ref=f4e84]:
+        - paragraph [ref=f4e85]: © 2026 Velura. All rights reserved.
+        - paragraph [ref=f4e86]: UPI · Cards · Net Banking · COD
+  - dialog [aria-hidden] [ref=f4e87]:
+    - generic [ref=f4e88]:
+      - heading [level=2] [ref=f4e89]: Your Bag
+      - button [ref=f4e90] [cursor=pointer]
+    - generic [ref=f4e95]:
+      - paragraph [ref=f4e96]: Your bag is empty.
+      - paragraph [ref=f4e97]: Invisible, weightless, unforgettable.
+      - link [ref=f4e98] [cursor=pointer]:
+        - /url: /shop
+        - text: Explore Collection
+  - button "Open Next.js Dev Tools" [ref=f4e104] [cursor=pointer]

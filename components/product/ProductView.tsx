@@ -15,7 +15,7 @@ export function ProductView({ product }: { product: Product }) {
   const colour = hex ? colorLabel(hex) : null
 
   return (
-    <div className={`${pageWrap} grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.95fr)] lg:gap-14 xl:gap-20`}>
+    <div className={`${pageWrap} grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_21.5rem] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-14`}>
       <div className="-mx-5 md:-mx-8 lg:mx-0">
         <ImageGallery
           images={images}
@@ -23,7 +23,7 @@ export function ProductView({ product }: { product: Product }) {
           colorLabel={colour}
         />
       </div>
-      <div className="lg:sticky lg:top-24 lg:self-start lg:py-1">
+      <div className="lg:sticky lg:top-20 lg:self-start lg:pt-6">
         <ProductDetail
           product={product}
           colorIndex={colorIndex}

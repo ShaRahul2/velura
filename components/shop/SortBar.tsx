@@ -39,7 +39,7 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
 
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 mb-7 pb-4 border-b border-lm">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-lm pb-3">
         <div className="flex items-center gap-3">
           <p className="font-sans text-[0.78rem] text-mauve">
             {total} {total === 1 ? 'piece' : 'pieces'}

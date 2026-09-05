@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { pageWrap } from '@/lib/utils'
 import { COD_LIMIT } from '@/lib/coupons'
 import { isOnlineMethod, razorpayAvailableInBrowser } from '@/lib/payments'
+import { rememberLastOrder } from '@/lib/orderPublic'
 import { googleMapsBrowserKey, googlePlacesAvailable } from '@/lib/indianAddress'
 import Script from 'next/script'
 
@@ -161,6 +162,7 @@ export default function CheckoutPage() {
       const orderId = data.data.orderId
 
       if (!isOnlineMethod(payment)) {
+        rememberLastOrder(orderId, address.email)
         clearCart()
         router.push(`/order-confirmed?order=${orderId}`)
         return
@@ -210,6 +212,7 @@ export default function CheckoutPage() {
               addToast('Payment received but could not be verified. Contact us with your order id.')
               return
             }
+            rememberLastOrder(orderId, address.email)
             clearCart()
             router.push(`/order-confirmed?order=${orderId}`)
           })()
@@ -279,7 +282,7 @@ export default function CheckoutPage() {
       )}
       {googlePlacesAvailable() && (
         <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${googleMapsBrowserKey()}&libraries=places&language=en&region=IN`}
+          src={`https://maps.googleapis.com/maps/api/js?key=${googleMapsBrowserKey()}&v=weekly&loading=async&language=en&region=IN`}
           strategy="afterInteractive"
         />
       )}

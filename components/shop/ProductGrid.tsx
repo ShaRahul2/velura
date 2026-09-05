@@ -6,10 +6,9 @@ interface ProductGridProps {
   products: Product[]
   loading?: boolean
   cols?: 2 | 3 | 4
-  onQuickView?: (product: Product) => void
 }
 
-export function ProductGrid({ products, loading = false, cols = 3, onQuickView }: ProductGridProps) {
+export function ProductGrid({ products, loading = false, cols = 4 }: ProductGridProps) {
   const gridClass =
     cols === 2
       ? 'grid-cols-2'
@@ -19,7 +18,7 @@ export function ProductGrid({ products, loading = false, cols = 3, onQuickView }
 
   if (loading) {
     return (
-      <div className={`grid ${gridClass} gap-x-4 gap-y-10 md:gap-x-6`}>
+      <div className={`grid ${gridClass} gap-x-3 gap-y-8 md:gap-x-5 md:gap-y-10`}>
         {Array.from({ length: 8 }).map((_, i) => (
           <ProductCardSkeleton key={i} />
         ))}
@@ -41,9 +40,9 @@ export function ProductGrid({ products, loading = false, cols = 3, onQuickView }
   }
 
   return (
-    <div className={`grid ${gridClass} gap-x-4 gap-y-10 md:gap-x-6 lg:gap-x-7`}>
+    <div className={`grid ${gridClass} gap-x-3 gap-y-8 md:gap-x-5 md:gap-y-10`}>
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} onQuickView={onQuickView} />
+        <ProductCard key={product.id} product={product} />
       ))}
     </div>
   )

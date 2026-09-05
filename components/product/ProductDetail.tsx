@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Star } from 'lucide-react'
+import Link from 'next/link'
 import type { Product } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
@@ -57,55 +57,42 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
   }
 
   return (
-    <div className="flex flex-col gap-6 pb-24 md:pb-0">
-      <div className="flex flex-col items-start gap-3">
-        {product.badge && <Badge type={product.badge} />}
+    <div className="flex flex-col gap-5 pb-24 md:pb-0">
+      <div>
+        {product.badge && (
+          <div className="mb-3">
+            <Badge type={product.badge} />
+          </div>
+        )}
         <h1
           className="font-serif font-light text-deep leading-tight"
-          style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.6rem)', letterSpacing: '-0.01em' }}
+          style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.5rem)', letterSpacing: '-0.01em' }}
         >
           {product.name}
         </h1>
-        <p className="font-sans text-[0.88rem] italic text-mauve">{product.story}</p>
+        <p className="mt-2 font-sans text-[0.88rem] font-light italic leading-relaxed text-mauve">
+          {product.story}
+        </p>
       </div>
 
-      <div className="flex items-baseline gap-3">
-        <span className="font-sans text-[1.25rem] text-deep">{formatPrice(product.price)}</span>
-        {product.oldPrice && (
-          <span className="font-sans text-[0.92rem] text-mauve line-through">
-            {formatPrice(product.oldPrice)}
-          </span>
-        )}
-        {product.oldPrice && (
-          <span className="font-sans text-[0.68rem] tracking-label uppercase text-gold">
-            Sale
-          </span>
-        )}
-      </div>
-
-      <div className="flex items-center gap-2">
-        <div className="flex gap-0.5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              size={13}
-              className={i < Math.round(product.rating) ? 'fill-gold text-gold' : 'text-lm'}
-            />
-          ))}
+      <div className="flex items-baseline justify-between gap-4">
+        <div className="flex items-baseline gap-3">
+          <span className="font-sans text-[1.15rem] text-deep">{formatPrice(product.price)}</span>
+          {product.oldPrice && (
+            <span className="font-sans text-[0.88rem] text-mauve line-through">
+              {formatPrice(product.oldPrice)}
+            </span>
+          )}
         </div>
-        <span className="font-sans text-[0.78rem] text-mauve">
+        <p className="font-sans text-[0.72rem] text-mauve">
           {product.rating} · {product.reviews.toLocaleString('en-IN')} reviews
-        </span>
+        </p>
       </div>
-
-      <p className="font-sans text-[0.84rem] text-mauve">{product.sub}</p>
-
-      <div className="h-px bg-lm" />
 
       {colors.length > 0 && (
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve">
+          <div className="mb-2.5 flex items-center justify-between">
+            <p className="font-sans text-[0.68rem] tracking-label uppercase text-mauve">
               Colour
             </p>
             {selectedLabel && (
@@ -138,8 +125,8 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
       )}
 
       <div>
-        <div className="flex items-center justify-between mb-3">
-          <p className="font-sans text-[0.72rem] tracking-label uppercase text-mauve">
+        <div className="mb-2.5 flex items-center justify-between">
+          <p className="font-sans text-[0.68rem] tracking-label uppercase text-mauve">
             Size{selectedSize ? ` · ${selectedSize}` : ''}
           </p>
           <button
@@ -147,13 +134,17 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
             onClick={() => setGuideOpen((v) => !v)}
             className="font-sans text-[0.72rem] text-mauve underline underline-offset-4 hover:text-deep"
           >
-            {guideOpen ? 'Close guide' : 'Size guide'}
+            {guideOpen ? 'Close' : 'Size guide'}
           </button>
         </div>
         {guideOpen && (
           <p className="font-sans text-[0.8rem] font-light text-mauve leading-relaxed mb-3">
             Band from underbust, rounded up to the even inch. Cup from the difference to the fullest point.
-            This piece: {product.sizes}. Unsure — ask the atelier.
+            This piece: {product.sizes}. Unsure —{' '}
+            <Link href="/size-guide" className="text-deep underline underline-offset-4">
+              read the full guide
+            </Link>
+            , or ask the atelier.
           </p>
         )}
         <SizeSelector
@@ -172,13 +163,13 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
         Add to Bag
       </Button>
 
-      <ul className="flex flex-col gap-2 pt-1">
+      <ul className="flex flex-col gap-1.5">
         {[
           'Free shipping above ₹999',
           '15-day easy returns',
           `${product.fabric} · ${product.support} support`,
         ].map((line) => (
-          <li key={line} className="font-sans text-[0.78rem] text-mauve flex gap-2">
+          <li key={line} className="flex gap-2 font-sans text-[0.74rem] text-mauve">
             <span className="text-rose">✦</span>
             {line}
           </li>

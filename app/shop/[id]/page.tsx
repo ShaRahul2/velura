@@ -76,12 +76,12 @@ export default async function ProductPage({ params }: PageProps) {
   }
 
   return (
-    <div className="pt-2 lg:pt-8 pb-16 md:pb-24">
+    <div className="pb-16 md:pb-24">
       <JsonLd data={jsonLd} />
       <RecentlyViewedTracker id={product.id} />
       <ProductView product={product} />
 
-      <div className={`${pageWrap} mt-16 md:mt-24`}>
+      <div className={`${pageWrap} mt-14 md:mt-20`}>
         <Suspense fallback={<RelatedSkeleton />}>
           <RelatedSection id={product.id} cat={product.cat as ProductCategory} />
         </Suspense>
@@ -109,7 +109,7 @@ async function RelatedSection({ id, cat }: { id: number; cat: ProductCategory })
           More in {cat === 'pushup' ? 'Push-up' : cat.charAt(0).toUpperCase() + cat.slice(1)}
         </h2>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-6">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-4 md:gap-x-5 md:gap-y-10">
         {related.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
@@ -123,7 +123,7 @@ function RelatedSkeleton() {
     <div className="mb-16" aria-hidden="true">
       <div className="h-3 w-24 bg-blush mb-3" />
       <div className="h-8 w-48 bg-blush mb-8" />
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-6">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-4 md:gap-x-5 md:gap-y-10">
         {Array.from({ length: 4 }).map((_, i) => (
           <ProductCardSkeleton key={i} />
         ))}

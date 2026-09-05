@@ -26,10 +26,11 @@ const COLS = [
   {
     title: 'Help',
     links: [
-      { label: 'Size Guide', href: '/builder' },
-      { label: 'Shipping', href: '/shop' },
-      { label: 'Returns', href: '/shop' },
-      { label: 'Contact', href: 'mailto:hello@velura.in' },
+      { label: 'Size Guide', href: '/size-guide' },
+      { label: 'Shipping', href: '/shipping' },
+      { label: 'Returns', href: '/returns' },
+      { label: 'Order status', href: '/order' },
+      { label: 'Contact', href: '/contact' },
     ],
   },
 ]
