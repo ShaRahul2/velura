@@ -3,6 +3,26 @@ set -euo pipefail
 
 cd /workspace
 
+# Start PostgreSQL and ensure local dev database exists (idempotent)
+if command -v pg_ctlcluster >/dev/null 2>&1; then
+  sudo pg_ctlcluster 16 main start 2>/dev/null || true
+elif command -v service >/dev/null 2>&1; then
+  sudo service postgresql start 2>/dev/null || true
+fi
+
+for _ in $(seq 1 30); do
+  if pg_isready -h localhost -p 5432 -q 2>/dev/null; then
+    break
+  fi
+  sleep 1
+done
+
+sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname='velura'" | grep -q 1 \
+  || sudo -u postgres psql -c "CREATE USER velura WITH PASSWORD 'velura_dev' CREATEDB;"
+sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname='velura'" | grep -q 1 \
+  || sudo -u postgres psql -c "CREATE DATABASE velura OWNER velura;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE velura TO velura;" 2>/dev/null || true
+
 # Local dev defaults — override via Cloud Agent secrets if needed
 if [[ ! -f .env.local ]]; then
   cat > .env.local <<'EOF'
