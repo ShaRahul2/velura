@@ -100,18 +100,18 @@ export function Navbar() {
         >
           Atelier
         </button>
-        {mounted && wishCount > 0 && (
-          <Link
-            href="/shop"
-            className="relative hidden p-2.5 text-blush/70 transition-colors hover:text-blush sm:flex"
-            aria-label="Wishlist"
-          >
-            <Heart size={17} strokeWidth={1.6} aria-hidden="true" />
+        <Link
+          href="/wishlist"
+          className="relative hidden p-2.5 text-blush/70 transition-colors hover:text-blush sm:flex"
+          aria-label="Saved pieces"
+        >
+          <Heart size={17} strokeWidth={1.6} aria-hidden="true" />
+          {mounted && wishCount > 0 && (
             <span className="absolute top-1 right-1 flex h-3.5 min-w-[15px] items-center justify-center rounded-full bg-rose px-1 font-sans text-[0.52rem] font-medium text-deep" aria-hidden="true">
               {wishCount}
             </span>
-          </Link>
-        )}
+          )}
+        </Link>
 
         <button
           onClick={openCart}

@@ -2,40 +2,77 @@
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
+import { pageWrap } from '@/lib/utils'
+import { OrderStatusView } from '@/components/order/OrderStatusView'
+import { readLastOrder, type PublicOrder } from '@/lib/orderPublic'
 
 function ConfirmedContent() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get('order') ?? ''
+  const [order, setOrder] = useState<PublicOrder | null>(null)
+
+  useEffect(() => {
+    const last = readLastOrder()
+    const id = orderId || last?.id
+    const email = last?.email
+    if (!id || !email) return
+    if (orderId && last?.id && last.id !== orderId) return
+
+    void (async () => {
+      try {
+        const res = await fetch('/api/orders/lookup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: id, email }),
+        })
+        const json = (await res.json()) as { data?: PublicOrder }
+        if (res.ok && json.data) setOrder(json.data)
+      } catch {
+        /* keep the thank-you without details */
+      }
+    })()
+  }, [orderId])
 
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center px-6 max-w-xl mx-auto text-center">
-      <div style={{ animation: 'popIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) both' }}>
-        <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-5">
-          Order confirmed
+    <div className={`${pageWrap} max-w-[40rem] py-16 md:py-24`}>
+      <p className="mb-3 font-sans text-[0.68rem] tracking-label uppercase text-rose">
+        Order confirmed
+      </p>
+      <h1
+        className="mb-4 font-serif font-light text-deep"
+        style={{ fontSize: 'clamp(2rem, 3.5vw, 3.2rem)', letterSpacing: '-0.01em' }}
+      >
+        It&apos;s on its way.
+      </h1>
+      <p className="mb-8 font-sans text-[0.9rem] font-light text-mauve">
+        Invisible, weightless, unforgettable.
+      </p>
+      {(order?.id || orderId) && (
+        <p className="mb-10 font-sans text-[0.78rem] text-mauve">
+          Order ID:{' '}
+          <span className="font-medium text-deep">{order?.id ?? orderId}</span>
         </p>
-        <h1
-          className="font-serif font-light text-deep mb-4"
-          style={{ fontSize: 'clamp(2rem, 3.5vw, 3.2rem)', letterSpacing: '-0.01em' }}
+      )}
+
+      {order ? (
+        <OrderStatusView order={order} />
+      ) : (
+        <p className="mb-10 font-sans text-[0.84rem] font-light leading-relaxed text-mauve">
+          Keep the order ID. Look it up any time with the email used at checkout.
+        </p>
+      )}
+
+      <div className="mt-12 flex flex-wrap gap-6">
+        <Link
+          href={orderId ? `/order?id=${encodeURIComponent(orderId)}` : '/order'}
+          className="font-sans text-[0.78rem] tracking-btn uppercase text-deep underline underline-offset-4"
         >
-          It&apos;s on its way.
-        </h1>
-        <p className="font-sans text-[0.9rem] lg:text-[1rem] font-light text-mauve mb-2">
-          Invisible, weightless, unforgettable.
-        </p>
-        {orderId && (
-          <p className="font-sans text-[0.78rem] lg:text-[0.84rem] text-mauve mb-8">
-            Order ID: <span className="text-deep font-medium">{orderId}</span>
-          </p>
-        )}
-        <p className="font-sans text-[0.82rem] lg:text-[0.9rem] text-mauve mb-10">
-          You&apos;ll receive a confirmation shortly.
-          <br />
-          Estimated delivery: 3–5 business days.
-        </p>
+          Look up this order
+        </Link>
         <Link
           href="/shop"
-          className="pressable pressable-track inline-flex items-center h-11 px-8 rounded-btn font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase bg-deep text-blush"
+          className="pressable pressable-track inline-flex h-11 items-center rounded-btn bg-deep px-8 font-sans text-[0.8rem] tracking-btn uppercase text-blush"
         >
           Explore Collection
         </Link>

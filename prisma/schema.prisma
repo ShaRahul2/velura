@@ -143,11 +143,26 @@ enum PaymentMethod {
   cod
 }
 
+enum PaymentStatus {
+  unpaid
+  pending
+  paid
+  failed
+  refunded
+}
+
 model Order {
   id            String        @id
   status        OrderStatus   @default(pending)
   paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(unpaid)
   couponCode    String?
+
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  paidAt            DateTime?
+  paymentDetails    Json?
 
   // Totals — all in INR paise-less integers
   subtotal      Int
@@ -164,6 +179,9 @@ model Order {
   city          String
   state         String
   pinCode       String
+  placeId       String?
+  lat           Float?
+  lng           Float?
 
   items         OrderItem[]
 
@@ -172,6 +190,7 @@ model Order {
 
   @@index([email])
   @@index([status])
+  @@index([paymentStatus])
   @@index([createdAt])
 }
 

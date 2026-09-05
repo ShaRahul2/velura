@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export function BuilderPromoBanner() {
   return (
-    <div className="relative my-12 flex min-h-[200px] items-stretch overflow-hidden md:min-h-[240px]">
+    <div className="relative my-8 flex min-h-[160px] items-stretch overflow-hidden md:my-10 md:min-h-[180px]">
       <div className="absolute inset-0">
         <Image
           src="/images/categories/lace.jpg"

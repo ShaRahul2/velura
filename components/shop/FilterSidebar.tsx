@@ -19,7 +19,7 @@ export function FilterSidebar() {
   }
 
   return (
-    <aside className="hidden md:block w-40 lg:w-44 shrink-0">
+    <aside className="hidden w-32 shrink-0 md:block lg:w-36">
       <div>
         <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
           Support

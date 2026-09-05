@@ -24,6 +24,9 @@ const AddressSchema = z.object({
   city:        z.string().min(1).max(100),
   state:       z.string().min(1).max(100),
   pinCode:     z.string().regex(/^\d{6}$/, 'PIN must be 6 digits'),
+  placeId:     z.string().max(256).optional(),
+  lat:         z.number().optional(),
+  lng:         z.number().optional(),
 })
 
 const OrderSchema = z.object({
@@ -109,7 +112,9 @@ export async function POST(req: NextRequest) {
       await db.order.create({
         data: {
           id:            orderId,
+          status:        paymentMethod === 'cod' ? 'confirmed' : 'pending',
           paymentMethod: paymentMethod as PaymentMethod,
+          paymentStatus: paymentMethod === 'cod' ? 'pending' : 'unpaid',
           couponCode:    couponCode?.toUpperCase() ?? null,
           subtotal,
           shipping,
@@ -123,6 +128,9 @@ export async function POST(req: NextRequest) {
           city:        address.city,
           state:       address.state,
           pinCode:     address.pinCode,
+          placeId:     address.placeId ?? null,
+          lat:         address.lat ?? null,
+          lng:         address.lng ?? null,
           items: {
             create: items.map((item) => ({
               productId:    item.productId,

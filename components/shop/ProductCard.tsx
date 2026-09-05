@@ -9,13 +9,14 @@ import { Badge } from '@/components/ui/Badge'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { ProductPhoto } from '@/components/product/ProductPhoto'
 import { imagesForColor } from '@/lib/productColorImages'
+import { colorLabel } from '@/lib/colorways'
+import { describeProductImage } from '@/lib/productDescribe'
 
 interface ProductCardProps {
   product: Product
-  onQuickView?: (product: Product) => void
 }
 
-export const ProductCard = memo(function ProductCard({ product, onQuickView }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
   const [hovered, setHovered] = useState(false)
   const [colorIndex, setColorIndex] = useState(0)
   const toggle = useWishlistStore((s) => s.toggle)
@@ -24,6 +25,8 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
   const hasAlt = product.images.length > 1
   const colors = product.colorways ?? []
   const colorImages = imagesForColor(product, colorIndex)
+  const selectedColour = colors[colorIndex] ? colorLabel(colors[colorIndex]) : null
+  const primaryAlt = describeProductImage(product, { shot: 'front', colorLabel: selectedColour })
 
   return (
     <article
@@ -41,7 +44,7 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
           >
             <ProductPhoto
               src={colorImages[0]}
-              alt={product.name}
+              alt={primaryAlt}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           </div>
@@ -68,19 +71,6 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
           </div>
         )}
 
-        {onQuickView && (
-          <button
-            type="button"
-            onClick={() => onQuickView(product)}
-            className={cn(
-              'absolute inset-x-0 bottom-0 z-10 hidden h-11 items-center justify-center bg-deep/92 font-sans text-[0.68rem] tracking-btn uppercase text-blush backdrop-blur-sm transition-[opacity,transform] duration-150 ease-out md:flex',
-              hovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'
-            )}
-          >
-            Quick view
-          </button>
-        )}
-
         <button
           type="button"
           onClick={() => toggle(product.id)}
@@ -97,9 +87,9 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
         </button>
       </div>
 
-      <div className="mt-3.5 flex flex-col gap-1.5">
+      <div className="mt-2.5 flex flex-col gap-1">
         {colors.length > 0 && (
-          <div className="flex items-center gap-0.5 -ml-1.5">
+          <div className="-ml-1 flex items-center">
             {colors.slice(0, 5).map((hex, i) => {
               const selected = i === colorIndex
               return (
@@ -109,10 +99,10 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
                   onClick={() => setColorIndex(i)}
                   aria-label={`Show colour ${i + 1}`}
                   aria-pressed={selected}
-                  className="w-11 h-11 flex items-center justify-center"
+                  className="flex h-8 w-8 items-center justify-center"
                 >
                   <span
-                    className="w-[15px] h-[15px] rounded-full"
+                    className="h-2.5 w-2.5 rounded-full"
                     style={{
                       background: hex,
                       boxShadow: selected
@@ -128,21 +118,21 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
 
         <div className="flex items-baseline justify-between gap-3">
           <Link href={`/shop/${product.id}`} className="min-w-0">
-            <h3 className="font-serif text-[1.04rem] font-medium tracking-[0.01em] text-deep leading-tight line-clamp-1 hover:opacity-70 transition-opacity">
+            <h3 className="line-clamp-1 font-serif text-[0.98rem] font-medium leading-tight tracking-[0.01em] text-deep transition-opacity hover:opacity-70">
               {product.name}
             </h3>
           </Link>
-          <span className="font-sans text-[0.92rem] text-deep tabular-nums shrink-0">
+          <span className="shrink-0 font-sans text-[0.88rem] tabular-nums text-deep">
             {formatPrice(product.price)}
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-2">
-          <p className="font-sans text-[0.62rem] tracking-[0.08em] uppercase text-mauve">
+          <p className="font-sans text-[0.6rem] uppercase tracking-[0.08em] text-mauve">
             {product.sizes}
           </p>
           {product.oldPrice && (
-            <span className="font-sans text-[0.68rem] text-mauve line-through tabular-nums">
+            <span className="font-sans text-[0.65rem] tabular-nums text-mauve line-through">
               {formatPrice(product.oldPrice)}
             </span>
           )}

@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/shop', label: 'Shop' },
   { href: '/builder', label: '✦ Custom Bra' },
+  { href: '/wishlist', label: 'Saved' },
 ]
 
 const CATS = [

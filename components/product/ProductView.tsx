@@ -5,21 +5,25 @@ import type { Product } from '@/types'
 import { ImageGallery } from './ImageGallery'
 import { ProductDetail } from './ProductDetail'
 import { imagesForColor } from '@/lib/productColorImages'
+import { colorLabel } from '@/lib/colorways'
+import { pageWrap } from '@/lib/utils'
 
 export function ProductView({ product }: { product: Product }) {
   const [colorIndex, setColorIndex] = useState(0)
   const images = imagesForColor(product, colorIndex)
+  const hex = product.colorways?.[colorIndex]
+  const colour = hex ? colorLabel(hex) : null
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-16 xl:gap-20 items-start">
-      <div>
+    <div className={`${pageWrap} grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_21.5rem] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-14`}>
+      <div className="-mx-5 md:-mx-8 lg:mx-0">
         <ImageGallery
-          key={`${product.id}-${colorIndex}`}
           images={images}
-          name={product.name}
+          product={product}
+          colorLabel={colour}
         />
       </div>
-      <div className="px-5 md:px-8 lg:px-0 py-8 lg:py-4 lg:pr-8 lg:sticky lg:top-24 self-start">
+      <div className="lg:sticky lg:top-20 lg:self-start lg:pt-6">
         <ProductDetail
           product={product}
           colorIndex={colorIndex}

@@ -1,0 +1,309 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "VELURA" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e6]:
+        - link "Shop" [ref=e7] [cursor=pointer]:
+          - /url: /shop
+        - link "Everyday" [ref=e8] [cursor=pointer]:
+          - /url: /shop?cat=everyday
+        - link "Bridal" [ref=e9] [cursor=pointer]:
+          - /url: /shop?cat=bridal
+        - link "✦ Custom Bra" [ref=e10] [cursor=pointer]:
+          - /url: /builder
+      - generic [ref=e11]:
+        - button "Search collection" [ref=e12] [cursor=pointer]
+        - button "Atelier" [ref=e16] [cursor=pointer]
+        - button "Open bag" [ref=e17] [cursor=pointer]
+  - main [ref=e21]:
+    - generic [ref=e22]:
+      - img "Velura campaign — crafted for the woman who knows" [ref=e23]
+      - paragraph [aria-hidden]: VELURA
+      - paragraph [ref=e25]: Campaign 01 · SS26
+      - generic [ref=e27]:
+        - paragraph [ref=e28]: Crafted for the woman who knows
+        - heading "Disappears under anything." [level=1] [ref=e29]: Disappearsunder anything.
+        - paragraph [ref=e30]: Remembered by your body. Premium Indian lingerie, cut 26AA–52K.
+        - generic [ref=e31]:
+          - link "Explore Collection" [ref=e32] [cursor=pointer]:
+            - /url: /shop
+          - link "Build Yours" [ref=e33] [cursor=pointer]:
+            - /url: /builder
+    - generic [ref=e35]:
+      - generic [ref=e36]: Crafted for every body✦
+      - generic [ref=e37]: 26AA – 52K✦
+      - generic [ref=e38]: Free shipping above ₹999✦
+      - generic [ref=e39]: XS – 4XL✦
+      - generic [ref=e40]: 15-day easy returns✦
+      - generic [ref=e41]: Invisible under anything✦
+      - generic [ref=e42]: Made in India✦
+      - generic [ref=e43]: Crafted for every body✦
+      - generic [ref=e44]: 26AA – 52K✦
+      - generic [ref=e45]: Free shipping above ₹999✦
+      - generic [ref=e46]: XS – 4XL✦
+      - generic [ref=e47]: 15-day easy returns✦
+      - generic [ref=e48]: Invisible under anything✦
+      - generic [ref=e49]: Made in India✦
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - paragraph [ref=e54]: Bestsellers
+          - heading "The ones they come back for." [level=2] [ref=e55]
+        - link "View all" [ref=e56] [cursor=pointer]:
+          - /url: /shop
+      - generic [ref=e57]:
+        - article [ref=e58]:
+          - generic [ref=e59]:
+            - link "FeatherSoft everyday bra in Nude, front view. Ultra-soft microfiber. Medium support. Sizes 28A–44DD. The everyday bra that feels like a second skin." [ref=e60] [cursor=pointer]:
+              - /url: /shop/1
+              - img "FeatherSoft everyday bra in Nude, front view. Ultra-soft microfiber. Medium support. Sizes 28A–44DD. The everyday bra that feels like a second skin." [ref=e62]
+            - generic [ref=e64]: Bestseller
+            - button "Save to wishlist" [ref=e66] [cursor=pointer]
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - button "Show colour 1" [pressed] [ref=e71] [cursor=pointer]
+              - button "Show colour 2" [ref=e73] [cursor=pointer]
+              - button "Show colour 3" [ref=e75] [cursor=pointer]
+            - generic [ref=e77]:
+              - link [ref=e78] [cursor=pointer]:
+                - /url: /shop/1
+                - heading "FeatherSoft" [level=3] [ref=e79]
+              - generic [ref=e80]: ₹699
+            - generic [ref=e81]:
+              - paragraph [ref=e82]: 28A–44DD
+              - generic [ref=e83]: ₹899
+        - article [ref=e84]:
+          - generic [ref=e85]:
+            - link "Velvet Plunge push-up bra in Midnight, front view. Soft velvet. High support. Sizes 30B–38DD. That evening shape that still feels soft at every hour." [ref=e86] [cursor=pointer]:
+              - /url: /shop/4
+              - img "Velvet Plunge push-up bra in Midnight, front view. Soft velvet. High support. Sizes 30B–38DD. That evening shape that still feels soft at every hour." [ref=e88]
+            - generic [ref=e90]: Premium
+            - button "Save to wishlist" [ref=e92] [cursor=pointer]
+          - generic [ref=e95]:
+            - generic [ref=e96]:
+              - button "Show colour 1" [pressed] [ref=e97] [cursor=pointer]
+              - button "Show colour 2" [ref=e99] [cursor=pointer]
+              - button "Show colour 3" [ref=e101] [cursor=pointer]
+            - generic [ref=e103]:
+              - link [ref=e104] [cursor=pointer]:
+                - /url: /shop/4
+                - heading "Velvet Plunge" [level=3] [ref=e105]
+              - generic [ref=e106]: ₹1,099
+            - generic [ref=e107]:
+              - paragraph [ref=e108]: 30B–38DD
+              - generic [ref=e109]: ₹1,299
+        - article [ref=e110]:
+          - generic [ref=e111]:
+            - link "Floral Luxe lace bra in Ivory, front view. French lace. Medium support. Sizes 30B–42DD. Delicate lace that makes every day feel special." [ref=e112] [cursor=pointer]:
+              - /url: /shop/6
+              - img "Floral Luxe lace bra in Ivory, front view. French lace. Medium support. Sizes 30B–42DD. Delicate lace that makes every day feel special." [ref=e114]
+            - generic [ref=e116]: New
+            - button "Save to wishlist" [ref=e118] [cursor=pointer]
+          - generic [ref=e121]:
+            - generic [ref=e122]:
+              - button "Show colour 1" [pressed] [ref=e123] [cursor=pointer]
+              - button "Show colour 2" [ref=e125] [cursor=pointer]
+              - button "Show colour 3" [ref=e127] [cursor=pointer]
+            - generic [ref=e129]:
+              - link [ref=e130] [cursor=pointer]:
+                - /url: /shop/6
+                - heading "Floral Luxe" [level=3] [ref=e131]
+              - generic [ref=e132]: ₹1,499
+            - generic [ref=e133]:
+              - paragraph [ref=e134]: 30B–42DD
+              - generic [ref=e135]: ₹1,699
+        - article [ref=e136]:
+          - generic [ref=e137]:
+            - link "CurveLove full-figure bra in Nude, front view. Stretch lace. High support. Sizes 34C–50H. Designed for fuller curves with secure support and soft edges." [ref=e138] [cursor=pointer]:
+              - /url: /shop/12
+              - img "CurveLove full-figure bra in Nude, front view. Stretch lace. High support. Sizes 34C–50H. Designed for fuller curves with secure support and soft edges." [ref=e140]
+            - generic [ref=e142]: Bestseller
+            - button "Save to wishlist" [ref=e144] [cursor=pointer]
+          - generic [ref=e147]:
+            - generic [ref=e148]:
+              - button "Show colour 1" [pressed] [ref=e149] [cursor=pointer]
+              - button "Show colour 2" [ref=e151] [cursor=pointer]
+              - button "Show colour 3" [ref=e153] [cursor=pointer]
+            - generic [ref=e155]:
+              - link [ref=e156] [cursor=pointer]:
+                - /url: /shop/12
+                - heading "CurveLove" [level=3] [ref=e157]
+              - generic [ref=e158]: ₹1,149
+            - generic [ref=e159]:
+              - paragraph [ref=e160]: 34C–50H
+              - generic [ref=e161]: ₹1,249
+    - generic [ref=e162]:
+      - generic [ref=e163]:
+        - generic [ref=e164]:
+          - paragraph [ref=e165]: Collections
+          - heading "Every shape has its own architecture." [level=2] [ref=e166]
+        - link "View all" [ref=e167] [cursor=pointer]:
+          - /url: /shop
+      - generic [ref=e168]:
+        - link [ref=e169] [cursor=pointer]:
+          - /url: /shop?cat=everyday
+          - img "Everyday" [ref=e170]
+          - generic [ref=e172]:
+            - heading "Everyday" [level=3] [ref=e173]
+            - paragraph [ref=e174]: The bra you forget you're wearing.
+        - link [ref=e175] [cursor=pointer]:
+          - /url: /shop?cat=lace
+          - img "Lace" [ref=e176]
+          - generic [ref=e178]:
+            - heading "Lace" [level=3] [ref=e179]
+            - paragraph [ref=e180]: Delicate. Precise.
+        - link [ref=e181] [cursor=pointer]:
+          - /url: /shop?cat=bridal
+          - img "Bridal" [ref=e182]
+          - generic [ref=e184]:
+            - heading "Bridal" [level=3] [ref=e185]
+            - paragraph [ref=e186]: Worn once. Remembered forever.
+        - link [ref=e187] [cursor=pointer]:
+          - /url: /shop?cat=sports
+          - img "Sports" [ref=e188]
+          - generic [ref=e190]:
+            - heading "Sports" [level=3] [ref=e191]
+            - paragraph [ref=e192]: For the moves that matter.
+        - link [ref=e193] [cursor=pointer]:
+          - /url: /shop?cat=seamless
+          - img "Seamless" [ref=e194]
+          - generic [ref=e196]:
+            - heading "Seamless" [level=3] [ref=e197]
+            - paragraph [ref=e198]: Invisible under anything.
+        - link [ref=e199] [cursor=pointer]:
+          - /url: /shop?cat=plus
+          - img "Plus" [ref=e200]
+          - generic [ref=e202]:
+            - heading "Plus" [level=3] [ref=e203]
+            - paragraph [ref=e204]: Built for every curve.
+        - link [ref=e205] [cursor=pointer]:
+          - /url: /shop?cat=pushup
+          - img "Push-Up" [ref=e206]
+          - generic [ref=e208]:
+            - heading "Push-Up" [level=3] [ref=e209]
+            - paragraph [ref=e210]: Shape, then forgotten.
+    - generic [ref=e211]:
+      - img "The Velura atelier" [ref=e212]
+      - generic [ref=e214]:
+        - paragraph [ref=e215]: ✦ Custom Bra
+        - paragraph [ref=e216]: Built from the measurements people actually live in.
+        - paragraph [ref=e217]: Band, cup, fabric, finish — specified, not approximated.
+        - link "Build Yours" [ref=e218] [cursor=pointer]:
+          - /url: /builder
+    - generic [ref=e219]:
+      - generic [ref=e221]:
+        - generic [ref=e222]:
+          - paragraph [ref=e223]: Lookbook
+          - heading "Sheer where it can be. Strong where it has to be." [level=2] [ref=e224]
+        - link "Explore Collection" [ref=e225] [cursor=pointer]:
+          - /url: /shop
+      - generic [ref=e226]:
+        - link [ref=e227] [cursor=pointer]:
+          - /url: /shop?cat=everyday
+          - img "Champagne silk, morning light" [ref=e228]
+          - paragraph [ref=e229]: Silk
+        - link [ref=e230] [cursor=pointer]:
+          - /url: /shop?cat=lace
+          - img "Black lace on linen" [ref=e231]
+          - paragraph [ref=e232]: Lace
+        - link [ref=e233] [cursor=pointer]:
+          - /url: /shop?cat=pushup
+          - img "Velvet in low light" [ref=e234]
+          - paragraph [ref=e235]: Velvet
+        - link [ref=e236] [cursor=pointer]:
+          - /url: /shop?cat=bridal
+          - img "Ivory, held to the light" [ref=e237]
+          - paragraph [ref=e238]: Bridal
+    - generic [ref=e240]:
+      - img "Black lace, photographed in pearl light" [ref=e242]
+      - generic [ref=e243]:
+        - paragraph [ref=e244]: From the fitting room
+        - blockquote [ref=e245]: “I forgot I was wearing it. That's exactly what I needed.”
+        - paragraph [ref=e246]: Priya M.
+        - paragraph [ref=e247]: Mumbai · FeatherSoft
+        - link "Explore Collection" [ref=e248] [cursor=pointer]:
+          - /url: /shop
+  - contentinfo [ref=e249]:
+    - generic [ref=e251]:
+      - generic [ref=e252]:
+        - paragraph [ref=e253]: Stay close
+        - heading "For the nights that begin at 9 PM." [level=2] [ref=e254]
+        - paragraph [ref=e255]: New arrivals. Nothing else.
+      - generic [ref=e257]:
+        - textbox "Your email" [ref=e258]
+        - button "Join" [ref=e259] [cursor=pointer]
+    - generic [ref=e260]:
+      - generic [ref=e261]:
+        - generic [ref=e262]:
+          - paragraph [ref=e263]: VELURA
+          - paragraph [ref=e264]: Crafted for the woman who knows.
+          - paragraph [ref=e265]: 26AA–52K · XS–4XL
+        - generic [ref=e266]:
+          - paragraph [ref=e267]: Collections
+          - list [ref=e268]:
+            - listitem [ref=e269]:
+              - link "Everyday" [ref=e270] [cursor=pointer]:
+                - /url: /shop?cat=everyday
+            - listitem [ref=e271]:
+              - link "Push-Up" [ref=e272] [cursor=pointer]:
+                - /url: /shop?cat=pushup
+            - listitem [ref=e273]:
+              - link "Lace" [ref=e274] [cursor=pointer]:
+                - /url: /shop?cat=lace
+            - listitem [ref=e275]:
+              - link "Sports" [ref=e276] [cursor=pointer]:
+                - /url: /shop?cat=sports
+            - listitem [ref=e277]:
+              - link "Seamless" [ref=e278] [cursor=pointer]:
+                - /url: /shop?cat=seamless
+            - listitem [ref=e279]:
+              - link "Plus" [ref=e280] [cursor=pointer]:
+                - /url: /shop?cat=plus
+            - listitem [ref=e281]:
+              - link "Bridal" [ref=e282] [cursor=pointer]:
+                - /url: /shop?cat=bridal
+        - generic [ref=e283]:
+          - paragraph [ref=e284]: Custom
+          - list [ref=e285]:
+            - listitem [ref=e286]:
+              - link "Build Yours" [ref=e287] [cursor=pointer]:
+                - /url: /builder
+            - listitem [ref=e288]:
+              - link "Fit Calculator" [ref=e289] [cursor=pointer]:
+                - /url: /builder
+            - listitem [ref=e290]:
+              - link "All collections" [ref=e291] [cursor=pointer]:
+                - /url: /shop
+        - generic [ref=e292]:
+          - paragraph [ref=e293]: Help
+          - list [ref=e294]:
+            - listitem [ref=e295]:
+              - link "Size Guide" [ref=e296] [cursor=pointer]:
+                - /url: /builder
+            - listitem [ref=e297]:
+              - link "Shipping" [ref=e298] [cursor=pointer]:
+                - /url: /shop
+            - listitem [ref=e299]:
+              - link "Returns" [ref=e300] [cursor=pointer]:
+                - /url: /shop
+            - listitem [ref=e301]:
+              - link "Contact" [ref=e302] [cursor=pointer]:
+                - /url: mailto:hello@velura.in
+      - generic [ref=e304]:
+        - paragraph [ref=e305]: © 2026 Velura. All rights reserved.
+        - paragraph [ref=e306]: UPI · Cards · Net Banking · COD
+  - dialog [aria-hidden] [ref=e307]:
+    - generic [ref=e308]:
+      - heading [level=2] [ref=e309]: Your Bag
+      - button [ref=e310] [cursor=pointer]
+    - generic [ref=e315]:
+      - paragraph [ref=e316]: Your bag is empty.
+      - paragraph [ref=e317]: Invisible, weightless, unforgettable.
+      - link [ref=e318] [cursor=pointer]:
+        - /url: /shop
+        - text: Explore Collection
+  - button "Open Next.js Dev Tools" [ref=e324] [cursor=pointer]
+  - alert [ref=e328]

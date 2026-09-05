@@ -43,14 +43,14 @@ const CATEGORIES = [
     label: 'Plus',
     sub: 'Built for every curve.',
     image: '/images/categories/plus.jpg',
-    span: '',
+    span: 'col-span-2 min-h-[200px] md:min-h-0',
   },
   {
     id: 'pushup',
     label: 'Push-Up',
     sub: 'Shape, then forgotten.',
     image: '/images/categories/pushup.jpg',
-    span: '',
+    span: 'col-span-2 min-h-[200px] md:min-h-0',
   },
 ]
 

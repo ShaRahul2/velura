@@ -6,6 +6,7 @@ import { formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/store/cartStore'
 import { Minus, Plus, X } from 'lucide-react'
 import { CB_COLOR_OPTIONS } from '@/data/builderOptions'
+import { describeCartLine } from '@/lib/productDescribe'
 
 interface CartItemProps {
   item: CartItemType
@@ -24,7 +25,7 @@ export function CartItem({ item }: CartItemProps) {
         {item.images?.[0] ? (
           <Image
             src={item.images[0]}
-            alt={item.name}
+            alt={describeCartLine(item)}
             fill
             sizes="64px"
             className="object-cover"

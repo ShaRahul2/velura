@@ -1,5 +1,6 @@
 import { PrismaClient, BadgeType, ProductCategory, SupportLevel, ImageType } from '@prisma/client'
 import { products as STATIC } from '../data/products'
+import { describeProductImage, shotKindFromIndex } from '../lib/productDescribe'
 
 const db = new PrismaClient()
 
@@ -116,7 +117,7 @@ async function main() {
     p.images.map((url, i) => ({
       productId: p.id,
       url,
-      alt:       `${p.name} — ${['front view', 'back view', 'lifestyle'][i] ?? 'detail'}`,
+      alt:       describeProductImage(p, { shot: shotKindFromIndex(i) }),
       position:  i,
       type:      IMAGE_TYPES[i] ?? ImageType.detail,
       isPrimary: i === 0,
