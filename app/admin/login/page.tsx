@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic'
 import { useState, FormEvent, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { safeAdminCallback } from '@/lib/adminAuth'
 
 function LoginForm() {
@@ -94,7 +95,7 @@ function LoginForm() {
         </form>
         <p className="mt-8 text-center text-[0.7rem] tracking-[0.08em] text-[rgba(237,233,228,0.45)]">
           Managers with a store account use{' '}
-          <a href="/sign-in" className="text-[#EDE9E4] underline underline-offset-4">Google / email sign-in</a>.
+          <Link href="/sign-in" className="text-[#EDE9E4] underline underline-offset-4">Google / email sign-in</Link>.
         </p>
       </div>
     </div>

@@ -22,7 +22,7 @@ function isAdminPath(pathname: string) {
 
 async function credentialsAdminOnly(req: Parameters<typeof nextAuthAdmin>[0], event: never) {
   const { pathname } = req.nextUrl
-  if (isAdminPath(pathname) && pathname !== '/admin/login' && pathname !== '/admin/denied') {
+  if (isAdminPath(pathname) && pathname !== '/admin/login' && pathname !== '/admin/denied' && pathname !== '/admin/forbidden') {
     return nextAuthAdmin(req, event)
   }
   return NextResponse.next()
@@ -37,7 +37,7 @@ export default clerkConfigured()
       }
 
       const { pathname } = req.nextUrl
-      if (isAdminPath(pathname) && pathname !== '/admin/login' && pathname !== '/admin/denied') {
+      if (isAdminPath(pathname) && pathname !== '/admin/login' && pathname !== '/admin/denied' && pathname !== '/admin/forbidden') {
         const { userId } = await auth()
         if (userId) return NextResponse.next()
         return nextAuthAdmin(req, event as never)

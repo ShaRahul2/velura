@@ -6,6 +6,8 @@ import { db } from '@/lib/db'
 import { pageWrap } from '@/lib/utils'
 import { AddressManager, ProfileForm } from './AccountForms'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Account',
   robots: { index: false, follow: false },
