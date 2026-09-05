@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import './globals.css'
 import { StorefrontFrame } from '@/components/layout/StorefrontFrame'
+import { AuthProviders } from '@/components/auth/AuthProviders'
 import { siteUrl } from '@/lib/site'
 
 const cormorant = Cormorant_Garamond({
@@ -50,7 +51,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body className="min-h-screen bg-cream text-deep font-sans antialiased">
-        <StorefrontFrame>{children}</StorefrontFrame>
+        <AuthProviders>
+          <StorefrontFrame>{children}</StorefrontFrame>
+        </AuthProviders>
       </body>
     </html>
   )

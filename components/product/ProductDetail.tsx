@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { Heart } from 'lucide-react'
 import type { Product } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
@@ -9,6 +10,7 @@ import { Button } from '@/components/ui/Button'
 import { SizeSelector } from './SizeSelector'
 import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
+import { useWishlistStore } from '@/store/wishlistStore'
 import { colorLabel } from '@/lib/colorways'
 import { imagesForColor } from '@/lib/productColorImages'
 import { parseSizeRange } from '@/lib/sizes'
@@ -26,6 +28,8 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
   const add      = useCartStore((s) => s.add)
   const openCart = useUiStore((s) => s.openCart)
   const addToast = useUiStore((s) => s.addToast)
+  const toggleWish = useWishlistStore((s) => s.toggle)
+  const wishlisted = useWishlistStore((s) => s.isWishlisted(product.id))
 
   const availableSizes = parseSizeRange(product.sizes)
   const [guideOpen, setGuideOpen] = useState(false)
@@ -159,9 +163,20 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
         )}
       </div>
 
-      <Button variant="dark" size="lg" onClick={handleAddToBag} className="w-full hidden md:inline-flex">
-        Add to Bag
-      </Button>
+      <div className="hidden gap-2 md:flex">
+        <Button variant="dark" size="lg" onClick={handleAddToBag} className="flex-1">
+          Add to Bag
+        </Button>
+        <button
+          type="button"
+          onClick={() => toggleWish(product.id)}
+          aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+          aria-pressed={wishlisted}
+          className="flex h-12 w-12 items-center justify-center border border-deep text-deep"
+        >
+          <Heart size={16} strokeWidth={1.7} fill={wishlisted ? 'currentColor' : 'none'} aria-hidden="true" />
+        </button>
+      </div>
 
       <ul className="flex flex-col gap-1.5">
         {[

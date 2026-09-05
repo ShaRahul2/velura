@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useCartStore, useCartHydrated } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { AddressForm } from '@/components/checkout/AddressForm'
+import { CheckoutAccountPrefill } from '@/components/checkout/CheckoutAccountPrefill'
 import { PaymentMethods } from '@/components/checkout/PaymentMethods'
 import { OrderSummaryPanel } from '@/components/checkout/OrderSummaryPanel'
 import type { Address } from '@/types'
@@ -324,6 +325,7 @@ export default function CheckoutPage() {
                 </p>
               </div>
             )}
+            <CheckoutAccountPrefill address={address} onChange={setAddress} />
             <AddressForm value={address} onChange={setAddress} submitted={submitted} />
             <PaymentMethods
               selected={payment}

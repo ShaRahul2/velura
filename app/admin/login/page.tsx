@@ -92,6 +92,10 @@ function LoginForm() {
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
+        <p className="mt-8 text-center text-[0.7rem] tracking-[0.08em] text-[rgba(237,233,228,0.45)]">
+          Managers with a store account use{' '}
+          <a href="/sign-in" className="text-[#EDE9E4] underline underline-offset-4">Google / email sign-in</a>.
+        </p>
       </div>
     </div>
   )

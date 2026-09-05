@@ -3,13 +3,20 @@ import { queryProducts } from '@/lib/products'
 import { products as staticProducts } from '@/data/products'
 import { WishlistGrid } from '@/components/shop/WishlistGrid'
 import { withTimeout } from '@/lib/utils'
+import { clerkConfigured } from '@/lib/clerkEnv'
+import { requireSignedInProfile } from '@/lib/requireCustomer'
 
 export const metadata: Metadata = {
   title: 'Saved',
   description: 'Pieces you kept. Velura.',
+  robots: { index: false, follow: false },
 }
 
 export default async function WishlistPage() {
+  if (clerkConfigured()) {
+    await requireSignedInProfile()
+  }
+
   let catalog = staticProducts
   try {
     const result = await withTimeout(

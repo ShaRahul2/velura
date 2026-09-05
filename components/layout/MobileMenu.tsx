@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: '/shop', label: 'Shop' },
   { href: '/builder', label: '✦ Custom Bra' },
   { href: '/wishlist', label: 'Saved' },
+  { href: '/account', label: 'Account' },
 ]
 
 const CATS = [

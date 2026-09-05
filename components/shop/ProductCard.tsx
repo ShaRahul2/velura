@@ -4,13 +4,15 @@ import { memo, useState } from 'react'
 import Link from 'next/link'
 import { Heart } from 'lucide-react'
 import type { Product } from '@/types'
-import { formatPrice, cn } from '@/lib/utils'
+import { formatPrice, cn, firstSizeFromRange } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { ProductPhoto } from '@/components/product/ProductPhoto'
 import { imagesForColor } from '@/lib/productColorImages'
 import { colorLabel } from '@/lib/colorways'
 import { describeProductImage } from '@/lib/productDescribe'
+import { useCartStore } from '@/store/cartStore'
+import { useUiStore } from '@/store/uiStore'
 
 interface ProductCardProps {
   product: Product
@@ -21,6 +23,9 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
   const [colorIndex, setColorIndex] = useState(0)
   const toggle = useWishlistStore((s) => s.toggle)
   const isWishlisted = useWishlistStore((s) => s.isWishlisted)
+  const add = useCartStore((s) => s.add)
+  const openCart = useUiStore((s) => s.openCart)
+  const addToast = useUiStore((s) => s.addToast)
   const wishlisted = isWishlisted(product.id)
   const hasAlt = product.images.length > 1
   const colors = product.colorways ?? []
@@ -137,6 +142,28 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
             </span>
           )}
         </div>
+        <button
+          type="button"
+          onClick={() => {
+            const size = firstSizeFromRange(product.sizes)
+            add({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              qty: 1,
+              size,
+              emoji: product.emoji,
+              images: colorImages,
+              color: colors[colorIndex],
+              colorLabel: selectedColour ?? undefined,
+            })
+            addToast(`${product.name} (${size}${selectedColour ? ` · ${selectedColour}` : ''}) added to bag`)
+            openCart()
+          }}
+          className="mt-1 self-start font-sans text-[0.68rem] uppercase tracking-btn text-deep underline underline-offset-4 hover:opacity-70"
+        >
+          Add to Bag
+        </button>
       </div>
     </article>
   )

@@ -12,6 +12,7 @@ import { CartDrawer } from '@/components/cart/CartDrawer'
 import { ToastContainer } from '@/components/ui/Toast'
 import { SearchOverlay } from '@/components/search/SearchOverlay'
 import { StylistDrawer } from '@/components/stylist/StylistDrawer'
+import { AccountSync } from '@/components/auth/AccountSync'
 import { cn } from '@/lib/utils'
 
 export function StorefrontFrame({ children }: { children: React.ReactNode }) {
@@ -33,7 +34,14 @@ export function StorefrontFrame({ children }: { children: React.ReactNode }) {
     return () => cancelAnimationFrame(id)
   }, [count, pathname])
 
-  if (isAdmin) return <>{children}</>
+  if (isAdmin) {
+    return (
+      <>
+        <AccountSync />
+        {children}
+      </>
+    )
+  }
 
   return (
     <>
@@ -64,6 +72,7 @@ export function StorefrontFrame({ children }: { children: React.ReactNode }) {
       <SearchOverlay />
       <StylistDrawer />
       <ToastContainer />
+      <AccountSync />
     </>
   )
 }
