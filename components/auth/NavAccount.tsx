@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { User } from 'lucide-react'
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { Show, UserButton } from '@clerk/nextjs'
 
 export function NavAccount() {
   const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
@@ -20,7 +20,7 @@ export function NavAccount() {
 
   return (
     <>
-      <SignedOut>
+      <Show when="signed-out">
         <Link
           href="/sign-in"
           className="hidden p-2.5 text-blush/70 transition-colors hover:text-blush sm:flex"
@@ -28,8 +28,8 @@ export function NavAccount() {
         >
           <User size={17} strokeWidth={1.6} aria-hidden="true" />
         </Link>
-      </SignedOut>
-      <SignedIn>
+      </Show>
+      <Show when="signed-in">
         <Link
           href="/account"
           className="hidden p-2.5 font-sans text-[0.68rem] tracking-btn uppercase text-blush/70 transition-colors hover:text-blush sm:flex"
@@ -39,7 +39,7 @@ export function NavAccount() {
         <div className="hidden items-center px-1 sm:flex">
           <UserButton appearance={{ elements: { avatarBox: 'h-7 w-7 rounded-[3px]' } }} />
         </div>
-      </SignedIn>
+      </Show>
     </>
   )
 }
