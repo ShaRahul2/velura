@@ -1,14 +1,16 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useCartStore } from '@/store/cartStore'
+import { useCartStore, useCartHydrated } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { AddressForm } from '@/components/checkout/AddressForm'
 import { PaymentMethods } from '@/components/checkout/PaymentMethods'
 import { OrderSummaryPanel } from '@/components/checkout/OrderSummaryPanel'
 import type { Address } from '@/types'
 import Link from 'next/link'
+import { pageWrap } from '@/lib/utils'
+import { COD_LIMIT } from '@/lib/coupons'
 
 const EMPTY_ADDRESS: Address = {
   firstName:   '',
@@ -26,21 +28,14 @@ export default function CheckoutPage() {
   const items     = useCartStore((s) => s.items)
   const clearCart = useCartStore((s) => s.clear)
   const addToast  = useUiStore((s) => s.addToast)
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setMounted(true))
-    return () => cancelAnimationFrame(id)
-  }, [])
+  const hydrated  = useCartHydrated()
 
   const [address,    setAddress]    = useState<Address>(EMPTY_ADDRESS)
   const [payment,    setPayment]    = useState('upi')
   const [loading,    setLoading]    = useState(false)
   const [couponCode, setCouponCode] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
-  const errorSummaryRef = useRef<HTMLDivElement>(null)
 
-  // Totals are owned by OrderSummaryPanel (single source of truth).
-  // The panel calls onTotals on every render so this is always current.
   const [totals, setTotals] = useState({
     subtotal: 0,
     shipping: 0,
@@ -48,15 +43,21 @@ export default function CheckoutPage() {
     total:    0,
   })
 
+  useEffect(() => {
+    if (payment === 'cod' && totals.total >= COD_LIMIT) {
+      setPayment('upi')
+    }
+  }, [payment, totals.total])
+
   function missingAddressFields() {
     const fields: { id: string; label: string; ok: boolean }[] = [
-      { id: 'checkout-firstName', label: 'first name', ok: Boolean(address.firstName.trim()) },
-      { id: 'checkout-lastName', label: 'last name', ok: Boolean(address.lastName.trim()) },
-      { id: 'checkout-email', label: 'email', ok: Boolean(address.email.trim()) },
-      { id: 'checkout-phone', label: 'phone', ok: Boolean(address.phone.trim()) },
-      { id: 'checkout-addressLine', label: 'address', ok: Boolean(address.addressLine.trim()) },
-      { id: 'checkout-city', label: 'city', ok: Boolean(address.city.trim()) },
-      { id: 'checkout-state', label: 'state', ok: Boolean(address.state.trim()) },
+      { id: 'checkout-firstName', label: 'First name', ok: Boolean(address.firstName.trim()) },
+      { id: 'checkout-lastName', label: 'Last name', ok: Boolean(address.lastName.trim()) },
+      { id: 'checkout-email', label: 'Email', ok: Boolean(address.email.trim()) },
+      { id: 'checkout-phone', label: 'Phone', ok: Boolean(address.phone.trim()) },
+      { id: 'checkout-addressLine', label: 'Address', ok: Boolean(address.addressLine.trim()) },
+      { id: 'checkout-city', label: 'City', ok: Boolean(address.city.trim()) },
+      { id: 'checkout-state', label: 'State', ok: Boolean(address.state.trim()) },
       { id: 'checkout-pinCode', label: 'PIN code', ok: Boolean(address.pinCode.trim()) },
     ]
     return fields.filter((f) => !f.ok)
@@ -70,7 +71,10 @@ export default function CheckoutPage() {
     e.preventDefault()
     setSubmitted(true)
     if (!isAddressComplete() || items.length === 0) {
-      requestAnimationFrame(() => errorSummaryRef.current?.focus())
+      const first = missingAddressFields()[0]
+      requestAnimationFrame(() => {
+        document.getElementById(first?.id)?.focus()
+      })
       return
     }
     setLoading(true)
@@ -110,60 +114,87 @@ export default function CheckoutPage() {
     }
   }
 
-  if (!mounted || items.length === 0) {
+  if (!hydrated) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        {mounted && (
-          <>
-            <p className="font-serif text-[1.4rem] font-light text-deep">Your bag is empty.</p>
-            <Link
-              href="/shop"
-              className="font-sans text-[0.78rem] lg:text-[0.84rem] tracking-btn uppercase underline underline-offset-4 text-mauve"
-            >
-              Explore Collection
-            </Link>
-          </>
-        )}
+      <div className={`${pageWrap} py-12 md:py-16`} aria-hidden="true">
+        <div className="mb-3 h-3 w-20 bg-blush" />
+        <div className="mb-10 h-9 w-48 bg-blush" />
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_360px]">
+          <div className="space-y-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-12 bg-blush" />
+            ))}
+          </div>
+          <div className="h-72 bg-blush" />
+        </div>
       </div>
     )
   }
 
+  if (items.length === 0) {
+    return (
+      <div className="flex min-h-[calc(100svh-8.5rem)] flex-col items-center justify-center px-6 text-center">
+        <p className="mb-3 font-sans text-[0.68rem] tracking-label uppercase text-rose">
+          Checkout
+        </p>
+        <p className="mb-3 font-serif text-[2rem] font-light text-deep md:text-[2.4rem]">
+          Your bag is empty.
+        </p>
+        <p className="mb-8 max-w-xs font-sans text-[0.9rem] font-light leading-relaxed text-mauve">
+          Nothing to place yet.
+        </p>
+        <Link
+          href="/shop"
+          className="pressable pressable-track inline-flex h-12 items-center rounded-btn bg-deep px-8 font-sans text-[0.8rem] tracking-btn uppercase text-blush"
+        >
+          Explore Collection
+        </Link>
+      </div>
+    )
+  }
+
+  const submitLabel = loading
+    ? 'Placing Order…'
+    : `Place Order · ₹${totals.total.toLocaleString('en-IN')}`
+
   return (
-    <div className="mx-auto w-full max-w-[1100px] px-5 md:px-8 lg:px-12 py-10 md:py-14">
-      <div className="mb-8">
-        <p className="font-sans text-[0.68rem] lg:text-[0.74rem] tracking-label uppercase text-rose mb-2">Checkout</p>
+    <div className={`${pageWrap} py-10 pb-28 md:py-14 lg:pb-16`}>
+      <div className="mb-10">
+        <p className="mb-2 font-sans text-[0.68rem] tracking-label uppercase text-rose">
+          Checkout
+        </p>
         <h1
           className="font-serif font-light text-deep"
-          style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', letterSpacing: '-0.01em' }}
+          style={{ fontSize: 'clamp(1.8rem, 3.6vw, 2.8rem)', letterSpacing: '-0.01em' }}
         >
           Almost there.
         </h1>
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-14">
-          {/* Left — forms */}
-          <div className="space-y-8">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-14">
+          <div className="order-2 space-y-10 lg:order-1">
             {submitted && missingAddressFields().length > 0 && (
-              <div
-                ref={errorSummaryRef}
-                tabIndex={-1}
-                role="alert"
-                aria-labelledby="checkout-error-title"
-                className="border border-lm bg-blush/60 p-4 outline-none"
-              >
-                <p id="checkout-error-title" className="font-sans text-[0.78rem] tracking-btn uppercase text-deep mb-2">
-                  There is a problem
+              <div role="alert" aria-labelledby="checkout-error-title">
+                <p
+                  id="checkout-error-title"
+                  className="font-serif text-[1.2rem] font-light leading-snug text-deep"
+                >
+                  A few details are still needed.
                 </p>
-                <ul className="flex flex-col gap-1">
-                  {missingAddressFields().map((field) => (
-                    <li key={field.id}>
-                      <a href={`#${field.id}`} className="font-sans text-[0.84rem] text-deep underline underline-offset-4">
-                        Enter {field.label}
+                <p className="mt-2 font-sans text-[0.78rem] leading-relaxed text-mauve">
+                  {missingAddressFields().map((field, i, all) => (
+                    <span key={field.id}>
+                      <a
+                        href={`#${field.id}`}
+                        className="underline decoration-lm underline-offset-4 transition-colors hover:text-deep hover:decoration-deep"
+                      >
+                        {field.label}
                       </a>
-                    </li>
+                      {i < all.length - 1 ? <span aria-hidden="true"> · </span> : null}
+                    </span>
                   ))}
-                </ul>
+                </p>
               </div>
             )}
             <AddressForm value={address} onChange={setAddress} submitted={submitted} />
@@ -172,21 +203,32 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={loading}
-              className="pressable pressable-track w-full h-12 font-sans text-[0.8rem] tracking-btn uppercase bg-deep text-blush disabled:opacity-40"
-              style={{ borderRadius: 3 }}
+              className="pressable pressable-track hidden h-12 w-full rounded-btn bg-deep font-sans text-[0.8rem] tracking-btn uppercase text-blush disabled:opacity-40 lg:inline-flex lg:items-center lg:justify-center"
             >
-              {loading
-                ? 'Placing Order…'
-                : `Place Order · ₹${totals.total.toLocaleString('en-IN')}`}
+              {submitLabel}
             </button>
           </div>
 
-          {/* Right — order summary (owns total calculation) */}
-          <OrderSummaryPanel
-            items={items}
-            onTotals={setTotals}
-            onCoupon={setCouponCode}
-          />
+          <div className="order-1 lg:order-2">
+            <OrderSummaryPanel
+              items={items}
+              onTotals={setTotals}
+              onCoupon={setCouponCode}
+            />
+          </div>
+        </div>
+
+        <div
+          className="fixed inset-x-0 bottom-0 z-30 border-t border-lm bg-cream/96 px-5 py-3 backdrop-blur-md lg:hidden"
+          style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+        >
+          <button
+            type="submit"
+            disabled={loading}
+            className="pressable pressable-track flex h-12 w-full items-center justify-center rounded-btn bg-deep font-sans text-[0.8rem] tracking-btn uppercase text-blush disabled:opacity-40"
+          >
+            {submitLabel}
+          </button>
         </div>
       </form>
     </div>

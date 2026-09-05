@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 1080px; height: 1920px; overflow: hidden; background: #151110; }
+    body { font-family: "DM Sans", Arial, sans-serif; color: #f2e6e1; }
+    .canvas { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #151110; }
+    .hero { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 52% 10%; opacity: .86; }
+    .veil { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(21,17,16,.55), rgba(21,17,16,.22) 36%, rgba(21,17,16,.94)); }
+    .rail { position: absolute; left: 0; right: 0; bottom: 0; height: 48px; background: repeating-linear-gradient(90deg, rgba(21,17,16,.40) 0 2px, transparent 2px 30px), linear-gradient(90deg, #a7895f, #d8be8d 48%, #a7895f); }
+    .vrail { position: absolute; left: 68px; top: 158px; bottom: 48px; width: 38px; background: repeating-linear-gradient(180deg, rgba(21,17,16,.40) 0 2px, transparent 2px 30px), linear-gradient(180deg, #a7895f, #d8be8d 48%, #a7895f); }
+    .brand { position: absolute; top: 78px; left: 68px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 31px; letter-spacing: .16em; }
+    .copy { position: absolute; left: 142px; right: 92px; bottom: 205px; }
+    .eyebrow { color: #d8be8d; font-size: 24px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 34px; }
+    h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 300; font-size: 146px; line-height: .92; letter-spacing: 0; }
+    .sub { width: 650px; margin-top: 40px; color: rgba(242,230,225,.80); font-size: 31px; line-height: 1.34; }
+    .cta { display: inline-block; margin-top: 44px; padding: 24px 34px; background: #f2e6e1; color: #151110; font-size: 23px; letter-spacing: .12em; text-transform: uppercase; }
+    .tag { position: absolute; right: 64px; top: 166px; color: rgba(242,230,225,.62); font-size: 19px; letter-spacing: .12em; text-transform: uppercase; writing-mode: vertical-rl; }
+  </style>
+</head>
+<body>
+  <main class="canvas" aria-label="Velura new collection Instagram story">
+    <img class="hero" src="../../public/images/hero/campaign.jpg" alt="" />
+    <div class="veil"></div>
+    <div class="vrail"></div>
+    <p class="brand">VELURA</p>
+    <p class="tag">New collection</p>
+    <section class="copy">
+      <p class="eyebrow">Fit-first lingerie</p>
+      <h1>Measured close.<br />Worn quiet.</h1>
+      <p class="sub">Soft under clothes. Built around real measurements.</p>
+      <p class="cta">Shop the collection</p>
+    </section>
+    <div class="rail"></div>
+  </main>
+</body>
+</html>

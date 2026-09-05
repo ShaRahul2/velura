@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import type { CartItem } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { calcShipping, calcDiscount, FREE_SHIPPING_THRESHOLD } from '@/lib/coupons'
+import { useUiStore } from '@/store/uiStore'
 
 interface Props {
   items:     CartItem[]
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
+  const openCart = useUiStore((s) => s.openCart)
   const [couponInput, setCouponInput] = useState('')
   const [appliedCode, setAppliedCode] = useState<string | null>(null)
   const [couponError, setCouponError] = useState('')
@@ -20,14 +22,12 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
   const shipping = calcShipping(subtotal)
-  // Discount recomputed client-side from validated code + current subtotal
   const discount = calcDiscount(appliedCode, subtotal)
   const total    = Math.max(0, subtotal + shipping - discount)
 
-  // Keep parent in sync on every render (covers mount + item changes + coupon changes)
   useEffect(() => {
     onTotals({ subtotal, shipping, discount, total })
-    // onTotals is setTotals from parent useState — stable reference, safe to omit
+    // onTotals is setTotals from parent useState — stable reference
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subtotal, shipping, discount, total])
 
@@ -50,7 +50,7 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
       setAppliedCode(data.data!.code)
       onCoupon?.(data.data!.code)
     } catch {
-      setCouponError('Failed to validate coupon. Please try again.')
+      setCouponError('Could not apply that code.')
     } finally {
       setApplying(false)
     }
@@ -64,107 +64,119 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
   }
 
   return (
-    <div
-      className="p-6 lg:sticky lg:top-28"
-      style={{ borderRadius: 4, border: '1px solid #D8D4CE', background: '#FDFBF9' }}
-    >
-      <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-4">
-        Order Summary
-      </p>
+    <div className="rounded-card border border-lm bg-blush/50 p-6 lg:sticky lg:top-24">
+      <div className="mb-5 flex items-baseline justify-between gap-3">
+        <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose">
+          Order
+        </p>
+        <button
+          type="button"
+          onClick={openCart}
+          className="font-sans text-[0.68rem] tracking-btn uppercase text-mauve underline underline-offset-4 hover:text-deep"
+        >
+          Edit bag
+        </button>
+      </div>
 
-      {/* Items */}
-      <div className="space-y-3 mb-4">
+      <div className="mb-5 space-y-3">
         {items.map((item) => (
-          <div key={`${item.id}-${item.size}`} className="flex gap-3 items-start">
-            <div
-              className="w-14 h-16 lg:w-16 lg:h-20 flex-shrink-0 flex items-center justify-center bg-blush overflow-hidden"
-              style={{ borderRadius: 4 }}
-            >
+          <div key={`${item.id}-${item.size}-${item.color ?? ''}`} className="flex items-start gap-3">
+            <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-card bg-blush lg:h-20 lg:w-16">
               {item.images[0] ? (
-                <div className="relative w-full h-full">
-                  <Image src={item.images[0]} alt={item.name} fill sizes="56px" className="object-cover" />
-                </div>
+                <Image src={item.images[0]} alt={item.name} fill sizes="64px" className="object-cover" />
               ) : (
-                <span className="text-2xl">{item.emoji}</span>
+                <span className="flex h-full items-center justify-center font-serif text-lg text-mauve">
+                  {item.name.charAt(0)}
+                </span>
               )}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-serif text-[0.88rem] lg:text-[0.95rem] text-deep leading-snug line-clamp-1">{item.name}</p>
-              <p className="font-sans text-[0.65rem] lg:text-[0.7rem] text-mauve mt-0.5">Size {item.size} · Qty {item.qty}</p>
+            <div className="min-w-0 flex-1">
+              <p className="line-clamp-1 font-serif text-[0.95rem] leading-snug text-deep">{item.name}</p>
+              <p className="mt-0.5 font-sans text-[0.7rem] text-mauve">
+                Size {item.size} · Qty {item.qty}
+              </p>
             </div>
-            <span className="font-sans text-[0.8rem] lg:text-[0.88rem] text-deep flex-shrink-0">
+            <span className="shrink-0 font-sans text-[0.88rem] tabular-nums text-deep">
               {formatPrice(item.price * item.qty)}
             </span>
           </div>
         ))}
       </div>
 
-      {/* Coupon */}
       {appliedCode ? (
-        <div className="flex items-center justify-between mb-4 px-3 py-2 bg-blush rounded-[3px]">
-          <span className="font-sans text-[0.72rem] lg:text-[0.78rem] text-deep">
-            <span className="font-medium">{appliedCode}</span> applied — saving {formatPrice(discount)}
+        <div className="mb-5 flex items-center justify-between rounded-btn bg-cream px-3 py-2.5">
+          <span className="font-sans text-[0.78rem] text-deep">
+            <span className="font-medium">{appliedCode}</span> — saving {formatPrice(discount)}
           </span>
           <button
+            type="button"
             onClick={handleRemove}
-            className="font-sans text-[0.65rem] lg:text-[0.7rem] text-mauve underline underline-offset-2 ml-3"
+            className="ml-3 font-sans text-[0.7rem] text-mauve underline underline-offset-2 hover:text-deep"
           >
             Remove
           </button>
         </div>
       ) : (
-        <div className="mb-4">
+        <div className="mb-5">
           <div className="flex gap-2">
             <input
               type="text"
               value={couponInput}
               onChange={(e) => { setCouponInput(e.target.value); setCouponError('') }}
-              onKeyDown={(e) => e.key === 'Enter' && handleApply()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  void handleApply()
+                }
+              }}
               placeholder="Coupon code"
-              className="flex-1 h-9 px-3 font-sans text-[0.78rem] lg:text-[0.85rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors"
-              style={{ borderRadius: 3 }}
+              aria-label="Coupon code"
+              aria-invalid={Boolean(couponError)}
+              aria-describedby={couponError ? 'coupon-error' : undefined}
+              className="h-11 flex-1 rounded-input border border-lm bg-cream px-3 font-sans text-[0.85rem] text-deep placeholder:text-mauve/40 transition-colors focus:border-deep focus:outline-none"
             />
             <button
-              onClick={handleApply}
+              type="button"
+              onClick={() => void handleApply()}
               disabled={applying}
-              className="pressable pressable-track h-9 px-4 font-sans text-[0.7rem] lg:text-[0.76rem] tracking-btn uppercase border border-deep text-deep hover:bg-deep hover:text-blush disabled:opacity-50"
-              style={{ borderRadius: 3 }}
+              className="pressable pressable-track h-11 px-4 rounded-btn border border-deep font-sans text-[0.72rem] tracking-btn uppercase text-deep hover:bg-deep hover:text-blush disabled:opacity-50"
             >
-              {applying ? '…' : 'Apply'}
+              {applying ? 'Applying' : 'Apply'}
             </button>
           </div>
           {couponError && (
-            <p className="font-sans text-[0.65rem] lg:text-[0.7rem] text-mauve mt-1">{couponError}</p>
+            <p id="coupon-error" role="alert" className="mt-1.5 font-sans text-[0.7rem] text-mauve">
+              {couponError}
+            </p>
           )}
         </div>
       )}
 
-      {/* Totals */}
-      <div className="space-y-2 pt-4 border-t border-lm">
+      <div className="space-y-2 border-t border-lm pt-4">
         <div className="flex justify-between">
-          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-mauve">Subtotal</span>
-          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-deep">{formatPrice(subtotal)}</span>
+          <span className="font-sans text-[0.82rem] text-mauve">Subtotal</span>
+          <span className="font-sans text-[0.82rem] tabular-nums text-deep">{formatPrice(subtotal)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-mauve">Shipping</span>
-          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] text-deep">
+          <span className="font-sans text-[0.82rem] text-mauve">Shipping</span>
+          <span className="font-sans text-[0.82rem] tabular-nums text-deep">
             {shipping === 0 ? 'Free' : formatPrice(shipping)}
           </span>
         </div>
         {discount > 0 && (
-          <div className="flex justify-between text-rose">
-            <span className="font-sans text-[0.75rem] lg:text-[0.82rem]">Discount</span>
-            <span className="font-sans text-[0.75rem] lg:text-[0.82rem]">−{formatPrice(discount)}</span>
+          <div className="flex justify-between">
+            <span className="font-sans text-[0.82rem] text-mauve">Discount</span>
+            <span className="font-sans text-[0.82rem] tabular-nums text-deep">−{formatPrice(discount)}</span>
           </div>
         )}
         {subtotal < FREE_SHIPPING_THRESHOLD && (
-          <p className="font-sans text-[0.63rem] lg:text-[0.68rem] text-rose">
+          <p className="font-sans text-[0.68rem] text-mauve">
             Add {formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} more for free shipping
           </p>
         )}
-        <div className="flex justify-between pt-3 border-t border-lm">
-          <span className="font-sans text-[0.75rem] lg:text-[0.82rem] tracking-label uppercase text-deep">Total</span>
-          <span className="font-serif text-[1.3rem] lg:text-[1.4rem] font-light text-deep">{formatPrice(total)}</span>
+        <div className="flex items-baseline justify-between border-t border-lm pt-3">
+          <span className="font-sans text-[0.72rem] tracking-label uppercase text-deep">Total</span>
+          <span className="font-serif text-[1.4rem] font-light tabular-nums text-deep">{formatPrice(total)}</span>
         </div>
       </div>
     </div>

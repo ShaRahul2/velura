@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { HeroSection } from '@/components/home/HeroSection'
-import { TrustStrip } from '@/components/home/TrustStrip'
+import { MarqueeBanner } from '@/components/home/MarqueeBanner'
 import { FeaturedProducts, FeaturedProductsSkeleton } from '@/components/home/FeaturedProducts'
 import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { AtelierBanner } from '@/components/home/AtelierBanner'
@@ -24,7 +24,7 @@ export default function HomePage() {
         }}
       />
       <HeroSection />
-      <TrustStrip />
+      <MarqueeBanner />
       <Suspense fallback={<FeaturedProductsSkeleton />}>
         <FeaturedProducts />
       </Suspense>

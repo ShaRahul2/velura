@@ -12,10 +12,7 @@ export function MarqueeBanner() {
   const loop = [...ITEMS, ...ITEMS]
 
   return (
-    <div
-      className="overflow-hidden py-3 border-y"
-      style={{ background: '#0F0D0B', borderColor: 'rgba(184,168,152,0.14)' }}
-    >
+    <div className="overflow-hidden border-y border-nav-border bg-deep py-3.5">
       <div
         className="flex w-max whitespace-nowrap"
         style={{ animation: 'marquee 32s linear infinite' }}
@@ -23,11 +20,12 @@ export function MarqueeBanner() {
         {loop.map((item, i) => (
           <span
             key={`${item}-${i}`}
-            className="font-sans text-[0.68rem] tracking-label uppercase px-6"
-            style={{ color: '#EDE9E4' }}
+            className="px-7 font-sans text-[0.68rem] tracking-label uppercase text-blush"
           >
             {item}
-            <span className="ml-6 opacity-30">✦</span>
+            <span className="ml-7 text-rose/50" aria-hidden="true">
+              ✦
+            </span>
           </span>
         ))}
       </div>

@@ -61,7 +61,7 @@ export function ShopContent({
   return (
     <div>
       {showBanner ? (
-        <div className="relative h-44 md:h-64 overflow-hidden bg-blush mb-8 md:mb-12">
+        <div className="relative mb-10 h-[38vh] min-h-[240px] max-h-[420px] overflow-hidden bg-deep md:mb-14 md:h-[46vh]">
           <Image
             src={`/images/categories/${cat}.jpg`}
             alt=""
@@ -74,34 +74,34 @@ export function ShopContent({
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(to top, rgba(15,13,11,0.55) 0%, rgba(15,13,11,0.12) 100%)',
+                'linear-gradient(to top, rgba(15,13,11,0.62) 0%, rgba(15,13,11,0.10) 100%)',
             }}
           />
-          <div className={`relative z-10 h-full flex flex-col justify-end ${pageWrap} pb-6 md:pb-8`}>
-            <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-2">
+          <div className={`relative z-10 flex h-full flex-col justify-end ${pageWrap} pb-8 md:pb-12`}>
+            <p className="mb-2 font-sans text-[0.68rem] tracking-label uppercase text-rose">
               Collection
             </p>
             <h1
               className="font-serif font-light text-blush"
-              style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.02em' }}
+              style={{ fontSize: 'clamp(2.4rem, 5vw, 4.2rem)', letterSpacing: '-0.02em' }}
             >
               {headingText}
             </h1>
             {cat && CAT_COPY[cat] && (
-              <p className="font-sans text-[0.88rem] font-light text-blush/70 mt-1 max-w-md">
+              <p className="mt-2 max-w-md font-sans text-[0.92rem] font-light text-blush/70">
                 {CAT_COPY[cat]}
               </p>
             )}
           </div>
         </div>
       ) : (
-        <div className={`${pageWrap} pt-10 md:pt-14 lg:pt-16 mb-6 md:mb-8`}>
-          <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-3">
+        <div className={`${pageWrap} mb-8 pt-12 md:mb-10 md:pt-16 lg:pt-20`}>
+          <p className="mb-3 font-sans text-[0.68rem] tracking-label uppercase text-rose">
             {query ? 'Search' : 'Shop'}
           </p>
           <h1
             className="font-serif font-light text-deep"
-            style={{ fontSize: 'clamp(2rem, 3.6vw, 3.2rem)', letterSpacing: '-0.02em' }}
+            style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', letterSpacing: '-0.02em' }}
           >
             {headingText}
           </h1>

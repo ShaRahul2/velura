@@ -37,7 +37,7 @@ function ConfirmedContent() {
           href="/shop"
           className="pressable pressable-track inline-flex items-center h-11 px-8 rounded-btn font-sans text-[0.8rem] lg:text-[0.86rem] tracking-btn uppercase bg-deep text-blush"
         >
-          Continue Shopping
+          Explore Collection
         </Link>
       </div>
     </div>
