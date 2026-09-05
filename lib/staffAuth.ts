@@ -18,6 +18,20 @@ function credentialsEmail() {
 }
 
 export async function getStaff(): Promise<StaffActor | null> {
+  if (clerkConfigured()) {
+    const { userId } = await clerkAuth()
+    if (userId) {
+      const profile = await ensureProfileForUserId(userId)
+      if (!isStaffRole(profile.role)) return null
+      return {
+        role: profile.role,
+        source: 'clerk',
+        userId,
+        email: profile.email,
+      }
+    }
+  }
+
   const session = await nextAuth()
   const credEmail = credentialsEmail()
   if (session?.user?.email && credEmail && session.user.email.toLowerCase().trim() === credEmail) {
@@ -29,17 +43,7 @@ export async function getStaff(): Promise<StaffActor | null> {
     }
   }
 
-  if (!clerkConfigured()) return null
-  const { userId } = await clerkAuth()
-  if (!userId) return null
-  const profile = await ensureProfileForUserId(userId)
-  if (!isStaffRole(profile.role)) return null
-  return {
-    role: profile.role,
-    source: 'clerk',
-    userId,
-    email: profile.email,
-  }
+  return null
 }
 
 export async function requireStaff(): Promise<StaffActor> {

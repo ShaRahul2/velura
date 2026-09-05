@@ -14,35 +14,70 @@ export function AccountSync() {
   return <AccountSyncInner />
 }
 
+function mergeFlag(userId: string) {
+  return `velura-merged:${userId}`
+}
+
 function AccountSyncInner() {
-  const { isSignedIn, isLoaded } = useAuth()
+  const { isSignedIn, isLoaded, userId } = useAuth()
   const ready = useRef(false)
+  const lastUser = useRef<string | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (!isLoaded) return
-    if (!isSignedIn) {
+    if (!isSignedIn || !userId) {
       ready.current = false
+      if (lastUser.current) {
+        try {
+          sessionStorage.removeItem(mergeFlag(lastUser.current))
+        } catch {
+          /* private mode */
+        }
+      }
+      lastUser.current = null
       return
     }
 
+    lastUser.current = userId
     let cancelled = false
     ready.current = false
 
-    const guestCart = useCartStore.getState().items
-    const guestWish = useWishlistStore.getState().ids
+    const alreadyMerged = (() => {
+      try {
+        return sessionStorage.getItem(mergeFlag(userId)) === '1'
+      } catch {
+        return false
+      }
+    })()
 
     void (async () => {
       try {
-        const res = await fetch('/api/account/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cart: guestCart, wishlist: guestWish }),
-        })
-        const json = (await res.json()) as { data?: { cart: CartItem[]; wishlist: number[] } }
-        if (!res.ok || !json.data || cancelled) return
-        useCartStore.setState({ items: json.data.cart })
-        useWishlistStore.setState({ ids: json.data.wishlist })
+        if (alreadyMerged) {
+          const [cartRes, wishRes] = await Promise.all([fetch('/api/cart'), fetch('/api/wishlist')])
+          const cartJson = (await cartRes.json()) as { data?: CartItem[] }
+          const wishJson = (await wishRes.json()) as { data?: number[] }
+          if (!cartRes.ok || !wishRes.ok || cancelled) return
+          useCartStore.setState({ items: cartJson.data ?? [] })
+          useWishlistStore.setState({ ids: wishJson.data ?? [] })
+        } else {
+          const guestCart = useCartStore.getState().items
+          const guestWish = useWishlistStore.getState().ids
+          const res = await fetch('/api/account/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cart: guestCart, wishlist: guestWish }),
+          })
+          const json = (await res.json()) as { data?: { cart: CartItem[]; wishlist: number[] } }
+          if (!res.ok || !json.data || cancelled) return
+          useCartStore.setState({ items: json.data.cart })
+          useWishlistStore.setState({ ids: json.data.wishlist })
+          try {
+            sessionStorage.setItem(mergeFlag(userId), '1')
+          } catch {
+            /* private mode */
+          }
+        }
       } catch {
         /* keep guest state */
       } finally {
@@ -53,7 +88,7 @@ function AccountSyncInner() {
     return () => {
       cancelled = true
     }
-  }, [isLoaded, isSignedIn])
+  }, [isLoaded, isSignedIn, userId])
 
   useEffect(() => {
     if (!isSignedIn) return
