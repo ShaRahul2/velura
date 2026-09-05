@@ -133,6 +133,7 @@ enum OrderStatus {
   confirmed
   shipped
   delivered
+  returned
   cancelled
 }
 
@@ -163,6 +164,9 @@ model Order {
   razorpaySignature String?
   paidAt            DateTime?
   paymentDetails    Json?
+  carrier           String?
+  trackingNumber    String?
+  placedNotifiedAt  DateTime?
 
   // Totals — all in INR paise-less integers
   subtotal      Int

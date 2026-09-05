@@ -30,8 +30,9 @@ export function ProductForm({ product }: Props) {
     fabric:   product?.fabric   ?? '',
     support:  product?.support  ?? 'Medium',
     sizes:    product?.sizes    ?? '',
-    isActive: product !== undefined ? true : true,
+    isActive: product?.isActive ?? false,
   })
+  const [success, setSuccess] = useState('')
   const [error,   setError]   = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -42,6 +43,7 @@ export function ProductForm({ product }: Props) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
+    setSuccess('')
     setLoading(true)
 
     const payload = {
@@ -56,6 +58,7 @@ export function ProductForm({ product }: Props) {
     const url    = isEdit ? `/api/products/${product!.id}` : '/api/products'
     const method = isEdit ? 'PUT' : 'POST'
 
+    try {
     const res = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
@@ -74,6 +77,9 @@ export function ProductForm({ product }: Props) {
     const id   = isEdit ? product!.id : (data as { data: { id: number } }).data.id
     router.push(`/admin/products/${id}/edit`)
     router.refresh()
+    setSuccess('Product saved.')
+    } catch { setError('Could not save. Check your connection and try again.') }
+    finally { setLoading(false) }
   }
 
   const inputCls =
@@ -85,8 +91,8 @@ export function ProductForm({ product }: Props) {
     <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl">
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2">
-          <label className={labelCls}>Name</label>
-          <input
+          <label htmlFor="product-name" className={labelCls}>Name</label>
+          <input id="product-name"
             className={inputCls}
             value={fields.name}
             onChange={(e) => set('name', e.target.value)}
@@ -96,8 +102,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div className="col-span-2">
-          <label className={labelCls}>Story (editorial 1-liner)</label>
-          <input
+          <label htmlFor="product-story-editorial-liner" className={labelCls}>Story (editorial 1-liner)</label>
+          <input id="product-story-editorial-liner"
             className={inputCls}
             value={fields.story}
             onChange={(e) => set('story', e.target.value)}
@@ -107,8 +113,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div className="col-span-2">
-          <label className={labelCls}>Sub (fabric · feature · sizes)</label>
-          <input
+          <label htmlFor="product-sub-fabric-feature-sizes" className={labelCls}>Sub (fabric · feature · sizes)</label>
+          <input id="product-sub-fabric-feature-sizes"
             className={inputCls}
             value={fields.sub}
             onChange={(e) => set('sub', e.target.value)}
@@ -118,20 +124,20 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Price (₹)</label>
-          <input
+          <label htmlFor="product-price" className={labelCls}>Price (₹)</label>
+          <input id="product-price"
             type="number"
             className={inputCls}
             value={fields.price}
             onChange={(e) => set('price', Number(e.target.value))}
             required
-            min={0}
+            min={1}
           />
         </div>
 
         <div>
-          <label className={labelCls}>Old Price (₹, optional)</label>
-          <input
+          <label htmlFor="product-old-price-optional" className={labelCls}>Old Price (₹, optional)</label>
+          <input id="product-old-price-optional"
             type="number"
             className={inputCls}
             value={fields.oldPrice}
@@ -142,8 +148,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Emoji</label>
-          <input
+          <label htmlFor="product-emoji" className={labelCls}>Emoji</label>
+          <input id="product-emoji"
             className={inputCls}
             value={fields.emoji}
             onChange={(e) => set('emoji', e.target.value)}
@@ -153,8 +159,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Badge</label>
-          <select
+          <label htmlFor="product-badge" className={labelCls}>Badge</label>
+          <select id="product-badge"
             className={inputCls}
             value={fields.badge ?? ''}
             onChange={(e) => set('badge', e.target.value as typeof fields.badge)}
@@ -168,8 +174,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Category</label>
-          <select
+          <label htmlFor="product-category" className={labelCls}>Category</label>
+          <select id="product-category"
             className={inputCls}
             value={fields.cat}
             onChange={(e) => set('cat', e.target.value as typeof fields.cat)}
@@ -183,8 +189,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Support</label>
-          <select
+          <label htmlFor="product-support" className={labelCls}>Support</label>
+          <select id="product-support"
             className={inputCls}
             value={fields.support}
             onChange={(e) => set('support', e.target.value as typeof fields.support)}
@@ -198,8 +204,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Rating (4.0–5.0)</label>
-          <input
+          <label htmlFor="product-rating" className={labelCls}>Rating (4.0–5.0)</label>
+          <input id="product-rating"
             type="number"
             className={inputCls}
             value={fields.rating}
@@ -209,8 +215,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Review count</label>
-          <input
+          <label htmlFor="product-review-count" className={labelCls}>Review count</label>
+          <input id="product-review-count"
             type="number"
             className={inputCls}
             value={fields.reviews}
@@ -220,8 +226,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Fabric</label>
-          <input
+          <label htmlFor="product-fabric" className={labelCls}>Fabric</label>
+          <input id="product-fabric"
             className={inputCls}
             value={fields.fabric}
             onChange={(e) => set('fabric', e.target.value)}
@@ -231,8 +237,8 @@ export function ProductForm({ product }: Props) {
         </div>
 
         <div>
-          <label className={labelCls}>Sizes</label>
-          <input
+          <label htmlFor="product-sizes" className={labelCls}>Sizes</label>
+          <input id="product-sizes"
             className={inputCls}
             value={fields.sizes}
             onChange={(e) => set('sizes', e.target.value)}
@@ -244,28 +250,16 @@ export function ProductForm({ product }: Props) {
 
       <div className="flex items-center gap-3 pt-1">
         <label className="flex items-center gap-2 cursor-pointer">
-          <div
-            onClick={() => set('isActive', !fields.isActive)}
-            className={[
-              'w-9 h-5 rounded-[10px] transition-colors relative cursor-pointer',
-              fields.isActive ? 'bg-[#B8A898]' : 'bg-[rgba(237,233,228,0.12)]',
-            ].join(' ')}
-          >
-            <div
-              className={[
-                'absolute top-0.5 w-4 h-4 rounded-full bg-[#EDE9E4] transition-transform',
-                fields.isActive ? 'translate-x-4' : 'translate-x-0.5',
-              ].join(' ')}
-            />
-          </div>
+          <input type="checkbox" checked={fields.isActive} onChange={e => set('isActive', e.target.checked)} className="h-5 w-5 accent-[#B8A898]" />
           <span className="text-[0.78rem] text-[rgba(237,233,228,0.55)]">
             {fields.isActive ? 'Active — visible in shop' : 'Draft — hidden from shop'}
           </span>
         </label>
       </div>
 
+      {success && <p role="status" className="text-sm text-[#B8A898]">{success}</p>}
       {error && (
-        <p className="text-[0.75rem] text-[#9A8878]">{error}</p>
+        <p role="alert" className="text-[0.75rem] text-[#9A8878]">{error}</p>
       )}
 
       <div className="flex gap-3 pt-2">

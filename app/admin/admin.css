@@ -1,0 +1,16 @@
+.admin-shell { color-scheme: dark; }
+.admin-shell :is(a,button,input,select,textarea):focus-visible { outline: 2px solid #EDE9E4; outline-offset: 4px; }
+.admin-shell button { cursor: pointer; }
+.admin-shell button:disabled { cursor: wait; opacity: .5; }
+.admin-page { padding: clamp(20px,4vw,48px); max-width: 1600px; margin: 0 auto; }
+.admin-eyebrow { font-size: 10px; letter-spacing: .16em; color: #B8A898; }
+.admin-input { width: 100%; min-height: 44px; border: 1px solid #65574b; border-radius: 4px; background: #1b1714; color: #EDE9E4; padding: 10px 12px; font-size: 14px; }
+.admin-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 18px; background: #EDE9E4; color: #141210; border-radius: 4px; font-size: 13px; }
+.admin-link { color: #EDE9E4; text-decoration: underline; text-underline-offset: 4px; }
+.admin-table-wrap { overflow-x: auto; border: 1px solid #413830; border-radius: 5px; }
+.admin-table { width: 100%; text-align: left; font-size: 14px; }
+.admin-table th { color: #B8A898; font-size: 11px; letter-spacing: .07em; font-weight: 400; text-transform: uppercase; background: #1c1815; }
+.admin-table :is(th,td) { padding: 16px; border-bottom: 1px solid #332c26; }
+.admin-table td { vertical-align: top; }
+.admin-shell [class*='text-[rgba(237,233,228,0.'] { color: #B8A898; }
+@media(max-width:767px) { .admin-shell .p-8 { padding: 20px; } }

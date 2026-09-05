@@ -1,39 +1,73 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { auth } from '@/auth'
-import { db } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { applyOrderAction } from '@/lib/orderActions'
+import { notifyOrder } from '@/lib/orderMail'
+import { db } from '@/lib/db'
 
 interface Context {
   params: Promise<{ id: string }>
 }
 
 const Body = z.object({
-  status: z.enum(['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']),
+  action: z.enum(['confirm', 'ship', 'deliver', 'collect', 'cancel', 'return', 'refund']).optional(),
+  carrier: z.string().max(80).optional(),
+  trackingNumber: z.string().max(80).optional(),
 })
 
 export async function PATCH(req: NextRequest, { params }: Context) {
   try {
     const session = await auth()
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const { id } = await params
     const parsed = Body.safeParse(await req.json())
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
 
-    const order = await db.order.update({
-      where: { id },
-      data: { status: parsed.data.status },
+    if (!parsed.data.action) {
+      const order = await db.order.update({
+        where: { id },
+        data: {
+          ...(parsed.data.carrier !== undefined && { carrier: parsed.data.carrier.trim() || null }),
+          ...(parsed.data.trackingNumber !== undefined && {
+            trackingNumber: parsed.data.trackingNumber.trim() || null,
+          }),
+        },
+      })
+      revalidatePath('/admin/orders')
+      revalidatePath(`/admin/orders/${id}`)
+      return NextResponse.json({
+        data: { id: order.id, carrier: order.carrier, trackingNumber: order.trackingNumber },
+      })
+    }
+
+    const order = await applyOrderAction(id, parsed.data.action, {
+      carrier: parsed.data.carrier,
+      trackingNumber: parsed.data.trackingNumber,
     })
 
     revalidatePath('/admin/orders')
     revalidatePath(`/admin/orders/${id}`)
 
-    return NextResponse.json({ data: { id: order.id, status: order.status } })
+    if (parsed.data.action === 'ship') void notifyOrder(id, 'shipped')
+    if (parsed.data.action === 'cancel') void notifyOrder(id, 'cancelled')
+    if (parsed.data.action === 'return') void notifyOrder(id, 'returned')
+    if (parsed.data.action === 'refund') void notifyOrder(id, 'cancelled')
+
+    return NextResponse.json({
+      data: {
+        id: order.id,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+      },
+    })
   } catch (err) {
+    const message = err instanceof Error ? err.message : 'Could not update order'
     console.error('[PATCH /api/admin/orders/[id]]', err)
-    return NextResponse.json({ error: 'Could not update order' }, { status: 500 })
+    const status = message === 'Order not found' ? 404 : message.includes('not available') ? 422 : 500
+    return NextResponse.json({ error: message }, { status })
   }
 }

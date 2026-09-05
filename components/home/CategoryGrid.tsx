@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getAllCategories } from '@/lib/products'
 import Image from 'next/image'
 import { pageWrap } from '@/lib/utils'
 
@@ -54,7 +55,16 @@ const CATEGORIES = [
   },
 ]
 
-export function CategoryGrid() {
+export async function CategoryGrid() {
+  let categories = CATEGORIES
+  try {
+    const rows = await getAllCategories()
+    if (rows.length) categories = rows.map(row => {
+      const fallback = CATEGORIES.find(c => c.id === row.slug)!
+      return { ...fallback, id: row.slug, label: row.label, sub: row.description ?? fallback.sub, image: row.imageUrl || fallback.image }
+    })
+  } catch { /* Retain editorial collection navigation if the database is unavailable. */ }
+
   return (
     <section className={`bg-cream pb-20 md:pb-28 ${pageWrap}`}>
       <div className="mb-10 grid gap-5 md:mb-14 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
@@ -78,7 +88,7 @@ export function CategoryGrid() {
       </div>
 
       <div className="grid auto-rows-[200px] grid-cols-2 gap-2 md:auto-rows-[240px] md:grid-cols-4 md:gap-3 lg:auto-rows-[280px]">
-        {CATEGORIES.map(({ id, label, sub, image, span }) => (
+        {categories.map(({ id, label, sub, image, span }) => (
           <Link
             key={id}
             href={`/shop?cat=${id}`}

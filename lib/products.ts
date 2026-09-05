@@ -49,7 +49,7 @@ export function mapDbProductToProduct(p: DbProductFull): Product {
 }
 
 function mapProduct(p: DbProductFull): Product {
-  const sortedImages = p.images // already ordered by position from the query
+  const sortedImages = [...p.images].sort((a, b) => Number(b.isPrimary) - Number(a.isPrimary) || a.position - b.position)
   const primaryImage = sortedImages.find((img) => img.isPrimary) ?? sortedImages[0]
   const fallback = STATIC_BY_ID.get(p.id)
   const images = sortedImages.map((img, i) => {
@@ -58,6 +58,7 @@ function mapProduct(p: DbProductFull): Product {
   })
   return {
     id:       p.id,
+    isActive: p.isActive,
     name:     p.name,
     story:    p.story,
     sub:      p.sub,
@@ -168,7 +169,8 @@ export async function getProductById(id: number): Promise<Product | null> {
       where:   { id },
       include: PRODUCT_INCLUDE,
     })
-    if (p) return mapProduct(p)
+    if (p) return p.isActive ? mapProduct(p) : null
+    return null
   } catch {
     // fall through to static catalog
   }
@@ -182,7 +184,7 @@ export async function getRelatedProducts(
   cat: ProductCategory
 ): Promise<Product[]> {
   const rows = await db.product.findMany({
-    where:   { category: { slug: cat }, id: { not: id } },
+    where:   { isActive: true, category: { slug: cat }, id: { not: id } },
     orderBy: { rating: 'desc' },
     take:    4,
     include: PRODUCT_INCLUDE,
@@ -194,6 +196,7 @@ export async function getRelatedProducts(
 
 export async function getAllProductIds(): Promise<number[]> {
   const rows = await db.product.findMany({
+    where: { isActive: true },
     select:  { id: true },
     orderBy: { id: 'asc' },
   })

@@ -1,5 +1,6 @@
 import type { Order, OrderItem, OrderStatus, PaymentMethod, PaymentStatus } from '@prisma/client'
 import { formatPrice } from '@/lib/utils'
+import { customerCanCancel } from '@/lib/orderActionPolicy'
 
 export type PublicOrder = {
   id: string
@@ -22,6 +23,9 @@ export type PublicOrder = {
     pinCode: string
   }
   note: string
+  canCancel: boolean
+  carrier: string | null
+  trackingNumber: string | null
 }
 
 const FULFILMENT: Record<OrderStatus, string> = {
@@ -29,6 +33,7 @@ const FULFILMENT: Record<OrderStatus, string> = {
   confirmed: 'Confirmed',
   shipped: 'On its way',
   delivered: 'Delivered',
+  returned: 'Returned',
   cancelled: 'Cancelled',
 }
 
@@ -50,11 +55,28 @@ export function paymentLabel(method: PaymentMethod, status: PaymentStatus): stri
 
 export function deliveryNote(order: {
   status: OrderStatus
+  paymentStatus: PaymentStatus
   items: Array<{ productId: number | null }>
+  carrier?: string | null
+  trackingNumber?: string | null
 }): string {
-  if (order.status === 'cancelled') return 'This order was cancelled.'
+  if (order.status === 'returned') {
+    return order.paymentStatus === 'refunded'
+      ? 'Returned. Refund issued to the original method.'
+      : 'Returned.'
+  }
+  if (order.status === 'cancelled') {
+    return order.paymentStatus === 'refunded'
+      ? 'Cancelled. Refund issued to the original method.'
+      : 'This order was cancelled.'
+  }
   if (order.status === 'delivered') return 'It arrived.'
-  if (order.status === 'shipped') return 'It has left us.'
+  if (order.status === 'shipped') {
+    if (order.trackingNumber) {
+      return `It has left us${order.carrier ? ` with ${order.carrier}` : ''}. Tracking ${order.trackingNumber}.`
+    }
+    return 'It has left us.'
+  }
   const custom = order.items.some((item) => item.productId === null)
   return custom
     ? 'Custom pieces: 7–10 business days after confirmation.'
@@ -91,6 +113,9 @@ export function toPublicOrder(
       pinCode: order.pinCode,
     },
     note: deliveryNote(order),
+    canCancel: customerCanCancel(order.status),
+    carrier: order.carrier,
+    trackingNumber: order.trackingNumber,
   }
 }
 

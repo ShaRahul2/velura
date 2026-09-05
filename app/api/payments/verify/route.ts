@@ -72,6 +72,9 @@ export async function POST(req: NextRequest) {
       },
     })
 
+    const { notifyOrder } = await import('@/lib/orderMail')
+    void notifyOrder(parsed.data.orderId, 'placed')
+
     return NextResponse.json({ data: { orderId: parsed.data.orderId, paid: true } })
   } catch {
     return NextResponse.json({ error: 'Could not verify payment' }, { status: 500 })

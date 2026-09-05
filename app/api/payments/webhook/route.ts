@@ -12,12 +12,41 @@ export async function POST(req: NextRequest) {
 
   let event: {
     event?: string
-    payload?: { payment?: { entity?: Record<string, unknown> } }
+    payload?: {
+      payment?: { entity?: Record<string, unknown> }
+      refund?: { entity?: Record<string, unknown> }
+    }
   }
   try {
     event = JSON.parse(raw) as typeof event
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
+
+  const refundEntity = event.payload?.refund?.entity
+  if (event.event?.startsWith('refund.') && refundEntity && typeof refundEntity.payment_id === 'string') {
+    const order = await db.order.findFirst({
+      where: { razorpayPaymentId: refundEntity.payment_id },
+    })
+    if (order) {
+      const current =
+        order.paymentDetails && typeof order.paymentDetails === 'object' && !Array.isArray(order.paymentDetails)
+          ? (order.paymentDetails as Record<string, unknown>)
+          : {}
+      await db.order.update({
+        where: { id: order.id },
+        data: {
+          paymentStatus: 'refunded',
+          paymentDetails: {
+            ...current,
+            refundId: typeof refundEntity.id === 'string' ? refundEntity.id : current.refundId,
+            refundStatus: typeof refundEntity.status === 'string' ? refundEntity.status : 'processed',
+            refundedAt: new Date().toISOString(),
+          } as Prisma.InputJsonValue,
+        },
+      })
+    }
+    return NextResponse.json({ data: { ok: true } })
   }
 
   const entity = event.payload?.payment?.entity
@@ -64,6 +93,8 @@ export async function POST(req: NextRequest) {
         paymentDetails:    details,
       },
     })
+    const { notifyOrder } = await import('@/lib/orderMail')
+    void notifyOrder(order.id, 'placed')
   } else if (event.event === 'payment.failed' || entity.status === 'failed') {
     await db.order.update({
       where: { id: order.id },
