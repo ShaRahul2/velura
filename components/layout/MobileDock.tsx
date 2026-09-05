@@ -42,7 +42,7 @@ export function MobileDock() {
 
   return (
     <nav
-      className="md:hidden fixed inset-x-0 bottom-0 z-40 border-t border-lm bg-cream/95 backdrop-blur-xl"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-nav-border bg-nav-bg backdrop-blur-[16px] md:hidden"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       aria-label="Primary"
     >
@@ -51,7 +51,7 @@ export function MobileDock() {
           href="/shop"
           className={cn(
             'flex flex-col items-center justify-center gap-0.5 font-sans text-[0.58rem] tracking-[0.12em] uppercase',
-            shopActive ? 'text-deep' : 'text-mauve'
+            shopActive ? 'text-blush' : 'text-blush/45'
           )}
         >
           <LayoutGrid size={18} strokeWidth={1.6} aria-hidden="true" />
@@ -60,7 +60,7 @@ export function MobileDock() {
         <button
           type="button"
           onClick={openSearch}
-          className="flex flex-col items-center justify-center gap-0.5 font-sans text-[0.58rem] tracking-[0.12em] uppercase text-mauve"
+          className="flex flex-col items-center justify-center gap-0.5 font-sans text-[0.58rem] tracking-[0.12em] uppercase text-blush/45"
         >
           <Search size={18} strokeWidth={1.6} aria-hidden="true" />
           Search
@@ -69,7 +69,7 @@ export function MobileDock() {
           href="/builder"
           className={cn(
             'flex flex-col items-center justify-center gap-0.5 font-sans text-[0.58rem] tracking-[0.12em] uppercase',
-            builderActive ? 'text-deep' : 'text-mauve'
+            builderActive ? 'text-rose' : 'text-blush/45'
           )}
         >
           <Sparkles size={18} strokeWidth={1.6} aria-hidden="true" />
@@ -78,13 +78,13 @@ export function MobileDock() {
         <button
           type="button"
           onClick={openCart}
-          className="relative flex flex-col items-center justify-center gap-0.5 font-sans text-[0.58rem] tracking-[0.12em] uppercase text-mauve"
+          className="relative flex flex-col items-center justify-center gap-0.5 font-sans text-[0.58rem] tracking-[0.12em] uppercase text-blush/45"
         >
           <span className="relative">
             <ShoppingBag size={18} strokeWidth={1.6} aria-hidden="true" />
             {mounted && count > 0 && (
               <>
-                <span className="absolute -top-1.5 -right-2 min-w-[14px] h-3.5 flex items-center justify-center rounded-full text-[0.5rem] font-sans font-medium px-0.5 bg-deep text-blush" aria-hidden="true">
+                <span className="absolute -top-1.5 -right-2 flex h-3.5 min-w-[14px] items-center justify-center rounded-full bg-rose px-0.5 font-sans text-[0.5rem] font-medium text-deep" aria-hidden="true">
                   {count}
                 </span>
                 <span className="sr-only" role="status" aria-atomic="true">

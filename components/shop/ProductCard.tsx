@@ -31,7 +31,7 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-blush">
+      <div className="relative aspect-[3/4] overflow-hidden bg-blush ring-1 ring-deep/5">
         <Link href={`/shop/${product.id}`} className="absolute inset-0 block">
           <div
             className={cn(
@@ -73,7 +73,7 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
             type="button"
             onClick={() => onQuickView(product)}
             className={cn(
-              'absolute inset-x-0 bottom-0 z-10 hidden md:flex items-center justify-center h-11 font-sans text-[0.68rem] tracking-btn uppercase bg-deep/92 text-blush backdrop-blur-sm transition-[opacity,transform] duration-150 ease-out',
+              'absolute inset-x-0 bottom-0 z-10 hidden h-11 items-center justify-center bg-deep/92 font-sans text-[0.68rem] tracking-btn uppercase text-blush backdrop-blur-sm transition-[opacity,transform] duration-150 ease-out md:flex',
               hovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'
             )}
           >
@@ -87,7 +87,7 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
           aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
           aria-pressed={wishlisted}
           className={cn(
-            'absolute top-3 right-3 z-20 w-11 h-11 flex items-center justify-center transition-opacity duration-150 ease-out',
+            'absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center transition-opacity duration-150 ease-out',
             wishlisted ? 'bg-deep text-blush' : 'bg-cream/90 text-mauve hover:text-deep',
             !hovered && !wishlisted && 'md:opacity-0 md:group-hover:opacity-100'
           )}
@@ -128,7 +128,7 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
 
         <div className="flex items-baseline justify-between gap-3">
           <Link href={`/shop/${product.id}`} className="min-w-0">
-            <h3 className="font-serif text-[1.02rem] font-medium tracking-[0.01em] text-deep leading-tight line-clamp-1 hover:opacity-70 transition-opacity">
+            <h3 className="font-serif text-[1.04rem] font-medium tracking-[0.01em] text-deep leading-tight line-clamp-1 hover:opacity-70 transition-opacity">
               {product.name}
             </h3>
           </Link>

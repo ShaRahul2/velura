@@ -30,8 +30,8 @@ export function CollectionChips() {
   }
 
   return (
-    <div className="-mx-5 md:mx-0 px-5 md:px-0 overflow-x-auto mb-6 md:mb-8 scrollbar-none">
-      <div className="flex gap-2 min-w-max pb-1">
+    <div className="scrollbar-none -mx-5 mb-8 overflow-x-auto px-5 md:mx-0 md:mb-10 md:px-0">
+      <div className="flex min-w-max gap-6 border-b border-lm pb-px">
         {CATEGORIES.map(({ id, label }) => {
           const active = activeCat === id
           return (
@@ -40,10 +40,10 @@ export function CollectionChips() {
               type="button"
               onClick={() => setCat(id)}
               className={cn(
-                'h-11 px-4 rounded-pill font-sans text-[0.72rem] tracking-btn uppercase border transition-colors duration-150',
+                '-mb-px h-11 border-b font-sans text-[0.72rem] tracking-btn uppercase transition-colors duration-150',
                 active
-                  ? 'bg-deep text-blush border-deep'
-                  : 'bg-transparent text-mauve border-lm hover:border-deep hover:text-deep'
+                  ? 'border-deep text-deep'
+                  : 'border-transparent text-mauve hover:text-deep'
               )}
             >
               {label}

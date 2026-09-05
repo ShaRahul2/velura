@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 1080px; height: 1080px; overflow: hidden; background: #252a32; }
+    body { font-family: "DM Sans", Arial, sans-serif; color: #f2e6e1; }
+    .canvas { position: relative; width: 1080px; height: 1080px; overflow: hidden; background: #252a32; padding: 64px; }
+    .grain { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(242,230,225,.04) 1px, transparent 1px), linear-gradient(180deg, rgba(242,230,225,.035) 1px, transparent 1px); background-size: 30px 30px; }
+    .brand { position: relative; z-index: 2; font-family: "Cormorant Garamond", Georgia, serif; font-size: 28px; letter-spacing: .16em; }
+    .card { position: absolute; right: 64px; top: 120px; width: 440px; height: 650px; overflow: hidden; background: #f2e6e1; }
+    .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .swatches { position: absolute; right: 64px; top: 800px; display: flex; gap: 16px; }
+    .swatch { width: 42px; height: 42px; border: 2px solid rgba(242,230,225,.42); }
+    .s1 { background: #d4b896; } .s2 { background: #1c1c1c; } .s3 { background: #e8c4b8; }
+    .copy { position: absolute; left: 64px; bottom: 92px; width: 610px; z-index: 2; }
+    .eyebrow { color: #d8be8d; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 30px; }
+    h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 300; font-size: 112px; line-height: .92; letter-spacing: 0; }
+    .sub { width: 450px; margin-top: 34px; color: rgba(242,230,225,.75); font-size: 26px; line-height: 1.35; }
+    .rail { position: absolute; left: 64px; right: 64px; bottom: 52px; height: 26px; background: repeating-linear-gradient(90deg, rgba(21,17,16,.38) 0 2px, transparent 2px 24px), linear-gradient(90deg, #a7895f, #d8be8d 48%, #a7895f); }
+  </style>
+</head>
+<body>
+  <main class="canvas" aria-label="Velura fit social post">
+    <div class="grain"></div>
+    <p class="brand">VELURA</p>
+    <div class="card"><img src="../../public/images/lookbook/fabric.jpg" alt="" /></div>
+    <div class="swatches" aria-hidden="true"><span class="swatch s1"></span><span class="swatch s2"></span><span class="swatch s3"></span></div>
+    <section class="copy">
+      <p class="eyebrow">Find your line</p>
+      <h1>Not tight.<br />Not loose.</h1>
+      <p class="sub">New everyday fits for the space between dressed up and done.</p>
+    </section>
+    <div class="rail"></div>
+  </main>
+</body>
+</html>

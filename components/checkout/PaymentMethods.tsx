@@ -1,5 +1,9 @@
 'use client'
 
+import { Smartphone, CreditCard, Building2, Package, ShieldCheck } from 'lucide-react'
+import { cn, formatPrice } from '@/lib/utils'
+import { COD_LIMIT } from '@/lib/coupons'
+
 interface PaymentMethodsProps {
   selected: string
   onSelect: (method: string) => void
@@ -7,79 +11,80 @@ interface PaymentMethodsProps {
 }
 
 const METHODS = [
-  { id: 'upi',        label: 'UPI',           icon: '⚡', sub: 'PhonePe · GPay · Paytm · Any UPI' },
-  { id: 'card',       label: 'Credit / Debit Card', icon: '💳', sub: 'Visa · Mastercard · RuPay · Amex' },
-  { id: 'netbanking', label: 'Net Banking',    icon: '🏦', sub: 'All major Indian banks' },
-  { id: 'cod',        label: 'Cash on Delivery', icon: '📦', sub: 'Available on orders under ₹5,000' },
+  { id: 'upi',        label: 'UPI',                Icon: Smartphone,  sub: 'PhonePe · GPay · Paytm' },
+  { id: 'card',       label: 'Credit / Debit Card', Icon: CreditCard,  sub: 'Visa · Mastercard · RuPay' },
+  { id: 'netbanking', label: 'Net Banking',         Icon: Building2,   sub: 'All major Indian banks' },
+  { id: 'cod',        label: 'Cash on Delivery',    Icon: Package,     sub: `Orders under ${formatPrice(COD_LIMIT)}` },
 ]
 
 export function PaymentMethods({ selected, onSelect, orderTotal }: PaymentMethodsProps) {
   return (
     <div>
-      <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-rose mb-4">
-        Payment Method
+      <p className="mb-5 font-sans text-[0.68rem] tracking-label uppercase text-rose">
+        Payment
       </p>
-      <div className="space-y-2">
+      <div className="space-y-2" role="radiogroup" aria-label="Payment method">
         {METHODS.map((method) => {
-          const disabled = method.id === 'cod' && orderTotal >= 5000
+          const disabled = method.id === 'cod' && orderTotal >= COD_LIMIT
           const active   = selected === method.id
+          const { Icon } = method
 
           return (
             <button
               key={method.id}
-              onClick={() => !disabled && onSelect(method.id)}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              aria-disabled={disabled}
               disabled={disabled}
-              className="w-full flex items-center gap-4 p-4 text-left transition-[background-color,border-color] duration-150 ease-out disabled:opacity-40"
-              style={{
-                borderRadius: 3,
-                border:      `1.5px solid ${active ? '#0F0D0B' : '#D8D4CE'}`,
-                background:   active ? 'rgba(15,13,11,0.03)' : 'transparent',
-              }}
+              onClick={() => !disabled && onSelect(method.id)}
+              className={cn(
+                'flex w-full items-center gap-4 rounded-btn border p-4 text-left transition-[background-color,border-color] duration-150 ease-out disabled:opacity-40',
+                active ? 'border-deep bg-blush/70' : 'border-lm bg-transparent'
+              )}
             >
-              {/* Radio */}
               <span
-                className="w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center border transition-[background-color,border-color] duration-150 ease-out"
-                style={{
-                  borderColor: active ? '#0F0D0B' : '#D8D4CE',
-                  background:  active ? '#0F0D0B' : 'transparent',
-                }}
-              >
-                {active && (
-                  <span className="block w-1.5 h-1.5 rounded-full bg-blush" />
+                className={cn(
+                  'flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-[background-color,border-color] duration-150 ease-out',
+                  active ? 'border-deep bg-deep' : 'border-lm bg-transparent'
                 )}
+                aria-hidden="true"
+              >
+                {active && <span className="block h-1.5 w-1.5 rounded-full bg-blush" />}
               </span>
-
-              {/* Icon + label */}
-              <span className="text-lg">{method.icon}</span>
-              <div className="flex-1 min-w-0">
-                <p className="font-sans text-[0.82rem] lg:text-[0.88rem] text-deep">{method.label}</p>
-                <p className="font-sans text-[0.65rem] lg:text-[0.7rem] text-mauve mt-0.5">{method.sub}</p>
+              <Icon size={18} strokeWidth={1.6} className="shrink-0 text-mauve" aria-hidden="true" />
+              <div className="min-w-0 flex-1">
+                <p className="font-sans text-[0.88rem] text-deep">{method.label}</p>
+                <p className="mt-0.5 font-sans text-[0.7rem] text-mauve">{method.sub}</p>
               </div>
             </button>
           )
         })}
       </div>
 
-      {/* UPI input */}
       {selected === 'upi' && (
-        <div className="mt-3">
-          <label className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve block mb-1.5">
-            UPI ID
+        <div className="mt-4">
+          <label htmlFor="checkout-upi" className="mb-1.5 block font-sans text-[0.68rem] tracking-label uppercase text-mauve">
+            UPI ID <span className="font-normal normal-case tracking-normal text-mauve/70">(optional)</span>
           </label>
           <input
+            id="checkout-upi"
             type="text"
-            placeholder="yourname@upi"
-            className="w-full h-11 px-3 font-sans text-[0.85rem] lg:text-[0.92rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors"
-            style={{ borderRadius: 3 }}
+            name="upiId"
+            autoComplete="off"
+            placeholder="name@upi"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') e.preventDefault()
+            }}
+            className="h-12 w-full rounded-input border border-lm bg-cream px-3 font-sans text-[0.88rem] text-deep placeholder:text-mauve/40 transition-colors focus:border-deep focus:outline-none"
           />
         </div>
       )}
 
-      {/* Trust badge */}
-      <div className="mt-4 flex items-center gap-2">
-        <span className="text-sm">🔒</span>
-        <p className="font-sans text-[0.65rem] text-mauve">
-          Secured by Razorpay · 256-bit SSL encryption
+      <div className="mt-5 flex items-center gap-2">
+        <ShieldCheck size={14} strokeWidth={1.6} className="text-mauve" aria-hidden="true" />
+        <p className="font-sans text-[0.68rem] text-mauve">
+          Secured by Razorpay · 256-bit SSL
         </p>
       </div>
     </div>

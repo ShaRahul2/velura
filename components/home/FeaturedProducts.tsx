@@ -35,40 +35,42 @@ export async function FeaturedProducts() {
   if (sorted.length === 0) return null
 
   return (
-    <section className={`py-16 md:py-24 ${pageWrap}`}>
-      <div className="flex items-end justify-between mb-8 md:mb-12">
-        <div>
-          <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-3">
-            Bestsellers
-          </p>
-          <h2
-            className="font-serif font-light text-deep"
-            style={{ fontSize: 'clamp(1.85rem, 3.6vw, 3.1rem)', letterSpacing: '-0.02em' }}
+    <section className="bg-cream py-20 md:py-28">
+      <div className={pageWrap}>
+        <div className="mb-10 flex items-end justify-between gap-8 md:mb-14">
+          <div className="max-w-2xl">
+            <p className="mb-3 font-sans text-[0.68rem] tracking-label uppercase text-rose">
+              Bestsellers
+            </p>
+            <h2
+              className="font-serif font-light text-deep"
+              style={{ fontSize: 'clamp(1.9rem, 3.8vw, 3.2rem)', letterSpacing: '-0.01em' }}
+            >
+              The ones they come back for.
+            </h2>
+          </div>
+          <Link
+            href="/shop"
+            className="hidden font-sans text-[0.78rem] tracking-btn uppercase text-mauve underline underline-offset-4 transition-colors hover:text-deep md:block"
           >
-            The ones they come back for.
-          </h2>
+            View all
+          </Link>
         </div>
-        <Link
-          href="/shop"
-          className="hidden md:block font-sans text-[0.78rem] tracking-btn uppercase text-mauve hover:text-deep transition-colors underline underline-offset-4"
-        >
-          View all
-        </Link>
-      </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
-        {sorted.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:gap-x-8 lg:grid-cols-4">
+          {sorted.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
 
-      <div className="mt-10 flex justify-center md:hidden">
-        <Link
-          href="/shop"
-          className="font-sans text-[0.78rem] tracking-btn uppercase text-mauve hover:text-deep transition-colors underline underline-offset-4"
-        >
-          View all →
-        </Link>
+        <div className="mt-12 flex justify-center md:hidden">
+          <Link
+            href="/shop"
+            className="font-sans text-[0.78rem] tracking-btn uppercase text-mauve underline underline-offset-4 transition-colors hover:text-deep"
+          >
+            View all
+          </Link>
+        </div>
       </div>
     </section>
   )
@@ -76,12 +78,12 @@ export async function FeaturedProducts() {
 
 export function FeaturedProductsSkeleton() {
   return (
-    <section className={`py-16 md:py-24 ${pageWrap}`} aria-hidden="true">
-      <div className="mb-8 md:mb-12">
-        <div className="h-3 w-24 bg-blush mb-3" />
+    <section className={`bg-cream py-20 md:py-28 ${pageWrap}`} aria-hidden="true">
+      <div className="mb-10 md:mb-14">
+        <div className="mb-3 h-3 w-24 bg-blush" />
         <div className="h-10 w-64 max-w-full bg-blush" />
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:gap-x-8 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <ProductCardSkeleton key={i} />
         ))}

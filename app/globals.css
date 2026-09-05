@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Colors — Onyx & Pearl ──────────────────── */
+  /* ── Colors — Onyx & Pearl ───────────────────── */
   --color-rose:  #B8A898;
   --color-blush: #EDE9E4;
   --color-deep:  #0F0D0B;
@@ -44,7 +44,7 @@
   --shadow-toast:   0 4px 20px rgba(15,13,11,0.30);
 
   /* ── Letter spacing ───────────────────────────── */
-  --tracking-logo:  0.16em;
+  --tracking-logo:  0.22em;
   --tracking-label: 0.14em;
   --tracking-btn:   0.12em;
   --tracking-wide:  0.18em;
@@ -55,7 +55,6 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* CSS custom properties for direct var() use in arbitrary values */
 :root {
   --rose:  #B8A898;
   --blush: #EDE9E4;
@@ -144,7 +143,7 @@ button:not(:disabled),
 @starting-style {
   .modal-panel {
     opacity: 0;
-    transform: scale(0.97);
+    transform: scale(0.95);
   }
 }
 
@@ -161,7 +160,7 @@ button:not(:disabled),
 }
 
 :focus-visible {
-  outline: 2px solid var(--deep);
+  outline: 2px solid var(--rose);
   outline-offset: 3px;
 }
 
@@ -204,20 +203,6 @@ button:not(:disabled),
   100% { background-position: -200% 0; }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-14px); }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 @keyframes ken {
   from { transform: scale(1); }
   to   { transform: scale(1.06); }
@@ -242,5 +227,3 @@ button:not(:disabled),
 
 ::-webkit-scrollbar       { width: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--lm); border-radius: 2px; }
-
-

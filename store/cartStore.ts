@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { CartItem } from '@/types'
@@ -63,3 +64,22 @@ export const useCartStore = create<CartStore>()(
 )
 
 export const useCart = useCartStore
+
+export function useCartHydrated() {
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => {
+    const api = useCartStore.persist
+    if (!api) {
+      setHydrated(true)
+      return
+    }
+    if (api.hasHydrated()) {
+      setHydrated(true)
+      return
+    }
+    return api.onFinishHydration(() => setHydrated(true))
+  }, [])
+
+  return hydrated
+}

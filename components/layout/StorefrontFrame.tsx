@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useCartStore } from '@/store/cartStore'
 import { Navbar } from './Navbar'
 import { Footer } from './Footer'
+import { CheckoutFooter } from './CheckoutFooter'
 import { MobileMenu } from './MobileMenu'
 import { MobileDock } from './MobileDock'
 import { CartDrawer } from '@/components/cart/CartDrawer'
@@ -56,7 +57,7 @@ export function StorefrontFrame({ children }: { children: React.ReactNode }) {
       >
         {children}
       </main>
-      {!isBuilder && <Footer />}
+      {isCheckout ? <CheckoutFooter /> : !isBuilder && <Footer />}
       <MobileMenu />
       <MobileDock />
       <CartDrawer />

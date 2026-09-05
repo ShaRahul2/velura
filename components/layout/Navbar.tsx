@@ -48,20 +48,20 @@ export function Navbar() {
   return (
     <div
       className={cn(
-        'h-16 flex items-center px-5 md:px-8 lg:px-12 transition-[background-color,border-color,box-shadow] duration-200 ease-out',
+        'flex h-16 items-center px-5 transition-[background-color,border-color] duration-200 ease-out md:px-8 lg:px-12',
         solid
-          ? 'bg-cream/92 backdrop-blur-xl border-b border-lm/80 shadow-[0_1px_0_rgba(15,13,11,0.04)]'
-          : 'bg-transparent border-b border-transparent'
+          ? 'border-b border-nav-border bg-nav-bg backdrop-blur-[16px]'
+          : 'border-b border-transparent bg-gradient-to-b from-deep/80 via-deep/40 to-transparent'
       )}
     >
       <Link
         href="/"
-        className="font-serif text-[1.18rem] lg:text-[1.28rem] tracking-logo text-deep mr-auto"
+        className="mr-auto font-serif text-[1.18rem] tracking-logo text-blush lg:text-[1.28rem]"
       >
         VELURA
       </Link>
 
-      <nav className="hidden md:flex items-center gap-7 lg:gap-9 mr-6">
+      <nav className="mr-6 hidden items-center gap-7 md:flex lg:gap-9">
         {NAV_LINKS.map(({ href, label }) => {
           const isBuilder = href === '/builder'
           const active = isBuilder
@@ -72,12 +72,12 @@ export function Navbar() {
               key={href}
               href={href}
               className={cn(
-                'font-sans text-[0.72rem] lg:text-[0.76rem] tracking-btn uppercase transition-colors duration-200',
+                'font-sans text-[0.72rem] tracking-btn uppercase transition-colors duration-200 lg:text-[0.76rem]',
                 isBuilder
-                  ? 'text-rose hover:text-deep'
+                  ? 'text-rose hover:text-blush'
                   : active
-                    ? 'text-deep'
-                    : 'text-deep/55 hover:text-deep'
+                    ? 'text-nav-active'
+                    : 'text-nav-text hover:text-blush'
               )}
             >
               {label}
@@ -86,28 +86,28 @@ export function Navbar() {
         })}
       </nav>
 
-      <div className="flex items-center gap-0.5 text-deep">
+      <div className="flex items-center gap-0.5 text-blush">
         <button
           onClick={openSearch}
-          className="p-3 text-deep/70 hover:text-deep transition-colors"
+          className="p-3 text-blush/70 transition-colors hover:text-blush"
           aria-label="Search collection"
         >
           <Search size={17} strokeWidth={1.6} aria-hidden="true" />
         </button>
         <button
           onClick={openStylist}
-          className="hidden sm:flex items-center px-2 py-2 font-sans text-[0.68rem] tracking-btn uppercase text-deep/70 hover:text-deep transition-colors"
+          className="hidden items-center px-2 py-2 font-sans text-[0.68rem] tracking-btn uppercase text-blush/70 transition-colors hover:text-blush sm:flex"
         >
           Atelier
         </button>
         {mounted && wishCount > 0 && (
           <Link
             href="/shop"
-            className="relative p-2.5 hidden sm:flex text-deep/70 hover:text-deep transition-colors"
+            className="relative hidden p-2.5 text-blush/70 transition-colors hover:text-blush sm:flex"
             aria-label="Wishlist"
           >
             <Heart size={17} strokeWidth={1.6} aria-hidden="true" />
-            <span className="absolute top-1 right-1 min-w-[15px] h-3.5 flex items-center justify-center rounded-full text-[0.52rem] font-sans font-medium px-1 bg-deep text-blush" aria-hidden="true">
+            <span className="absolute top-1 right-1 flex h-3.5 min-w-[15px] items-center justify-center rounded-full bg-rose px-1 font-sans text-[0.52rem] font-medium text-deep" aria-hidden="true">
               {wishCount}
             </span>
           </Link>
@@ -115,13 +115,13 @@ export function Navbar() {
 
         <button
           onClick={openCart}
-          className="relative hidden md:flex p-3 text-deep/70 hover:text-deep transition-colors"
+          className="relative hidden p-3 text-blush/70 transition-colors hover:text-blush md:flex"
           aria-label="Open bag"
         >
           <ShoppingBag size={18} strokeWidth={1.6} aria-hidden="true" />
           {mounted && count > 0 && (
             <>
-              <span className="absolute top-1 right-1 min-w-[15px] h-3.5 flex items-center justify-center rounded-full text-[0.52rem] font-sans font-medium px-1 bg-deep text-blush" aria-hidden="true">
+              <span className="absolute top-1 right-1 flex h-3.5 min-w-[15px] items-center justify-center rounded-full bg-rose px-1 font-sans text-[0.52rem] font-medium text-deep" aria-hidden="true">
                 {count}
               </span>
               <span className="sr-only" role="status" aria-atomic="true">
@@ -133,7 +133,7 @@ export function Navbar() {
 
         <button
           onClick={openMenu}
-          className="flex md:hidden ml-0.5 p-3 text-deep hover:text-deep/70 transition-colors"
+          className="ml-0.5 flex p-3 text-blush transition-colors hover:text-blush/70 md:hidden"
           aria-label="Open menu"
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-menu"

@@ -56,28 +56,28 @@ const CATEGORIES = [
 
 export function CategoryGrid() {
   return (
-    <section className={`py-16 md:py-24 ${pageWrap}`}>
-      <div className="flex items-end justify-between mb-8 md:mb-12">
-        <div>
-          <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-3">
-            Shop the body
+    <section className={`bg-cream pb-20 md:pb-28 ${pageWrap}`}>
+      <div className="mb-10 grid gap-5 md:mb-14 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+        <div className="max-w-2xl">
+          <p className="mb-3 font-sans text-[0.68rem] tracking-label uppercase text-rose">
+            Collections
           </p>
           <h2
             className="font-serif font-light text-deep"
-            style={{ fontSize: 'clamp(1.85rem, 3.6vw, 3.1rem)', letterSpacing: '-0.02em' }}
+            style={{ fontSize: 'clamp(1.9rem, 3.8vw, 3.2rem)', letterSpacing: '-0.01em' }}
           >
-            Every shape. Every occasion.
+            Every shape has its own architecture.
           </h2>
         </div>
         <Link
           href="/shop"
-          className="hidden md:block font-sans text-[0.78rem] tracking-btn uppercase text-mauve hover:text-deep transition-colors underline underline-offset-4"
+          className="hidden font-sans text-[0.78rem] tracking-btn uppercase text-mauve underline underline-offset-4 transition-colors hover:text-deep md:block"
         >
           View all
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[200px] md:auto-rows-[220px] lg:auto-rows-[260px] gap-2 md:gap-3">
+      <div className="grid auto-rows-[200px] grid-cols-2 gap-2 md:auto-rows-[240px] md:grid-cols-4 md:gap-3 lg:auto-rows-[280px]">
         {CATEGORIES.map(({ id, label, sub, image, span }) => (
           <Link
             key={id}
@@ -93,13 +93,16 @@ export function CategoryGrid() {
             />
             <div
               className="absolute inset-0"
-              style={{ background: 'linear-gradient(to top, rgba(15,13,11,0.58) 0%, rgba(15,13,11,0.05) 58%)' }}
+              style={{
+                background:
+                  'linear-gradient(to top, rgba(15,13,11,0.58) 0%, rgba(15,13,11,0.08) 55%, rgba(15,13,11,0.00) 100%)',
+              }}
             />
-            <div className="absolute bottom-0 inset-x-0 p-4 md:p-5">
-              <h3 className="font-serif font-light text-[1.2rem] md:text-[1.45rem] leading-tight text-blush">
+            <div className="absolute inset-x-0 bottom-0 p-4 md:p-5">
+              <h3 className="font-serif text-[1.25rem] font-light leading-tight text-blush md:text-[1.5rem]">
                 {label}
               </h3>
-              <p className="font-sans text-[0.72rem] font-light mt-0.5 line-clamp-1 text-blush/70">
+              <p className="mt-0.5 line-clamp-1 font-sans text-[0.72rem] font-light text-blush/70">
                 {sub}
               </p>
             </div>

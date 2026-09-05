@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { Address } from '@/types'
+import { cn } from '@/lib/utils'
 
 interface AddressFormProps {
   value: Address
@@ -41,7 +42,7 @@ function Field({
   inputMode?: 'text' | 'numeric' | 'tel' | 'email' | 'search'
 }) {
   const [touched, setTouched] = useState(false)
-  const show = touched || submitted
+  const show = touched || Boolean(submitted)
   const emptyError = required && show && !value.trim() ? `Enter ${label.toLowerCase()}` : null
   const formatError = show && value ? (validate?.(value) ?? null) : null
   const error = emptyError ?? formatError
@@ -50,8 +51,8 @@ function Field({
 
   return (
     <div>
-      <label htmlFor={fieldId} className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve block mb-1.5">
-        {label}{required && <span className="text-rose ml-0.5">*</span>}
+      <label htmlFor={fieldId} className="mb-1.5 block font-sans text-[0.68rem] tracking-label uppercase text-mauve">
+        {label}{required && <span className="ml-0.5 text-rose">*</span>}
       </label>
       <input
         id={fieldId}
@@ -62,18 +63,22 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={() => setTouched(true)}
-        placeholder={placeholder}
+        placeholder={error ? undefined : placeholder}
         required={required}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className="w-full h-11 lg:h-12 px-3 font-sans text-[0.85rem] lg:text-[0.92rem] text-deep bg-cream border focus:outline-none focus-visible:outline-none focus:border-deep transition-colors"
-        style={{ borderRadius: 3, borderColor: error ? 'var(--deep)' : 'var(--lm)' }}
+        className={cn(
+          'h-12 w-full scroll-mt-24 rounded-input border bg-cream px-3 font-sans text-[0.88rem] text-deep placeholder:text-mauve/35 transition-colors focus:border-deep focus:outline-none focus-visible:outline-none',
+          error ? 'border-deep' : 'border-lm'
+        )}
       />
       {error && (
-        <p id={errorId} role="alert" className="font-sans text-[0.62rem] lg:text-[0.68rem] text-mauve mt-1">{error}</p>
+        <p id={errorId} role="alert" className="mt-1 font-sans text-[0.68rem] text-deep">
+          {error}
+        </p>
       )}
       {!error && hint && !touched && (
-        <p className="font-sans text-[0.62rem] text-mauve opacity-60 mt-1">{hint}</p>
+        <p className="mt-1 font-sans text-[0.62rem] text-mauve/70">{hint}</p>
       )}
     </div>
   )
@@ -84,55 +89,77 @@ export function AddressForm({ value, onChange, submitted }: AddressFormProps) {
     return (v: string) => onChange({ ...value, [field]: v })
   }
 
+  const stateError = Boolean(submitted) && !value.state
+  const stateErrorId = 'checkout-state-error'
+
   return (
     <div>
-      <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
-        Delivery Details
+      <p className="mb-5 font-sans text-[0.68rem] tracking-label uppercase text-rose">
+        Delivery
       </p>
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <Field label="First name" name="firstName" value={value.firstName} onChange={set('firstName')} placeholder="Priya" submitted={submitted} />
-          <Field label="Last name"  name="lastName"  value={value.lastName}  onChange={set('lastName')}  placeholder="Sharma" submitted={submitted} />
+          <Field label="First name" name="firstName" value={value.firstName} onChange={set('firstName')} submitted={submitted} />
+          <Field label="Last name"  name="lastName"  value={value.lastName}  onChange={set('lastName')}  submitted={submitted} />
         </div>
         <Field
           label="Email" name="email" value={value.email} onChange={set('email')}
-          type="email" placeholder="priya@email.com" submitted={submitted}
+          type="email" submitted={submitted}
           validate={(v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : 'Enter a valid email address'}
         />
         <Field
           label="Phone" name="phone" value={value.phone} onChange={set('phone')}
-          type="tel" placeholder="9876543210" submitted={submitted} inputMode="numeric"
+          type="tel" submitted={submitted} inputMode="numeric"
           validate={(v) => /^\d{10}$/.test(v.replace(/\s/g, '')) ? null : 'Enter a 10-digit mobile number'}
-          hint="10-digit mobile number, no spaces"
+          hint="10-digit mobile number"
         />
-        <Field label="Address" name="addressLine" value={value.addressLine} onChange={set('addressLine')} placeholder="House/Flat no., Street, Area" submitted={submitted} />
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="City" name="city" value={value.city} onChange={set('city')} placeholder="Mumbai" submitted={submitted} />
+        <Field
+          label="Address"
+          name="addressLine"
+          value={value.addressLine}
+          onChange={set('addressLine')}
+          placeholder="Building, street, area"
+          submitted={submitted}
+        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Field label="City" name="city" value={value.city} onChange={set('city')} submitted={submitted} />
           <div>
-            <label htmlFor="checkout-state" className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-mauve block mb-1.5">
+            <label htmlFor="checkout-state" className="mb-1.5 block font-sans text-[0.68rem] tracking-label uppercase text-mauve">
               State <span className="text-rose">*</span>
             </label>
             <select
               id="checkout-state"
+              name="state"
               value={value.state}
               onChange={(e) => set('state')(e.target.value)}
               required
               autoComplete="address-level1"
-              aria-invalid={submitted && !value.state}
-              className="w-full h-11 px-3 font-sans text-[0.85rem] text-deep bg-cream border border-lm focus:border-deep focus:outline-none transition-colors appearance-none"
-              style={{ borderRadius: 3 }}
+              aria-invalid={stateError}
+              aria-describedby={stateError ? stateErrorId : undefined}
+              className={cn(
+                'h-12 w-full scroll-mt-24 appearance-none rounded-input border bg-cream px-3 font-sans text-[0.88rem] transition-colors focus:border-deep focus:outline-none',
+                stateError ? 'border-deep' : 'border-lm',
+                value.state ? 'text-deep' : 'text-mauve/40'
+              )}
             >
-              <option value="">Select state</option>
+              <option value="" disabled>
+                Select
+              </option>
               {INDIAN_STATES.map((s) => (
-                <option key={s} value={s}>{s}</option>
+                <option key={s} value={s} className="text-deep">
+                  {s}
+                </option>
               ))}
             </select>
+            {stateError && (
+              <p id={stateErrorId} role="alert" className="mt-1 font-sans text-[0.68rem] text-deep">
+                Enter state
+              </p>
+            )}
           </div>
-        </div>
-        <div className="w-1/2">
           <Field
             label="PIN code" name="pinCode" value={value.pinCode} onChange={set('pinCode')}
-            placeholder="400001" submitted={submitted} inputMode="numeric"
+            submitted={submitted} inputMode="numeric"
             validate={(v) => /^\d{6}$/.test(v) ? null : 'Enter a 6-digit PIN code'}
             hint="6-digit postal code"
           />
