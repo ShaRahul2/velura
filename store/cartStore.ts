@@ -78,7 +78,12 @@ export function useCartHydrated() {
       setHydrated(true)
       return
     }
-    return api.onFinishHydration(() => setHydrated(true))
+    const unsub = api.onFinishHydration(() => setHydrated(true))
+    const timeout = setTimeout(() => setHydrated(true), 400)
+    return () => {
+      unsub()
+      clearTimeout(timeout)
+    }
   }, [])
 
   return hydrated
