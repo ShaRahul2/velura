@@ -7,6 +7,8 @@ import { toPublicOrder } from '@/lib/orderPublic'
 import { OrderStatusView } from '@/components/order/OrderStatusView'
 import { pageWrap } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Order',
   robots: { index: false, follow: false },

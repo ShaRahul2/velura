@@ -6,6 +6,8 @@ import { withTimeout } from '@/lib/utils'
 import { clerkConfigured } from '@/lib/clerkEnv'
 import { requireSignedInProfile } from '@/lib/requireCustomer'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Saved',
   description: 'Pieces you kept. Velura.',

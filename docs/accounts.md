@@ -56,6 +56,8 @@ Pick one:
 2. **SQL / script** (after the user has a profile row, or to create one):
 
 ```sh
+npx tsx prisma/grant-admin.ts you@example.com admin
+# or by Clerk user id:
 npx tsx prisma/grant-admin.ts user_2abc admin
 ```
 

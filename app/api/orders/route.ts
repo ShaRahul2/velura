@@ -4,6 +4,7 @@ import { type PaymentMethod, Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
 import { calcShipping, calcDiscount, BUILDER_BASE_PRICE, COD_LIMIT } from '@/lib/coupons'
 import { requireCustomerId } from '@/lib/staffAuth'
+import { clearCart } from '@/lib/accountCommerce'
 
 // ── Zod schemas ───────────────────────────────────────────────────────────────
 
@@ -166,6 +167,14 @@ export async function POST(req: NextRequest) {
       } else {
         console.error('[orders] DB write failed:', dbErr)
         return NextResponse.json({ error: 'Order could not be saved. Please try again.' }, { status: 503 })
+      }
+    }
+
+    if (profileId) {
+      try {
+        await clearCart(profileId)
+      } catch {
+        /* client still clears the local bag after Place Order */
       }
     }
 

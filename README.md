@@ -4,13 +4,22 @@ Premium Indian lingerie storefront. Next.js App Router.
 
 ## Getting Started
 
+Cloud Agent / local scripts:
+
+```bash
+./.cursor/scripts/install.sh
+./.cursor/scripts/start.sh
+```
+
+Or by hand:
+
 ```bash
 npm install
 npx prisma generate
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Admin desk: `/admin` — `admin@velura.local` / `velura-admin-dev` when using local defaults.
 
 ## Auth, accounts, and admin
 

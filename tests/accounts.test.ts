@@ -5,6 +5,7 @@ import { mergeCartItems, mergeWishlistIds } from '../lib/accountMerge'
 import { lineKey } from '../lib/cartLine'
 import type { CartItem } from '../types'
 import { safeAdminCallback } from '../lib/adminAuth'
+import { clerkWebhookSecret } from '../lib/clerkEnv'
 
 test('client-sent roles are ignored unless they are Clerk metadata', () => {
   assert.equal(parseClerkRole({ role: 'admin' }), 'admin')
@@ -56,4 +57,16 @@ test('order list ownership is profile id, not a client-supplied email', () => {
 test('admin callbacks still cannot leave /admin', () => {
   assert.equal(safeAdminCallback('/account'), '/admin')
   assert.equal(safeAdminCallback('/admin/customers'), '/admin/customers')
+})
+
+test('webhook signing secret alias is accepted', () => {
+  const prevSign = process.env.CLERK_WEBHOOK_SIGNING_SECRET
+  const prevAlias = process.env.CLERK_WEBHOOK_SECRET
+  delete process.env.CLERK_WEBHOOK_SIGNING_SECRET
+  process.env.CLERK_WEBHOOK_SECRET = 'whsec_alias'
+  assert.equal(clerkWebhookSecret(), 'whsec_alias')
+  if (prevSign === undefined) delete process.env.CLERK_WEBHOOK_SIGNING_SECRET
+  else process.env.CLERK_WEBHOOK_SIGNING_SECRET = prevSign
+  if (prevAlias === undefined) delete process.env.CLERK_WEBHOOK_SECRET
+  else process.env.CLERK_WEBHOOK_SECRET = prevAlias
 })

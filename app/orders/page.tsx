@@ -6,6 +6,8 @@ import { formatPrice, pageWrap } from '@/lib/utils'
 import { formatAdminDate } from '@/lib/adminOrders'
 import { ORDER_LABEL } from '@/lib/adminOrders'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Orders',
   robots: { index: false, follow: false },

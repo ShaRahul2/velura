@@ -29,4 +29,6 @@ npx tsc --noEmit
 npm run build
 ```
 
-The policy tests cover callback confinement, invalid product/category data, unpaid online fulfilment, closed orders, and manual COD refund semantics. Local HTTP smoke verification also covered sign-in, all management pages, unauthorized writes, invalid input, and a disposable product lifecycle (draft → edit → publish → delete). Live gateway refunds and Cloudinary uploads were not executed during implementation.
+The policy tests cover callback confinement, invalid product/category data, unpaid online fulfilment, closed orders, and manual COD refund semantics. Account tests cover role parsing, admin promotion rules, guest cart merge, and order ownership. Local HTTP smoke verification also covered sign-in, all management pages, unauthorized writes, invalid input, and a disposable product lifecycle (draft → edit → publish → delete). Live gateway refunds, Cloudinary uploads, and live Clerk SSO were not executed during implementation.
+
+Customer accounts, Clerk webhooks, and the first-admin grant path are documented in `docs/accounts.md`.

@@ -55,6 +55,10 @@ export async function mergeGuestCart(profileId: string, guest: CartItem[]) {
   return replaceCart(profileId, mergeCartItems(server, guest))
 }
 
+export async function clearCart(profileId: string) {
+  return replaceCart(profileId, [])
+}
+
 export async function wishlistIdsForProfile(profileId: string) {
   const rows = await db.wishlistItem.findMany({
     where: { profileId },
