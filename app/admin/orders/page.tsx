@@ -1,24 +1,10 @@
+import Link from 'next/link'
 import { db } from '@/lib/db'
 import { formatPrice } from '@/lib/utils'
-import type { PaymentStatus, OrderStatus } from '@prisma/client'
+import type { PaymentStatus } from '@prisma/client'
+import { ORDER_LABEL, PAYMENT_LABEL, adminTone as tone, formatAdminDate } from '@/lib/adminOrders'
 
 export const dynamic = 'force-dynamic'
-
-const PAYMENT_LABEL: Record<PaymentStatus, string> = {
-  unpaid: 'Unpaid',
-  pending: 'Pending',
-  paid: 'Paid',
-  failed: 'Failed',
-  refunded: 'Refunded',
-}
-
-const ORDER_LABEL: Record<OrderStatus, string> = {
-  pending: 'Pending',
-  confirmed: 'Confirmed',
-  shipped: 'Shipped',
-  delivered: 'Delivered',
-  cancelled: 'Cancelled',
-}
 
 function loadOrders() {
   return db.order.findMany({
@@ -26,16 +12,6 @@ function loadOrders() {
     orderBy: { createdAt: 'desc' },
     take: 100,
   })
-}
-
-function tone(status: string) {
-  if (status === 'paid' || status === 'delivered' || status === 'confirmed') {
-    return 'text-[#EDE9E4]'
-  }
-  if (status === 'failed' || status === 'cancelled') {
-    return 'text-[#C4A090]'
-  }
-  return 'text-[rgba(237,233,228,0.55)]'
 }
 
 export default async function AdminOrdersPage() {
@@ -119,22 +95,27 @@ export default async function AdminOrdersPage() {
                   className="border-b border-[rgba(184,168,152,0.07)] last:border-0"
                 >
                   <td className="px-4 py-3 align-top">
-                    <p className="font-sans text-[0.78rem] text-[#EDE9E4]">{order.id}</p>
+                    <Link
+                      href={`/admin/orders/${encodeURIComponent(order.id)}`}
+                      className="font-sans text-[0.78rem] text-[#EDE9E4] underline decoration-[rgba(184,168,152,0.25)] underline-offset-4 hover:decoration-[#EDE9E4]"
+                    >
+                      {order.id}
+                    </Link>
                     <p className="mt-0.5 font-sans text-[0.65rem] text-[rgba(237,233,228,0.35)]">
-                      {order.createdAt.toLocaleString('en-IN', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
+                      {formatAdminDate(order.createdAt)}
                     </p>
                   </td>
                   <td className="px-4 py-3 align-top">
                     <p className="font-sans text-[0.78rem] text-[#EDE9E4]">
                       {order.firstName} {order.lastName}
                     </p>
-                    <p className="mt-0.5 font-sans text-[0.65rem] text-[rgba(237,233,228,0.35)]">
+                    <p className="mt-1 font-sans text-[0.68rem] text-[rgba(237,233,228,0.7)]">
+                      {order.phone}
+                    </p>
+                    <p className="mt-0.5 font-sans text-[0.65rem] text-[rgba(237,233,228,0.45)]">
+                      {order.email}
+                    </p>
+                    <p className="mt-0.5 font-sans text-[0.62rem] text-[rgba(237,233,228,0.35)]">
                       {order.city}, {order.pinCode}
                     </p>
                   </td>
@@ -153,7 +134,7 @@ export default async function AdminOrdersPage() {
                     {PAYMENT_LABEL[order.paymentStatus]}
                     {order.paidAt && (
                       <p className="mt-0.5 text-[0.62rem] text-[rgba(237,233,228,0.35)]">
-                        {order.paidAt.toLocaleDateString('en-IN')}
+                        {formatAdminDate(order.paidAt)}
                       </p>
                     )}
                   </td>
