@@ -2,15 +2,15 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { Heart } from 'lucide-react'
 import type { Product } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { SizeSelector } from './SizeSelector'
-import { Heart } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
-import { useWishlistStore } from '@/store/wishlistStore'
 import { useUiStore } from '@/store/uiStore'
+import { useWishlistStore } from '@/store/wishlistStore'
 import { colorLabel } from '@/lib/colorways'
 import { imagesForColor } from '@/lib/productColorImages'
 import { parseSizeRange } from '@/lib/sizes'
@@ -28,8 +28,8 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
   const add      = useCartStore((s) => s.add)
   const openCart = useUiStore((s) => s.openCart)
   const addToast = useUiStore((s) => s.addToast)
-  const toggleSaved = useWishlistStore((s) => s.toggle)
-  const isSaved = useWishlistStore((s) => s.isWishlisted(product.id))
+  const toggleWish = useWishlistStore((s) => s.toggle)
+  const wishlisted = useWishlistStore((s) => s.isWishlisted(product.id))
 
   const availableSizes = parseSizeRange(product.sizes)
   const [guideOpen, setGuideOpen] = useState(false)
@@ -163,18 +163,18 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
         )}
       </div>
 
-      <div className="flex gap-2">
-        <Button variant="dark" size="lg" onClick={handleAddToBag} className="hidden w-full md:inline-flex">
+      <div className="hidden gap-2 md:flex">
+        <Button variant="dark" size="lg" onClick={handleAddToBag} className="flex-1">
           Add to Bag
         </Button>
         <button
           type="button"
-          onClick={() => toggleSaved(product.id)}
-          aria-pressed={isSaved}
-          aria-label={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
-          className="hidden h-12 w-12 shrink-0 items-center justify-center border border-deep text-deep md:inline-flex"
+          onClick={() => toggleWish(product.id)}
+          aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+          aria-pressed={wishlisted}
+          className="flex h-12 w-12 items-center justify-center border border-deep text-deep"
         >
-          <Heart size={16} strokeWidth={1.7} fill={isSaved ? 'currentColor' : 'none'} aria-hidden="true" />
+          <Heart size={16} strokeWidth={1.7} fill={wishlisted ? 'currentColor' : 'none'} aria-hidden="true" />
         </button>
       </div>
 
@@ -206,15 +206,6 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
               {selectedSize ? selectedSize : 'Select a size'}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => toggleSaved(product.id)}
-            aria-pressed={isSaved}
-            aria-label={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
-            className="inline-flex h-12 w-12 shrink-0 items-center justify-center border border-deep text-deep"
-          >
-            <Heart size={16} strokeWidth={1.7} fill={isSaved ? 'currentColor' : 'none'} aria-hidden="true" />
-          </button>
           <Button variant="dark" size="lg" onClick={handleAddToBag} className="flex-1">
             Add to Bag
           </Button>

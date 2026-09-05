@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { auth } from '@/auth'
+import { staffUnauthorized } from '@/lib/staffAuth'
 import { revalidatePath } from 'next/cache'
 import { applyOrderAction } from '@/lib/orderActions'
 import { notifyOrder } from '@/lib/orderMail'
@@ -18,8 +18,8 @@ const Body = z.object({
 
 export async function PATCH(req: NextRequest, { params }: Context) {
   try {
-    const session = await auth()
-    if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const denied = await staffUnauthorized()
+    if (denied) return denied
 
     const { id } = await params
     const parsed = Body.safeParse(await req.json())

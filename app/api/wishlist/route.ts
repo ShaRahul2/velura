@@ -1,43 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { withCustomer } from '@/lib/withCustomer'
-import { wishlistIdsSchema } from '@/lib/accountSchemas'
-import { listWishlistIds, mergeGuestWishlist, replaceWishlist, toggleWishlist } from '@/lib/wishlistServer'
+import { requireCustomerProfile } from '@/lib/staffAuth'
+import { replaceWishlist, toggleWishlist, wishlistIdsForProfile } from '@/lib/accountCommerce'
 
 export async function GET() {
-  const auth = await withCustomer()
-  if (auth.error) return auth.error
-  const data = await listWishlistIds(auth.profile.id)
-  return NextResponse.json({ data })
-}
-
-export async function POST(req: NextRequest) {
-  const auth = await withCustomer()
-  if (auth.error) return auth.error
-  const body = await req.json() as { productId?: unknown; ids?: unknown }
-  if (Array.isArray(body.ids)) {
-    const parsed = wishlistIdsSchema.safeParse(body.ids)
-    if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid saved list' }, { status: 400 })
-    }
-    const data = await mergeGuestWishlist(auth.profile.id, parsed.data)
-    return NextResponse.json({ data })
-  }
-  const parsed = z.object({ productId: z.number().int().positive() }).safeParse(body)
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'Invalid product' }, { status: 400 })
-  }
-  const result = await toggleWishlist(auth.profile.id, parsed.data.productId)
-  return NextResponse.json({ data: result })
+  const profile = await requireCustomerProfile()
+  if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  return NextResponse.json({ data: await wishlistIdsForProfile(profile.id) })
 }
 
 export async function PUT(req: NextRequest) {
-  const auth = await withCustomer()
-  if (auth.error) return auth.error
-  const parsed = wishlistIdsSchema.safeParse((await req.json())?.ids)
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'Invalid saved list' }, { status: 400 })
+  try {
+    const profile = await requireCustomerProfile()
+    if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const parsed = z.object({ ids: z.array(z.number().int().positive()).max(100) }).safeParse(await req.json().catch(() => null))
+    if (!parsed.success) return NextResponse.json({ error: 'Invalid wishlist' }, { status: 400 })
+    const ids = await replaceWishlist(profile.id, parsed.data.ids)
+    return NextResponse.json({ data: ids })
+  } catch (err) {
+    console.error('[PUT /api/wishlist]', err)
+    return NextResponse.json({ error: 'Could not save' }, { status: 500 })
   }
-  const data = await replaceWishlist(auth.profile.id, parsed.data)
-  return NextResponse.json({ data })
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const profile = await requireCustomerProfile()
+    if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const parsed = z.object({ productId: z.number().int().positive() }).safeParse(await req.json().catch(() => null))
+    if (!parsed.success) return NextResponse.json({ error: 'Invalid product' }, { status: 400 })
+    const result = await toggleWishlist(profile.id, parsed.data.productId)
+    return NextResponse.json({ data: result })
+  } catch (err) {
+    console.error('[POST /api/wishlist]', err)
+    return NextResponse.json({ error: 'Could not update' }, { status: 500 })
+  }
 }

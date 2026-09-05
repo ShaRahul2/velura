@@ -7,7 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "dotenv -e .env.local -- node --import tsx --test tests/admin.test.ts tests/account.test.ts tests/account.db.test.ts",
+    "test": "dotenv -e .env.local -- node --import tsx --test tests/*.test.ts",
     "db:generate": "prisma generate",
     "db:push": "dotenv -e .env.local -- prisma db push",
     "db:seed": "dotenv -e .env.local -- prisma db seed",
@@ -32,7 +32,6 @@
     "razorpay": "^2.9.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "svix": "^2.3.0",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3",
     "zustand": "^5.0.13"

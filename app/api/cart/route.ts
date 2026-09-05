@@ -1,33 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { withCustomer } from '@/lib/withCustomer'
-import { cartItemsSchema, asCartItems } from '@/lib/accountSchemas'
-import { listCartItems, mergeGuestCart, replaceCart } from '@/lib/cartServer'
+import { z } from 'zod'
+import { requireCustomerProfile } from '@/lib/staffAuth'
+import { cartItemsForProfile, replaceCart } from '@/lib/accountCommerce'
+import type { CartItem } from '@/types'
+
+const CartItemSchema = z.object({
+  id: z.number().int(),
+  name: z.string().min(1).max(200),
+  price: z.number().int().nonnegative(),
+  qty: z.number().int().min(1).max(10),
+  size: z.string().min(0).max(40),
+  emoji: z.string().max(16).optional().default(''),
+  images: z.array(z.string()).max(12).optional().default([]),
+  color: z.string().max(32).optional(),
+  colorLabel: z.string().max(40).optional(),
+  isCustom: z.boolean().optional(),
+  customSpec: z.unknown().optional(),
+  customGrad: z.string().max(400).optional(),
+})
 
 export async function GET() {
-  const auth = await withCustomer()
-  if (auth.error) return auth.error
-  const data = await listCartItems(auth.profile.id)
-  return NextResponse.json({ data })
+  const profile = await requireCustomerProfile()
+  if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const items = await cartItemsForProfile(profile.id)
+  return NextResponse.json({ data: items })
 }
 
 export async function PUT(req: NextRequest) {
-  const auth = await withCustomer()
-  if (auth.error) return auth.error
-  const parsed = cartItemsSchema.safeParse((await req.json())?.items)
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? 'Invalid bag' }, { status: 400 })
+  try {
+    const profile = await requireCustomerProfile()
+    if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const parsed = z.object({ items: z.array(CartItemSchema).max(50) }).safeParse(await req.json().catch(() => null))
+    if (!parsed.success) return NextResponse.json({ error: 'Invalid cart' }, { status: 400 })
+    const items = await replaceCart(profile.id, parsed.data.items as CartItem[])
+    return NextResponse.json({ data: items })
+  } catch (err) {
+    console.error('[PUT /api/cart]', err)
+    return NextResponse.json({ error: 'Could not save bag' }, { status: 500 })
   }
-  const data = await replaceCart(auth.profile.id, asCartItems(parsed.data))
-  return NextResponse.json({ data })
-}
-
-export async function POST(req: NextRequest) {
-  const auth = await withCustomer()
-  if (auth.error) return auth.error
-  const parsed = cartItemsSchema.safeParse((await req.json())?.items)
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? 'Invalid bag' }, { status: 400 })
-  }
-  const data = await mergeGuestCart(auth.profile.id, asCartItems(parsed.data))
-  return NextResponse.json({ data })
 }

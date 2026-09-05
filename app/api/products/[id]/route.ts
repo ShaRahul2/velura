@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { getProductById, updateProduct, deleteProduct } from '@/lib/products'
-import { auth } from '@/auth'
+import { staffUnauthorized } from '@/lib/staffAuth'
 import { destroyCloudinaryAsset } from '@/lib/cloudinary-upload'
 
 interface Context {
@@ -27,8 +27,8 @@ export async function GET(_req: NextRequest, { params }: Context) {
 
 export async function PUT(req: NextRequest, { params }: Context) {
   try {
-    const session = await auth()
-    if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const denied = await staffUnauthorized()
+    if (denied) return denied
 
     const { id } = await params
     if (!/^\d+$/.test(id) || !Number.isSafeInteger(Number(id)) || Number(id) < 1) return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 })
@@ -50,8 +50,8 @@ export async function PUT(req: NextRequest, { params }: Context) {
 
 export async function DELETE(_req: NextRequest, { params }: Context) {
   try {
-    const session = await auth()
-    if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const denied = await staffUnauthorized()
+    if (denied) return denied
 
     const { id }       = await params
     if (!/^\d+$/.test(id) || !Number.isSafeInteger(Number(id)) || Number(id) < 1) return NextResponse.json({error:'Invalid product ID'},{status:400})
