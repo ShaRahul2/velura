@@ -20,8 +20,16 @@ function isAdminPath(pathname: string) {
   return pathname.startsWith('/admin')
 }
 
+async function credentialsAdminOnly(req: Parameters<typeof nextAuthAdmin>[0], event: never) {
+  const { pathname } = req.nextUrl
+  if (isAdminPath(pathname) && pathname !== '/admin/login' && pathname !== '/admin/denied') {
+    return nextAuthAdmin(req, event)
+  }
+  return NextResponse.next()
+}
+
 export default clerkConfigured()
-  ? clerkMiddleware(async (auth, req) => {
+  ? clerkMiddleware(async (auth, req, event) => {
       if (isCustomerProtected(req)) {
         await auth.protect({
           unauthenticatedUrl: new URL('/sign-in', requestOrigin(req)).toString(),
@@ -32,19 +40,17 @@ export default clerkConfigured()
       if (isAdminPath(pathname) && pathname !== '/admin/login' && pathname !== '/admin/denied') {
         const { userId } = await auth()
         if (userId) return NextResponse.next()
-        return nextAuthAdmin(req, undefined as never)
+        return nextAuthAdmin(req, event as never)
       }
 
       return NextResponse.next()
     })
-  : nextAuthAdmin
+  : credentialsAdminOnly
 
 export const config = {
-  matcher: clerkConfigured()
-    ? [
-        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-        '/(api|trpc)(.*)',
-        '/__clerk/(.*)',
-      ]
-    : ['/admin/:path*'],
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+    '/__clerk/(.*)',
+  ],
 }
