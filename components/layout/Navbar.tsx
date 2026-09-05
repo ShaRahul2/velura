@@ -5,6 +5,7 @@ import { ShoppingBag, Menu, Heart, Search } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
 import { useUiStore } from '@/store/uiStore'
 import { useWishlistStore } from '@/store/wishlistStore'
+import { NavAccount } from '@/components/auth/NavAccount'
 import { usePathname } from 'next/navigation'
 import { startTransition, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -100,6 +101,8 @@ export function Navbar() {
         >
           Atelier
         </button>
+        <NavAccount />
+
         <Link
           href="/wishlist"
           className="relative hidden p-2.5 text-blush/70 transition-colors hover:text-blush sm:flex"

@@ -1,14 +1,14 @@
 import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { staffUnauthorized } from '@/lib/staffAuth'
 import { db } from '@/lib/db'
 
 export async function PATCH(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string; imageId: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const denied = await staffUnauthorized()
+  if (denied) return denied
 
   const { id, imageId } = await params
   const productId = Number(id)

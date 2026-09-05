@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { type PaymentMethod, Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
 import { calcShipping, calcDiscount, BUILDER_BASE_PRICE, COD_LIMIT } from '@/lib/coupons'
+import { requireCustomerId } from '@/lib/staffAuth'
 
 // ── Zod schemas ───────────────────────────────────────────────────────────────
 
@@ -106,6 +107,17 @@ export async function POST(req: NextRequest) {
     }
 
     const orderId = `VLR-${Date.now()}-${Math.floor(Math.random() * 10000)}`
+    const profileId = await requireCustomerId()
+    const shippingSnapshot = {
+      firstName: address.firstName,
+      lastName: address.lastName,
+      email: address.email,
+      phone: address.phone,
+      addressLine: address.addressLine,
+      city: address.city,
+      state: address.state,
+      pinCode: address.pinCode,
+    }
 
     // Persist to DB
     try {
@@ -131,6 +143,8 @@ export async function POST(req: NextRequest) {
           placeId:     address.placeId ?? null,
           lat:         address.lat ?? null,
           lng:         address.lng ?? null,
+          shippingSnapshot,
+          profileId:   profileId,
           items: {
             create: items.map((item) => ({
               productId:    item.productId,
@@ -163,5 +177,41 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ data: { orderId, total } }, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
+export async function GET() {
+  try {
+    const profileId = await requireCustomerId()
+    if (!profileId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const orders = await db.order.findMany({
+      where: { profileId },
+      include: { items: true },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    })
+    return NextResponse.json({
+      data: orders.map((order) => ({
+        id: order.id,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        total: order.total,
+        subtotal: order.subtotal,
+        shipping: order.shipping,
+        createdAt: order.createdAt,
+        items: order.items,
+        address: {
+          firstName: order.firstName,
+          lastName: order.lastName,
+          addressLine: order.addressLine,
+          city: order.city,
+          state: order.state,
+          pinCode: order.pinCode,
+        },
+      })),
+    })
+  } catch (err) {
+    console.error('[GET /api/orders]', err)
+    return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
   }
 }

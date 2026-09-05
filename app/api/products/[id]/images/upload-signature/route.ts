@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { auth } from '@/auth'
+import { staffUnauthorized } from '@/lib/staffAuth'
 import { buildUploadSignature } from '@/lib/cloudinary-upload'
 
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const denied = await staffUnauthorized()
+  if (denied) return denied
 
   const { id } = await params
   const productId = Number(id)

@@ -1,6 +1,6 @@
 import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { staffUnauthorized } from '@/lib/staffAuth'
 import { db } from '@/lib/db'
 import { destroyCloudinaryAsset } from '@/lib/cloudinary-upload'
 
@@ -8,8 +8,8 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string; imageId: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const denied = await staffUnauthorized()
+  if (denied) return denied
 
   const { id, imageId } = await params
   const productId = Number(id)
@@ -43,8 +43,8 @@ export async function DELETE(
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{id:string;imageId:string}> }) {
-  const session = await auth()
-  if (!session?.user?.email || session.user.email.toLowerCase().trim() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return NextResponse.json({error:'Unauthorized'},{status:401})
+  const denied = await staffUnauthorized()
+  if (denied) return denied
   const {id,imageId} = await params
   const productId=Number(id), imgId=Number(imageId)
   if (!Number.isSafeInteger(productId) || productId < 1 || !Number.isSafeInteger(imgId) || imgId < 1) return NextResponse.json({error:'Invalid image ID'},{status:400})

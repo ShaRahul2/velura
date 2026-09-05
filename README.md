@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Velura
+
+Premium Indian lingerie storefront. Next.js App Router.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
+npx prisma generate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Auth, accounts, and admin
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Customer SSO is **Clerk** (Google + email). Cart, wishlist, orders, and `/account` persist on Neon via Prisma.
 
-## Learn More
+Full setup (Vercel env vars, webhook, first admin): **[docs/accounts.md](docs/accounts.md)**.
 
-To learn more about Next.js, take a look at the following resources:
+Admin catalogue/orders still work with the existing NextAuth operator (`ADMIN_EMAIL` / `ADMIN_PASSWORD`) and also with Clerk users whose `Profile.role` is `manager` or `admin`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npx prisma db push
+npm test
+```
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Production origin: `https://www.thevelura.in`. Copy variables from `env.production.example`. After adding Clerk keys, redeploy so `NEXT_PUBLIC_*` is inlined.

@@ -1,12 +1,12 @@
-import { auth } from '@/auth'
+import { staffUnauthorized } from '@/lib/staffAuth'
 import { db } from '@/lib/db'
 import { categorySchema } from '@/lib/adminValidation'
 import { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 type Context = { params: Promise<{resource:string;id:string}> }
 async function mutate(req: Request, context: Context) {
- const session = await auth()
- if (!session?.user?.email || session.user.email.toLowerCase() !== process.env.ADMIN_EMAIL?.toLowerCase().trim()) return Response.json({error:'Unauthorized'},{status:401})
+ const denied = await staffUnauthorized()
+ if (denied) return denied
  const {resource,id} = await context.params
  try {
   if(resource === 'categories' && req.method === 'PATCH') {
