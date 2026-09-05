@@ -1,45 +1,59 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ProductPhoto } from './ProductPhoto'
 import { cn } from '@/lib/utils'
+import type { Product } from '@/types'
+import { describeProductImage, describeProductShort, shotKindFromIndex } from '@/lib/productDescribe'
 
 interface ImageGalleryProps {
   images: string[]
-  name: string
+  product: Product
+  colorLabel?: string | null
 }
 
-const LABELS = ['Front', 'Back', 'Lifestyle']
-
-export function ImageGallery({ images, name }: ImageGalleryProps) {
+export function ImageGallery({ images, product, colorLabel }: ImageGalleryProps) {
   const [active, setActive] = useState(0)
-  const safeIndex = images[active] ? active : 0
+  const shots = images.filter(Boolean)
+  const safeIndex = shots[active] ? active : 0
+
+  useEffect(() => {
+    setActive(0)
+  }, [shots[0]])
+
+  if (shots.length === 0) {
+    return <div className="aspect-[3/4] bg-blush" />
+  }
+
+  const activeAlt = describeProductImage(product, {
+    shot: shotKindFromIndex(safeIndex),
+    colorLabel,
+  })
 
   return (
-    <div className="flex flex-col gap-2 md:flex-row md:gap-3">
-      <div className="relative aspect-[3/4] overflow-hidden bg-blush md:flex-1 md:order-2">
-        <ProductPhoto
-          src={images[safeIndex] ?? images[0]}
-          alt={name}
-          sizes="(max-width: 768px) 100vw, 50vw"
-          priority
-        />
-      </div>
+    <div className="relative aspect-[3/4] w-full overflow-hidden bg-blush lg:max-h-[calc(100svh-5.5rem)]">
+      <ProductPhoto
+        src={shots[safeIndex]}
+        alt={activeAlt}
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        priority
+      />
 
-      {images.length > 1 && (
-        <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible px-5 md:px-0 pb-1 md:pb-0 md:order-1">
-          {images.map((src, i) => (
+      {shots.length > 1 && (
+        <div className="absolute bottom-3 left-3 flex gap-1.5 md:bottom-4 md:left-4">
+          {shots.map((src, i) => (
             <button
               key={`${src}-${i}`}
               type="button"
               onClick={() => setActive(i)}
               className={cn(
-                'shrink-0 w-16 h-20 lg:w-[72px] lg:h-[90px] relative overflow-hidden bg-blush border-[1.5px]',
-                safeIndex === i ? 'border-deep' : 'border-transparent'
+                'relative h-14 w-11 overflow-hidden bg-blush shadow-[0_1px_8px_rgba(15,13,11,0.18)] md:h-16 md:w-12',
+                safeIndex === i ? 'ring-1 ring-deep ring-offset-1 ring-offset-blush' : 'ring-1 ring-white/40',
               )}
-              aria-label={`View ${LABELS[i] ?? `image ${i + 1}`}`}
+              aria-label={`View ${describeProductShort(product, { shot: shotKindFromIndex(i), colorLabel })}`}
+              aria-current={safeIndex === i}
             >
-              <ProductPhoto src={src} alt="" sizes="80px" />
+              <ProductPhoto src={src} alt="" sizes="48px" />
             </button>
           ))}
         </div>

@@ -12,6 +12,7 @@ import { SortBar } from './SortBar'
 import { BuilderPromoBanner } from './BuilderPromoBanner'
 import { Pagination } from './Pagination'
 import { CollectionChips } from './CollectionChips'
+import { describeProductImage } from '@/lib/productDescribe'
 
 const ITEMS_PER_PAGE = 12
 
@@ -171,7 +172,7 @@ export function ShopContent({
             <div className="relative aspect-[3/4] bg-blush">
               <Image
                 src={quickViewProduct.images[0]}
-                alt={quickViewProduct.name}
+                alt={describeProductImage(quickViewProduct, { shot: 'front' })}
                 fill
                 sizes="(max-width: 768px) 100vw, 320px"
                 className="object-cover"

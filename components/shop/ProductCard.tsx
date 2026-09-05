@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/Badge'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { ProductPhoto } from '@/components/product/ProductPhoto'
 import { imagesForColor } from '@/lib/productColorImages'
+import { colorLabel } from '@/lib/colorways'
+import { describeProductImage } from '@/lib/productDescribe'
 
 interface ProductCardProps {
   product: Product
@@ -24,6 +26,8 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
   const hasAlt = product.images.length > 1
   const colors = product.colorways ?? []
   const colorImages = imagesForColor(product, colorIndex)
+  const selectedColour = colors[colorIndex] ? colorLabel(colors[colorIndex]) : null
+  const primaryAlt = describeProductImage(product, { shot: 'front', colorLabel: selectedColour })
 
   return (
     <article
@@ -41,7 +45,7 @@ export const ProductCard = memo(function ProductCard({ product, onQuickView }: P
           >
             <ProductPhoto
               src={colorImages[0]}
-              alt={product.name}
+              alt={primaryAlt}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           </div>

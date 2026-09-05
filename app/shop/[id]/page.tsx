@@ -9,6 +9,7 @@ import { pageWrap } from '@/lib/utils'
 import { siteUrl } from '@/lib/site'
 import { ProductCardSkeleton } from '@/components/ui/Skeleton'
 import type { ProductCategory } from '@/types'
+import { describeProductImage, describeProductSeo, shotKindFromIndex } from '@/lib/productDescribe'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -29,11 +30,13 @@ export async function generateMetadata({ params }: PageProps) {
   if (!product) return {}
   return {
     title: product.name,
-    description: product.story,
+    description: describeProductSeo(product),
     openGraph: {
       title: `${product.name} — VELURA`,
-      description: product.story,
-      images: product.images[0] ? [{ url: product.images[0], alt: product.name }] : undefined,
+      description: describeProductSeo(product),
+      images: product.images[0]
+        ? [{ url: product.images[0], alt: describeProductImage(product, { shot: 'front' }) }]
+        : undefined,
     },
   }
 }
@@ -50,8 +53,12 @@ export default async function ProductPage({ params }: PageProps) {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    description: product.story,
-    image: product.images,
+    description: describeProductSeo(product),
+    image: product.images.map((url, i) => ({
+      '@type': 'ImageObject',
+      url,
+      description: describeProductImage(product, { shot: shotKindFromIndex(i) }),
+    })),
     brand: { '@type': 'Brand', name: 'VELURA' },
     sku: String(product.id),
     offers: {
@@ -99,7 +106,7 @@ async function RelatedSection({ id, cat }: { id: number; cat: ProductCategory })
           className="font-serif font-light text-deep"
           style={{ fontSize: 'clamp(1.4rem, 2.8vw, 2.2rem)', letterSpacing: '-0.02em' }}
         >
-          More in {cat.charAt(0).toUpperCase() + cat.slice(1)}
+          More in {cat === 'pushup' ? 'Push-up' : cat.charAt(0).toUpperCase() + cat.slice(1)}
         </h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-6">

@@ -11,6 +11,49 @@ import type { Address } from '@/types'
 import Link from 'next/link'
 import { pageWrap } from '@/lib/utils'
 import { COD_LIMIT } from '@/lib/coupons'
+import { isOnlineMethod, razorpayAvailableInBrowser } from '@/lib/payments'
+import { googleMapsBrowserKey, googlePlacesAvailable } from '@/lib/indianAddress'
+import Script from 'next/script'
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: {
+      key: string
+      amount: number
+      currency: string
+      name: string
+      description: string
+      order_id: string
+      prefill: { name: string; email: string; contact: string }
+      theme: { color: string }
+      handler: (response: {
+        razorpay_order_id: string
+        razorpay_payment_id: string
+        razorpay_signature: string
+      }) => void
+      modal?: { ondismiss?: () => void }
+    }) => { open: () => void }
+  }
+}
+
+function waitForRazorpay(ms = 8000): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (typeof window !== 'undefined' && window.Razorpay) {
+      resolve(true)
+      return
+    }
+    const start = Date.now()
+    const id = window.setInterval(() => {
+      if (window.Razorpay) {
+        window.clearInterval(id)
+        resolve(true)
+      } else if (Date.now() - start > ms) {
+        window.clearInterval(id)
+        resolve(false)
+      }
+    }, 80)
+  })
+}
 
 const EMPTY_ADDRESS: Address = {
   firstName:   '',
@@ -31,7 +74,8 @@ export default function CheckoutPage() {
   const hydrated  = useCartHydrated()
 
   const [address,    setAddress]    = useState<Address>(EMPTY_ADDRESS)
-  const [payment,    setPayment]    = useState('upi')
+  const onlinePay = razorpayAvailableInBrowser()
+  const [payment,    setPayment]    = useState(onlinePay ? 'upi' : 'cod')
   const [loading,    setLoading]    = useState(false)
   const [couponCode, setCouponCode] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
@@ -44,10 +88,14 @@ export default function CheckoutPage() {
   })
 
   useEffect(() => {
-    if (payment === 'cod' && totals.total >= COD_LIMIT) {
+    if (!onlinePay && isOnlineMethod(payment)) {
+      setPayment('cod')
+      return
+    }
+    if (payment === 'cod' && totals.total >= COD_LIMIT && onlinePay) {
       setPayment('upi')
     }
-  }, [payment, totals.total])
+  }, [payment, totals.total, onlinePay])
 
   function missingAddressFields() {
     const fields: { id: string; label: string; ok: boolean }[] = [
@@ -77,6 +125,11 @@ export default function CheckoutPage() {
       })
       return
     }
+    if (isOnlineMethod(payment) && !onlinePay) {
+      addToast('Online payment needs Razorpay keys. Use Cash on Delivery for now.')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -105,8 +158,70 @@ export default function CheckoutPage() {
       }
 
       const data = await res.json() as { data: { orderId: string } }
-      clearCart()
-      router.push(`/order-confirmed?order=${data.data.orderId}`)
+      const orderId = data.data.orderId
+
+      if (!isOnlineMethod(payment)) {
+        clearCart()
+        router.push(`/order-confirmed?order=${orderId}`)
+        return
+      }
+
+      const payRes = await fetch('/api/payments/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId }),
+      })
+      if (!payRes.ok) {
+        const err = await payRes.json().catch(() => ({}))
+        addToast((err as { error?: string }).error ?? 'Could not start Razorpay.')
+        return
+      }
+      const pay = await payRes.json() as {
+        data: { razorpayOrderId: string; amount: number; key: string }
+      }
+
+      const ready = await waitForRazorpay()
+      if (!ready || !window.Razorpay) {
+        addToast('Razorpay is still loading. Try Place Order again.')
+        return
+      }
+
+      const rzp = new window.Razorpay({
+        key: pay.data.key,
+        amount: pay.data.amount,
+        currency: 'INR',
+        name: 'VELURA',
+        description: `Order ${orderId}`,
+        order_id: pay.data.razorpayOrderId,
+        prefill: {
+          name: `${address.firstName} ${address.lastName}`.trim(),
+          email: address.email,
+          contact: address.phone,
+        },
+        theme: { color: '#0F0D0B' },
+        handler: (response) => {
+          void (async () => {
+            const verify = await fetch('/api/payments/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orderId, ...response }),
+            })
+            if (!verify.ok) {
+              addToast('Payment received but could not be verified. Contact us with your order id.')
+              return
+            }
+            clearCart()
+            router.push(`/order-confirmed?order=${orderId}`)
+          })()
+        },
+        modal: {
+          ondismiss: () => {
+            addToast('Payment cancelled. Your bag is still here.')
+          },
+        },
+      })
+      rzp.open()
+      return
     } catch {
       addToast('Something went wrong. Please try again.')
     } finally {
@@ -159,6 +274,15 @@ export default function CheckoutPage() {
 
   return (
     <div className={`${pageWrap} py-10 pb-28 md:py-14 lg:pb-16`}>
+      {onlinePay && (
+        <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
+      )}
+      {googlePlacesAvailable() && (
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${googleMapsBrowserKey()}&libraries=places&language=en&region=IN`}
+          strategy="afterInteractive"
+        />
+      )}
       <div className="mb-10">
         <p className="mb-2 font-sans text-[0.68rem] tracking-label uppercase text-rose">
           Checkout
@@ -198,7 +322,12 @@ export default function CheckoutPage() {
               </div>
             )}
             <AddressForm value={address} onChange={setAddress} submitted={submitted} />
-            <PaymentMethods selected={payment} onSelect={setPayment} orderTotal={totals.total} />
+            <PaymentMethods
+              selected={payment}
+              onSelect={setPayment}
+              orderTotal={totals.total}
+              onlineEnabled={onlinePay}
+            />
 
             <button
               type="submit"

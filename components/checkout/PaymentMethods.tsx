@@ -8,6 +8,7 @@ interface PaymentMethodsProps {
   selected: string
   onSelect: (method: string) => void
   orderTotal: number
+  onlineEnabled?: boolean
 }
 
 const METHODS = [
@@ -17,15 +18,23 @@ const METHODS = [
   { id: 'cod',        label: 'Cash on Delivery',    Icon: Package,     sub: `Orders under ${formatPrice(COD_LIMIT)}` },
 ]
 
-export function PaymentMethods({ selected, onSelect, orderTotal }: PaymentMethodsProps) {
+export function PaymentMethods({ selected, onSelect, orderTotal, onlineEnabled = true }: PaymentMethodsProps) {
   return (
     <div>
       <p className="mb-5 font-sans text-[0.68rem] tracking-label uppercase text-rose">
         Payment
       </p>
+      {!onlineEnabled && (
+        <p className="mb-4 font-sans text-[0.78rem] leading-relaxed text-mauve">
+          Razorpay keys are not in this environment, so UPI, cards and net banking cannot charge yet. Cash on Delivery is available. Add <span className="text-deep">RAZORPAY_KEY_ID</span> to enable online payment.
+        </p>
+      )}
       <div className="space-y-2" role="radiogroup" aria-label="Payment method">
         {METHODS.map((method) => {
-          const disabled = method.id === 'cod' && orderTotal >= COD_LIMIT
+          const online = method.id !== 'cod'
+          const disabled =
+            (online && !onlineEnabled) ||
+            (method.id === 'cod' && orderTotal >= COD_LIMIT)
           const active   = selected === method.id
           const { Icon } = method
 
@@ -84,7 +93,7 @@ export function PaymentMethods({ selected, onSelect, orderTotal }: PaymentMethod
       <div className="mt-5 flex items-center gap-2">
         <ShieldCheck size={14} strokeWidth={1.6} className="text-mauve" aria-hidden="true" />
         <p className="font-sans text-[0.68rem] text-mauve">
-          Secured by Razorpay · 256-bit SSL
+          UPI, cards and net banking via Razorpay · 256-bit SSL
         </p>
       </div>
     </div>

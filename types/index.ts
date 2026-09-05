@@ -99,6 +99,9 @@ export interface Address {
   city: string
   state: string
   pinCode: string
+  placeId?: string
+  lat?: number
+  lng?: number
 }
 
 export interface Order {
@@ -106,10 +109,14 @@ export interface Order {
   items: OrderItem[]
   address: Address
   paymentMethod: string
+  paymentStatus: 'unpaid' | 'pending' | 'paid' | 'failed' | 'refunded'
   subtotal: number
   shipping: number
   total: number
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered'
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
+  razorpayOrderId?: string | null
+  razorpayPaymentId?: string | null
+  paidAt?: string | null
   createdAt: string
 }
 

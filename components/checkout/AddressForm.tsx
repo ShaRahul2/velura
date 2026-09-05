@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Address } from '@/types'
 import { cn } from '@/lib/utils'
+import { INDIAN_STATES, googlePlacesAvailable } from '@/lib/indianAddress'
+import { placeToAddress, type GooglePlaceLike } from '@/lib/googlePlaces'
 
 interface AddressFormProps {
   value: Address
@@ -19,20 +21,14 @@ const AUTOCOMPLETE: Record<keyof Address, string> = {
   city: 'address-level2',
   state: 'address-level1',
   pinCode: 'postal-code',
+  placeId: 'off',
+  lat: 'off',
+  lng: 'off',
 }
-
-const INDIAN_STATES = [
-  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
-  'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
-  'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-  'Delhi', 'Jammu & Kashmir', 'Ladakh',
-]
 
 function Field({
   label, name, value, onChange, type = 'text', placeholder, required = true,
-  validate, hint, submitted, inputMode,
+  validate, hint, submitted, inputMode, inputRef, autoComplete,
 }: {
   label: string; name: keyof Address; value: string;
   onChange: (v: string) => void; type?: string; placeholder?: string; required?: boolean
@@ -40,6 +36,8 @@ function Field({
   hint?: string
   submitted?: boolean
   inputMode?: 'text' | 'numeric' | 'tel' | 'email' | 'search'
+  inputRef?: React.RefObject<HTMLInputElement | null>
+  autoComplete?: string
 }) {
   const [touched, setTouched] = useState(false)
   const show = touched || Boolean(submitted)
@@ -55,10 +53,11 @@ function Field({
         {label}{required && <span className="ml-0.5 text-rose">*</span>}
       </label>
       <input
+        ref={inputRef}
         id={fieldId}
         type={type}
         name={name}
-        autoComplete={AUTOCOMPLETE[name]}
+        autoComplete={autoComplete ?? AUTOCOMPLETE[name]}
         inputMode={inputMode}
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -66,7 +65,7 @@ function Field({
         placeholder={error ? undefined : placeholder}
         required={required}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? errorId : undefined}
+        aria-describedby={error ? errorId : hint ? `${fieldId}-hint` : undefined}
         className={cn(
           'h-12 w-full scroll-mt-24 rounded-input border bg-cream px-3 font-sans text-[0.88rem] text-deep placeholder:text-mauve/35 transition-colors focus:border-deep focus:outline-none focus-visible:outline-none',
           error ? 'border-deep' : 'border-lm'
@@ -77,17 +76,95 @@ function Field({
           {error}
         </p>
       )}
-      {!error && hint && !touched && (
-        <p className="mt-1 font-sans text-[0.62rem] text-mauve/70">{hint}</p>
+      {!error && hint && (
+        <p id={`${fieldId}-hint`} className="mt-1 font-sans text-[0.62rem] text-mauve/70">{hint}</p>
       )}
     </div>
   )
 }
 
 export function AddressForm({ value, onChange, submitted }: AddressFormProps) {
+  const addressRef = useRef<HTMLInputElement>(null)
+  const valueRef = useRef(value)
+  valueRef.current = value
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+  const placesOn = googlePlacesAvailable()
+  const [pinHint, setPinHint] = useState('')
+
   function set(field: keyof Address) {
     return (v: string) => onChange({ ...value, [field]: v })
   }
+
+  useEffect(() => {
+    if (!placesOn) return
+    const input = addressRef.current
+    if (!input) return
+
+    let listener: google.maps.MapsEventListener | undefined
+    let cancelled = false
+
+    const start = Date.now()
+    const timer = window.setInterval(() => {
+      if (cancelled) return
+      if (!window.google?.maps?.places) {
+        if (Date.now() - start > 8000) window.clearInterval(timer)
+        return
+      }
+      window.clearInterval(timer)
+      const autocomplete = new google.maps.places.Autocomplete(input, {
+        componentRestrictions: { country: 'in' },
+        fields: ['address_components', 'formatted_address', 'geometry', 'place_id'],
+        types: ['geocode'],
+      })
+      listener = autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace() as GooglePlaceLike
+        if (!place?.address_components && !place?.formatted_address) return
+        onChangeRef.current(placeToAddress(place, valueRef.current))
+      })
+    }, 120)
+
+    return () => {
+      cancelled = true
+      window.clearInterval(timer)
+      if (listener) google.maps.event.removeListener(listener)
+    }
+  }, [placesOn])
+
+  useEffect(() => {
+    const pin = value.pinCode.trim()
+    if (!/^\d{6}$/.test(pin)) {
+      setPinHint('')
+      return
+    }
+    if (valueRef.current.city && valueRef.current.state) return
+
+    const ctrl = new AbortController()
+    const t = window.setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/address/pincode?pin=${pin}`, { signal: ctrl.signal })
+        const json = (await res.json()) as { data?: { city: string; state: string }; error?: string }
+        if (!res.ok || !json.data) {
+          setPinHint(json.error ?? '')
+          return
+        }
+        setPinHint('')
+        const current = valueRef.current
+        onChangeRef.current({
+          ...current,
+          city: current.city || json.data.city,
+          state: current.state || json.data.state,
+        })
+      } catch {
+        /* ignore abort */
+      }
+    }, 350)
+
+    return () => {
+      ctrl.abort()
+      window.clearTimeout(t)
+    }
+  }, [value.pinCode])
 
   const stateError = Boolean(submitted) && !value.state
   const stateErrorId = 'checkout-state-error'
@@ -118,8 +195,11 @@ export function AddressForm({ value, onChange, submitted }: AddressFormProps) {
           name="addressLine"
           value={value.addressLine}
           onChange={set('addressLine')}
-          placeholder="Building, street, area"
+          placeholder={placesOn ? 'Start typing a building or street' : 'Building, street, area'}
+          hint={placesOn ? 'Pick a Google suggestion for a precise pin.' : 'Enter the street, then PIN to fill city and state.'}
           submitted={submitted}
+          inputRef={addressRef}
+          autoComplete={placesOn ? 'off' : 'street-address'}
         />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="City" name="city" value={value.city} onChange={set('city')} submitted={submitted} />
@@ -161,7 +241,7 @@ export function AddressForm({ value, onChange, submitted }: AddressFormProps) {
             label="PIN code" name="pinCode" value={value.pinCode} onChange={set('pinCode')}
             submitted={submitted} inputMode="numeric"
             validate={(v) => /^\d{6}$/.test(v) ? null : 'Enter a 6-digit PIN code'}
-            hint="6-digit postal code"
+            hint={pinHint || '6-digit postal code — fills city and state'}
           />
         </div>
       </div>

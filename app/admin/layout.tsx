@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
-import { Package, LogOut } from 'lucide-react'
+import { Package, LogOut, ClipboardList } from 'lucide-react'
 
 const NAV = [
   { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/orders', label: 'Orders', icon: ClipboardList },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
