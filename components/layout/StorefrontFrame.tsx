@@ -51,7 +51,7 @@ export function StorefrontFrame({ children }: { children: React.ReactNode }) {
       >
         Skip to content
       </a>
-      <header className="fixed top-0 inset-x-0 z-40">
+      <header className="fixed top-0 inset-x-0 z-40 bg-deep">
         <Navbar />
       </header>
       <main

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useRef, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Product } from '@/types'
 
@@ -16,17 +16,20 @@ export function ProductForm({ product }: Props) {
   const router  = useRouter()
   const isEdit  = !!product
 
+  // Numeric fields are held as strings so the inputs can be cleared while
+  // typing (a numeric `0` in state is impossible to delete — every empty
+  // value coerces straight back to 0). They are parsed on submit.
   const [fields, setFields] = useState({
     name:     product?.name     ?? '',
     story:    product?.story    ?? '',
     sub:      product?.sub      ?? '',
-    price:    product?.price    ?? 0,
-    oldPrice: product?.oldPrice ?? '',
+    price:    product?.price   != null ? String(product.price)   : '',
+    oldPrice: product?.oldPrice != null ? String(product.oldPrice) : '',
     emoji:    product?.emoji    ?? '',
     badge:    product?.badge    ?? '',
     cat:      product?.cat      ?? 'everyday',
-    rating:   product?.rating   ?? 4.5,
-    reviews:  product?.reviews  ?? 0,
+    rating:   product?.rating  != null ? String(product.rating)  : '4.5',
+    reviews:  product?.reviews != null ? String(product.reviews) : '0',
     fabric:   product?.fabric   ?? '',
     support:  product?.support  ?? 'Medium',
     sizes:    product?.sizes    ?? '',
@@ -35,6 +38,7 @@ export function ProductForm({ product }: Props) {
   const [success, setSuccess] = useState('')
   const [error,   setError]   = useState('')
   const [loading, setLoading] = useState(false)
+  const submittingRef = useRef(false)
 
   function set<K extends keyof typeof fields>(key: K, value: (typeof fields)[K]) {
     setFields((prev) => ({ ...prev, [key]: value }))
@@ -42,16 +46,21 @@ export function ProductForm({ product }: Props) {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    // Guard against a double submit creating two identical products before the
+    // disabled state has painted.
+    if (submittingRef.current) return
+    submittingRef.current = true
     setError('')
     setSuccess('')
     setLoading(true)
 
     const payload = {
       ...fields,
+      name:     fields.name.trim(),
       price:    Number(fields.price),
-      oldPrice: fields.oldPrice !== '' ? Number(fields.oldPrice) : null,
-      rating:   Number(fields.rating),
-      reviews:  Number(fields.reviews),
+      oldPrice: fields.oldPrice.trim() !== '' ? Number(fields.oldPrice) : null,
+      rating:   fields.rating.trim()   !== '' ? Number(fields.rating)   : 4.5,
+      reviews:  fields.reviews.trim()  !== '' ? Number(fields.reviews)  : 0,
       badge:    fields.badge || null,
     }
 
@@ -70,6 +79,7 @@ export function ProductForm({ product }: Props) {
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
       setError((data as { error?: string }).error ?? 'Something went wrong.')
+      submittingRef.current = false
       return
     }
 
@@ -78,7 +88,10 @@ export function ProductForm({ product }: Props) {
     router.push(`/admin/products/${id}/edit`)
     router.refresh()
     setSuccess('Product saved.')
-    } catch { setError('Could not save. Check your connection and try again.') }
+    } catch {
+      setError('Could not save. Check your connection and try again.')
+      submittingRef.current = false
+    }
     finally { setLoading(false) }
   }
 
@@ -127,11 +140,13 @@ export function ProductForm({ product }: Props) {
           <label htmlFor="product-price" className={labelCls}>Price (₹)</label>
           <input id="product-price"
             type="number"
+            inputMode="numeric"
             className={inputCls}
             value={fields.price}
-            onChange={(e) => set('price', Number(e.target.value))}
+            onChange={(e) => set('price', e.target.value)}
             required
             min={1}
+            placeholder="899"
           />
         </div>
 
@@ -139,10 +154,11 @@ export function ProductForm({ product }: Props) {
           <label htmlFor="product-old-price-optional" className={labelCls}>Old Price (₹, optional)</label>
           <input id="product-old-price-optional"
             type="number"
+            inputMode="numeric"
             className={inputCls}
             value={fields.oldPrice}
-            onChange={(e) => set('oldPrice', e.target.value as unknown as number)}
-            min={0}
+            onChange={(e) => set('oldPrice', e.target.value)}
+            min={1}
             placeholder="Leave blank if no sale"
           />
         </div>
@@ -207,9 +223,10 @@ export function ProductForm({ product }: Props) {
           <label htmlFor="product-rating" className={labelCls}>Rating (4.0–5.0)</label>
           <input id="product-rating"
             type="number"
+            inputMode="decimal"
             className={inputCls}
             value={fields.rating}
-            onChange={(e) => set('rating', Number(e.target.value))}
+            onChange={(e) => set('rating', e.target.value)}
             min={1} max={5} step={0.1}
           />
         </div>
@@ -218,9 +235,10 @@ export function ProductForm({ product }: Props) {
           <label htmlFor="product-review-count" className={labelCls}>Review count</label>
           <input id="product-review-count"
             type="number"
+            inputMode="numeric"
             className={inputCls}
             value={fields.reviews}
-            onChange={(e) => set('reviews', Number(e.target.value))}
+            onChange={(e) => set('reviews', e.target.value)}
             min={0}
           />
         </div>
