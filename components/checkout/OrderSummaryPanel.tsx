@@ -1,12 +1,12 @@
 'use client'
 
-import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import type { CartItem } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { calcShipping, calcDiscount, FREE_SHIPPING_THRESHOLD } from '@/lib/coupons'
 import { describeCartLine } from '@/lib/productDescribe'
 import { useUiStore } from '@/store/uiStore'
+import { ProductPhoto } from '@/components/product/ProductPhoto'
 
 interface Props {
   items:     CartItem[]
@@ -84,7 +84,7 @@ export function OrderSummaryPanel({ items, onTotals, onCoupon }: Props) {
           <div key={`${item.id}-${item.size}-${item.color ?? ''}`} className="flex items-start gap-3">
             <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-card bg-blush lg:h-20 lg:w-16">
               {item.images[0] ? (
-                <Image src={item.images[0]} alt={describeCartLine(item)} fill sizes="64px" className="object-cover" />
+                <ProductPhoto src={item.images[0]} alt={describeCartLine(item)} sizes="64px" />
               ) : (
                 <span className="flex h-full items-center justify-center font-serif text-lg text-mauve">
                   {item.name.charAt(0)}

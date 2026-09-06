@@ -11,6 +11,8 @@ import { ProductCardSkeleton } from '@/components/ui/Skeleton'
 import type { ProductCategory } from '@/types'
 import { describeProductImage, describeProductSeo, shotKindFromIndex } from '@/lib/productDescribe'
 
+export const revalidate = 3600
+
 interface PageProps {
   params: Promise<{ id: string }>
 }

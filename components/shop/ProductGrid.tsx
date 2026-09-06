@@ -6,9 +6,15 @@ interface ProductGridProps {
   products: Product[]
   loading?: boolean
   cols?: 2 | 3 | 4
+  priorityCount?: number
 }
 
-export function ProductGrid({ products, loading = false, cols = 4 }: ProductGridProps) {
+export function ProductGrid({
+  products,
+  loading = false,
+  cols = 4,
+  priorityCount = 0,
+}: ProductGridProps) {
   const gridClass =
     cols === 2
       ? 'grid-cols-2'
@@ -18,7 +24,7 @@ export function ProductGrid({ products, loading = false, cols = 4 }: ProductGrid
 
   if (loading) {
     return (
-      <div className={`grid ${gridClass} gap-x-3 gap-y-8 md:gap-x-5 md:gap-y-10`}>
+      <div className={`grid ${gridClass} gap-x-3 gap-y-10 md:gap-x-5 md:gap-y-12`}>
         {Array.from({ length: 8 }).map((_, i) => (
           <ProductCardSkeleton key={i} />
         ))}
@@ -28,7 +34,7 @@ export function ProductGrid({ products, loading = false, cols = 4 }: ProductGrid
 
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
+      <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
         <p className="font-serif text-[1.5rem] font-light text-deep">
           Nothing here yet.
         </p>
@@ -40,9 +46,9 @@ export function ProductGrid({ products, loading = false, cols = 4 }: ProductGrid
   }
 
   return (
-    <div className={`grid ${gridClass} gap-x-3 gap-y-8 md:gap-x-5 md:gap-y-10`}>
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+    <div className={`grid ${gridClass} items-stretch gap-x-3 gap-y-10 md:gap-x-5 md:gap-y-12`}>
+      {products.map((product, i) => (
+        <ProductCard key={product.id} product={product} priority={i < priorityCount} />
       ))}
     </div>
   )

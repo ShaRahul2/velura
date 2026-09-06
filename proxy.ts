@@ -47,10 +47,20 @@ export default clerkConfigured()
     })
   : credentialsAdminOnly
 
+/**
+ * Clerk handshake on every document request sets cookies / private Cache-Control,
+ * which prevents CDN HIT on the public catalog. Keep middleware on auth surfaces
+ * only; ClerkProvider still hydrates the session on public pages.
+ */
 export const config = {
   matcher: [
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    '/(api|trpc)(.*)',
-    '/__clerk/(.*)',
+    '/account(.*)',
+    '/wishlist(.*)',
+    '/orders(.*)',
+    '/admin(.*)',
+    '/sign-in(.*)',
+    '/sign-up(.*)',
+    '/api(.*)',
+    '/__clerk(.*)',
   ],
 }

@@ -1,8 +1,9 @@
 'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
-const SUPPORT = ['Light', 'Medium', 'High']
+const SUPPORT = ['Light', 'Medium', 'High'] as const
 
 export function FilterSidebar() {
   const router = useRouter()
@@ -19,32 +20,45 @@ export function FilterSidebar() {
   }
 
   return (
-    <aside className="hidden w-32 shrink-0 md:block lg:w-36">
-      <div>
-        <p className="font-sans text-[0.68rem] tracking-label uppercase text-rose mb-4">
-          Support
-        </p>
-        <ul className="flex flex-col">
-          {SUPPORT.map((level) => {
-            const active = activeSupport === level
-            return (
-              <li key={level}>
-                <button
-                  onClick={() => setParam('support', active ? '' : level)}
-                  className="w-full text-left font-sans text-[0.84rem] py-1.5 pl-3 -ml-3 border-l-2 transition-colors"
-                  style={{
-                    color: active ? '#0F0D0B' : '#6B6058',
-                    fontWeight: active ? 500 : 300,
-                    borderColor: active ? '#0F0D0B' : 'transparent',
-                  }}
-                >
-                  {level}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
+    <aside className="hidden w-36 shrink-0 md:block lg:w-40">
+      <p className="mb-4 font-sans text-[0.68rem] tracking-label uppercase text-rose">
+        Support
+      </p>
+      <ul className="flex flex-col">
+        <li>
+          <button
+            type="button"
+            onClick={() => setParam('support', '')}
+            className={cn(
+              'w-full border-l-2 py-1.5 pl-3 -ml-3 text-left font-sans text-[0.84rem] transition-colors',
+              !activeSupport
+                ? 'border-deep font-medium text-deep'
+                : 'border-transparent font-light text-mauve hover:text-deep'
+            )}
+          >
+            All
+          </button>
+        </li>
+        {SUPPORT.map((level) => {
+          const active = activeSupport === level
+          return (
+            <li key={level}>
+              <button
+                type="button"
+                onClick={() => setParam('support', active ? '' : level)}
+                className={cn(
+                  'w-full border-l-2 py-1.5 pl-3 -ml-3 text-left font-sans text-[0.84rem] transition-colors',
+                  active
+                    ? 'border-deep font-medium text-deep'
+                    : 'border-transparent font-light text-mauve hover:text-deep'
+                )}
+              >
+                {level}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
     </aside>
   )
 }

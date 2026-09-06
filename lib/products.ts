@@ -91,6 +91,17 @@ export interface QueryParams {
 
 // ── queryProducts ─────────────────────────────────────────────────────────────
 
+/** Full active catalog for the ISR shop listing (filters run on the client). */
+export async function getActiveCatalog(): Promise<Product[]> {
+  const rows = await db.product.findMany({
+    where: { isActive: true },
+    orderBy: { id: 'asc' },
+    include: PRODUCT_INCLUDE,
+    take: 100,
+  })
+  return rows.map(mapProduct)
+}
+
 export async function queryProducts(
   params: QueryParams = {}
 ): Promise<{ data: Product[]; total: number; page: number }> {

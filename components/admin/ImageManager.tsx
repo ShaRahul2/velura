@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Star, Trash2, ArrowLeft, ArrowRight } from 'lucide-react'
+import { shouldBypassImageOptimizer } from '@/lib/imageOptimizer'
 
 interface AdminImage {
   id:        number
@@ -75,6 +76,7 @@ export function ImageManager({ productId, images, onRefresh }: Props) {
               fill
               className="object-cover"
               sizes="200px"
+              unoptimized={shouldBypassImageOptimizer(img.url)}
             />
           </div>
 

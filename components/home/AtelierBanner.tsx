@@ -9,6 +9,7 @@ export function AtelierBanner() {
         alt="The Velura atelier"
         fill
         sizes="100vw"
+        quality={70}
         className="object-cover"
       />
       <div

@@ -10,6 +10,7 @@ export function HeroSection() {
         fill
         priority
         sizes="100vw"
+        quality={70}
         className="object-cover object-[center_18%] md:object-[center_15%]"
         style={{ animation: 'ken 22s cubic-bezier(0.23, 1, 0.32, 1) both' }}
       />

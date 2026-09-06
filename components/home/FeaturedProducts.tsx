@@ -58,8 +58,8 @@ export async function FeaturedProducts() {
         </div>
 
         <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:gap-x-8 lg:grid-cols-4">
-          {sorted.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {sorted.map((product, i) => (
+            <ProductCard key={product.id} product={product} priority={i < 4} />
           ))}
         </div>
 

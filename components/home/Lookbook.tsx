@@ -64,6 +64,7 @@ export function Lookbook() {
               alt={plate.alt}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
+              quality={70}
               className="object-cover img-zoom"
             />
             <div
