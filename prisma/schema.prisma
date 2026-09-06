@@ -158,6 +158,31 @@ enum ProfileRole {
   admin
 }
 
+// ── Shipping ──────────────────────────────────────────────────────────────────
+// A Shipment is the physical parcel for an Order (1:1). Provider is the courier
+// aggregator that generated it. ShipmentStatus is the granular lifecycle; the
+// coarse Order.status still only moves pending→confirmed→shipped→delivered.
+
+enum ShipmentProvider {
+  shiprocket
+  manual
+}
+
+enum ShipmentStatus {
+  pending          // row created, no AWB yet
+  awb_assigned     // AWB generated, awaiting pickup
+  pickup_scheduled
+  picked_up
+  in_transit
+  out_for_delivery
+  delivered
+  undelivered      // failed attempt / NDR
+  rto_in_transit   // returning to origin
+  rto_delivered
+  cancelled
+  lost
+}
+
 // ── Profile ───────────────────────────────────────────────────────────────────
 // 1:1 with Clerk `userId`. Role is never accepted from the client — only the
 // Clerk webhook (publicMetadata.role), SQL seed, or an admin-only API.
@@ -276,6 +301,7 @@ model Order {
   profile       Profile?      @relation(fields: [profileId], references: [id], onDelete: SetNull)
 
   items         OrderItem[]
+  shipment      Shipment?
 
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -308,6 +334,66 @@ model OrderItem {
 // ── SavedDesign ───────────────────────────────────────────────────────────────
 // Builder designs saved by the user. specHash deduplicates identical specs so
 // the AI image is generated at most once per unique configuration.
+
+// ── Shipment ──────────────────────────────────────────────────────────────────
+
+model Shipment {
+  id                 String           @id @default(cuid())
+  orderId            String           @unique
+  order              Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  provider           ShipmentProvider
+  status             ShipmentStatus   @default(pending)
+
+  providerOrderId    String?          // aggregator's order id (Shiprocket order_id)
+  providerShipmentId String?          // aggregator's shipment id
+  awb                String?
+  courier            String?
+  labelUrl           String?
+  manifestUrl        String?
+  invoiceUrl         String?
+  trackingUrl        String?
+
+  weightKg           Float?
+  estimatedDelivery  DateTime?
+  pickupScheduledAt  DateTime?
+  deliveredAt        DateTime?
+  lastSyncedAt       DateTime?
+
+  createRequest      Json?
+  createResponse     Json?
+
+  // Per-milestone notification stamps (idempotency)
+  notifiedShipped        DateTime?
+  notifiedOutForDelivery DateTime?
+  notifiedDelivered      DateTime?
+
+  events             ShipmentEvent[]
+
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([status])
+  @@index([awb])
+  @@index([lastSyncedAt])
+}
+
+model ShipmentEvent {
+  id          String         @id @default(cuid())
+  shipmentId  String
+  shipment    Shipment       @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  status      ShipmentStatus
+  code        String?        // raw provider status code/label
+  description String
+  location    String?
+  occurredAt  DateTime
+  raw         Json?
+  createdAt   DateTime       @default(now())
+
+  // One row per distinct provider scan — makes webhook + poll ingestion idempotent
+  @@unique([shipmentId, status, occurredAt])
+  @@index([shipmentId, occurredAt])
+}
 
 model SavedDesign {
   id         String   @id @default(cuid())

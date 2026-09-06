@@ -32,6 +32,16 @@ account configuration that can only be done on the hosting side.
       `RESEND_API_KEY` and `ORDER_FROM_EMAIL`. Order confirmation emails are
       skipped silently while `RESEND_API_KEY` is empty.
 
+- [ ] **Shipping (Shiprocket).** See `docs/shipping.md`. Create an API user,
+      set `SHIPROCKET_EMAIL` / `SHIPROCKET_PASSWORD` / `SHIPROCKET_PICKUP_LOCATION`,
+      register the webhook at `/api/shipping/webhook` with a token in
+      `SHIPROCKET_WEBHOOK_TOKEN`, and set `CRON_SECRET` for the sync cron.
+      Without the credentials the admin falls back to entering AWBs by hand.
+      Confirm the wallet has balance before the first real shipment.
+- [ ] **WhatsApp notifications.** Set `WHATSAPP_PHONE_NUMBER_ID` /
+      `WHATSAPP_ACCESS_TOKEN` and get the six `WHATSAPP_TEMPLATE_*` templates
+      approved in Meta. Email works without any of this.
+
 ## Environment sanity
 
 - [ ] Every var in `env.production.example` is set in Vercel (Production, and

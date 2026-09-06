@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 import { formatPrice } from '@/lib/utils'
 import { OrderActions } from '@/components/admin/OrderActions'
-import { OrderTrackingForm } from '@/components/admin/OrderTrackingForm'
+import { ShipmentPanel, type ShipmentPanelData } from '@/components/admin/ShipmentPanel'
+import { shippingProviderKey } from '@/lib/shipping'
 import { ORDER_LABEL, PAYMENT_LABEL, adminTone, formatAdminDate } from '@/lib/adminOrders'
 import type { StoredPaymentDetails } from '@/lib/razorpay'
 
@@ -49,11 +50,36 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
   const { id } = await params
   const order = await db.order.findUnique({
     where: { id },
-    include: { items: true },
+    include: {
+      items: true,
+      shipment: { include: { events: { orderBy: { occurredAt: 'desc' }, take: 40 } } },
+    },
   })
   if (!order) notFound()
 
   const pay = asPaymentDetails(order.paymentDetails)
+
+  const shipmentData: ShipmentPanelData | null = order.shipment
+    ? {
+        id: order.shipment.id,
+        provider: order.shipment.provider,
+        status: order.shipment.status,
+        awb: order.shipment.awb,
+        courier: order.shipment.courier,
+        labelUrl: order.shipment.labelUrl,
+        trackingUrl: order.shipment.trackingUrl,
+        estimatedDelivery: order.shipment.estimatedDelivery?.toISOString() ?? null,
+        pickupScheduledAt: order.shipment.pickupScheduledAt?.toISOString() ?? null,
+        lastSyncedAt: order.shipment.lastSyncedAt?.toISOString() ?? null,
+        events: order.shipment.events.map((e) => ({
+          id: e.id,
+          status: e.status,
+          description: e.description,
+          location: e.location,
+          occurredAt: e.occurredAt.toISOString(),
+        })),
+      }
+    : null
 
   return (
     <div className="p-8">
@@ -221,10 +247,10 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
             )}
           </section>
 
-          <OrderTrackingForm
+          <ShipmentPanel
             orderId={order.id}
-            carrier={order.carrier}
-            trackingNumber={order.trackingNumber}
+            providerKey={shippingProviderKey()}
+            shipment={shipmentData}
           />
 
           <section>
