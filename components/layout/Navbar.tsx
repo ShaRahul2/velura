@@ -7,7 +7,7 @@ import { useUiStore } from '@/store/uiStore'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { NavAccount } from '@/components/auth/NavAccount'
 import { usePathname } from 'next/navigation'
-import { startTransition, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const NAV_LINKS = [
@@ -26,35 +26,15 @@ export function Navbar() {
   const openStylist = useUiStore((s) => s.openStylist)
   const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const wishCount = useWishlistStore((s) => s.ids.length)
-  const isHome = pathname === '/'
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setMounted(true))
     return () => cancelAnimationFrame(id)
   }, [])
 
-  useEffect(() => {
-    const onScroll = () => {
-      startTransition(() => setScrolled(window.scrollY > 16))
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [pathname])
-
-  const solid = !isHome || scrolled
-
   return (
-    <div
-      className={cn(
-        'flex h-16 items-center px-5 transition-[background-color,border-color] duration-200 ease-out md:px-8 lg:px-12',
-        solid
-          ? 'border-b border-nav-border bg-nav-bg backdrop-blur-[16px]'
-          : 'border-b border-transparent bg-gradient-to-b from-deep/80 via-deep/40 to-transparent'
-      )}
-    >
+    <div className="flex h-16 items-center border-b border-nav-border bg-deep px-5 md:px-8 lg:px-12">
       <Link
         href="/"
         className="mr-auto font-serif text-[1.18rem] tracking-logo text-blush lg:text-[1.28rem]"

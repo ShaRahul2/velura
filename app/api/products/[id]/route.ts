@@ -3,7 +3,7 @@ import { db } from '@/lib/db'
 import { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
-import { getProductById, updateProduct, deleteProduct } from '@/lib/products'
+import { getProductById, updateProduct, deleteProduct, DuplicateProductNameError } from '@/lib/products'
 import { staffUnauthorized } from '@/lib/staffAuth'
 import { destroyCloudinaryAsset } from '@/lib/cloudinary-upload'
 
@@ -42,6 +42,7 @@ export async function PUT(req: NextRequest, { params }: Context) {
     revalidatePath('/shop', 'layout'); revalidatePath('/'); revalidatePath('/admin/products')
     return NextResponse.json({ data: product })
   } catch (err) {
+    if (err instanceof DuplicateProductNameError) return NextResponse.json({ error: err.message }, { status: 409 })
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     console.error('[PUT /api/products/[id]]', err)
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 })

@@ -239,6 +239,27 @@ export async function queryAllProducts(): Promise<Product[]> {
 
 // ── Admin: createProduct ───────────────────────────────────────────────────────
 
+/** Thrown when a create/rename would collide with an existing product name. */
+export class DuplicateProductNameError extends Error {
+  readonly code = 'DUPLICATE_PRODUCT_NAME'
+  constructor(productName: string) {
+    super(`A product named “${productName}” already exists.`)
+    this.name = 'DuplicateProductNameError'
+  }
+}
+
+/** Case-insensitive name-collision check. Pass `exceptId` when renaming. */
+async function assertProductNameFree(name: string, exceptId?: number): Promise<void> {
+  const clash = await db.product.findFirst({
+    where: {
+      name: { equals: name.trim(), mode: 'insensitive' },
+      ...(exceptId != null ? { id: { not: exceptId } } : {}),
+    },
+    select: { id: true },
+  })
+  if (clash) throw new DuplicateProductNameError(name.trim())
+}
+
 export interface CreateProductInput {
   name:       string
   story:      string
@@ -257,6 +278,8 @@ export interface CreateProductInput {
 }
 
 export async function createProduct(data: CreateProductInput): Promise<Product> {
+  await assertProductNameFree(data.name)
+
   const category = await db.category.findUnique({ where: { slug: data.cat as ProductCategory } })
   if (!category) throw new Error(`Category not found: ${data.cat}`)
 
@@ -288,6 +311,8 @@ export async function updateProduct(
   id:   number,
   data: Partial<CreateProductInput>
 ): Promise<Product> {
+  if (data.name !== undefined) await assertProductNameFree(data.name, id)
+
   let categoryId: number | undefined
   if (data.cat) {
     const category = await db.category.findUnique({ where: { slug: data.cat as ProductCategory } })

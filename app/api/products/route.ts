@@ -2,7 +2,7 @@ import { productSchema, validPrice } from '@/lib/adminValidation'
 import { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
-import { queryProducts, createProduct } from '@/lib/products'
+import { queryProducts, createProduct, DuplicateProductNameError } from '@/lib/products'
 import { staffUnauthorized } from '@/lib/staffAuth'
 
 export async function GET(req: NextRequest) {
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     revalidatePath('/shop'); revalidatePath('/'); revalidatePath('/admin/products')
     return NextResponse.json({ data: product }, { status: 201 })
   } catch (err) {
+    if (err instanceof DuplicateProductNameError) return NextResponse.json({ error: err.message }, { status: 409 })
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     console.error('[POST /api/products]', err)
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 })
