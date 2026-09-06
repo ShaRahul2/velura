@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { emailsMatch, toPublicOrder } from '@/lib/orderPublic'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 
 const Body = z.object({
   orderId: z.string().min(6).max(80),
@@ -12,6 +13,10 @@ const NOT_FOUND = 'We could not find that order.'
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkRateLimit(`order-lookup:${clientIp(req)}`, 15, 10 * 60 * 1000))) {
+      return NextResponse.json({ error: 'Too many attempts. Please wait a few minutes.' }, { status: 429 })
+    }
+
     const parsed = Body.safeParse(await req.json())
     if (!parsed.success) {
       return NextResponse.json({ error: NOT_FOUND }, { status: 404 })

@@ -26,7 +26,15 @@ export function rupeesToPaise(rupees: number): number {
 
 export function verifyRazorpayWebhook(rawBody: string, signature: string): boolean {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET
-  if (!secret) return false
+  if (!secret) {
+    // Distinct from a genuine bad signature: this means the deploy is
+    // misconfigured and EVERY webhook will 400, leaving paid orders stuck.
+    console.error(
+      '[razorpay] RAZORPAY_WEBHOOK_SECRET is not set — rejecting all webhooks. ' +
+        'Set it in the environment and register the webhook in the Razorpay dashboard.',
+    )
+    return false
+  }
   const expected = createHmac('sha256', secret).update(rawBody).digest('hex')
   const a = Buffer.from(expected)
   const b = Buffer.from(signature)

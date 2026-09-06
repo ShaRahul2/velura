@@ -60,7 +60,7 @@ export const config = {
     '/admin(.*)',
     '/sign-in(.*)',
     '/sign-up(.*)',
-    '/api(.*)',
+    '/api/((?!builder-preview).*)',
     '/__clerk(.*)',
   ],
 }

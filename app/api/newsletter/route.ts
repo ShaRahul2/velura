@@ -8,7 +8,7 @@ const BodySchema = z.object({
 })
 
 export async function POST(req: Request) {
-  if (!checkRateLimit(`newsletter:${clientIp(req)}`, 8)) {
+  if (!await checkRateLimit(`newsletter:${clientIp(req)}`, 8)) {
     return NextResponse.json({ error: 'Please wait before trying again.' }, { status: 429 })
   }
 

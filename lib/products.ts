@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache'
 import { db } from '@/lib/db'
 import { BadgeType as DbBadge, SupportLevel as DbSupportLevel, type Prisma } from '@prisma/client'
 import { products as STATIC } from '@/data/products'
@@ -91,7 +92,7 @@ export interface QueryParams {
 
 // ── queryProducts ─────────────────────────────────────────────────────────────
 
-/** Full active catalog for the ISR shop listing (filters run on the client). */
+/** Full active catalog. Shop filters run on the cached result. */
 export async function getActiveCatalog(): Promise<Product[]> {
   const rows = await db.product.findMany({
     where: { isActive: true },
@@ -101,6 +102,12 @@ export async function getActiveCatalog(): Promise<Product[]> {
   })
   return rows.map(mapProduct)
 }
+
+export const getCachedCatalog = unstable_cache(
+  async () => getActiveCatalog(),
+  ['shop-active-catalog'],
+  { revalidate: 3600, tags: ['catalog'] }
+)
 
 export async function queryProducts(
   params: QueryParams = {}

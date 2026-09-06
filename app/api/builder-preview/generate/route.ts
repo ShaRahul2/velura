@@ -4,22 +4,24 @@
  * Generates an AI product-only preview from a BuilderVisualSpec.
  *
  * Provider priority (first configured wins):
- *   1. HF_TOKEN            — HuggingFace serverless via SDK (FREE)
- *   2. REPLICATE_API_TOKEN — Replicate SDXL (paid)
- *   3. Pollinations.ai     — always available, zero config, genuinely free
+ *   1. XAI_API_KEY         — Grok Imagine (grok-imagine-image-2.0)
+ *   2. HF_TOKEN            — HuggingFace FLUX.1-schnell
+ *   3. REPLICATE_API_TOKEN — Replicate SDXL
+ *   4. Pollinations.ai     — zero-config fallback
  *
- * Every generated image is cached in Cloudinary (velura/custom-previews/{hash})
- * so the same spec combination is never generated twice.
- *
- * Rate limit: 5 per IP per hour (in-memory; use Redis in production).
- * Rate limit is skipped in development mode.
+ * Cached in Cloudinary at velura/custom-previews/{hash}.
+ * Pass `{ refresh: true }` to regenerate and overwrite the cache.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { HfInference } from '@huggingface/inference'
+import { InferenceClient } from '@huggingface/inference'
 import type { BuilderVisualSpec } from '@/lib/builderVisualSpec'
-import { specToHash, buildAIPrompt, buildPollinationsPrompt } from '@/lib/builderVisualSpec'
-import { getCloudinaryUrl, uploadFromUrl } from '@/lib/cloudinary-upload'
+import { specToHash, specToSeed, buildAIPrompt, buildPollinationsPrompt } from '@/lib/builderVisualSpec'
+import { access, mkdir, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+import { getCloudinaryUrl, uploadFromBuffer, uploadFromUrl } from '@/lib/cloudinary-upload'
+import { hasXaiKey, xaiImageModel } from '@/lib/xai'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 import {
   CB_BRA_TYPES,
   CB_STRAP_STYLES,
@@ -31,28 +33,11 @@ import {
   CB_COLOR_OPTIONS,
 } from '@/data/builderOptions'
 
-export const maxDuration = 120  // seconds
+export const maxDuration = 120
 
-// ── Rate limiter ──────────────────────────────────────────────────────────────
-
-interface RateLimitEntry { count: number; resetAt: number }
-const rateLimitMap = new Map<string, RateLimitEntry>()
-
-function checkRateLimit(ip: string): boolean {
-  if (process.env.NODE_ENV === 'development') return true   // unlimited in dev
-
-  const now   = Date.now()
-  const entry = rateLimitMap.get(ip)
-  if (!entry || entry.resetAt < now) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + 3_600_000 })
-    return true
-  }
-  if (entry.count >= 5) return false
-  entry.count++
-  return true
-}
-
-// ── Input validation ──────────────────────────────────────────────────────────
+const NEGATIVE_PROMPT =
+  'person, human, model, body, torso, skin, face, hands, mannequin, dummy, ' +
+  'nudity, text, watermark, logo, cartoon, illustration, sketch, blurry, low quality, NSFW'
 
 const VALID_BRA_TYPES: Set<string>    = new Set(CB_BRA_TYPES.map((o) => o.id))
 const VALID_STRAP_STYLES: Set<string> = new Set([...CB_STRAP_STYLES.map((o) => o.id), 'none'])
@@ -78,63 +63,117 @@ function validateSpec(s: unknown): s is BuilderVisualSpec {
   )
 }
 
-// ── Provider 1: HuggingFace via official SDK ──────────────────────────────────
-// SDK handles URL routing, retries, and streaming internally.
-// Defaults to FLUX.1-schnell — 4 steps, fast, high quality.
+type Provider = 'xai' | 'huggingface' | 'replicate' | 'pollinations'
+type ImageData = { kind: 'buffer'; data: Buffer } | { kind: 'url'; data: string }
+
+function isPng(buf: Buffer): boolean {
+  return buf[0] === 0x89 && buf[1] === 0x50
+}
+
+async function getLocalPreview(hash: string): Promise<string | null> {
+  for (const ext of ['png', 'jpg'] as const) {
+    try {
+      await access(path.join(process.cwd(), 'public', 'previews', `${hash}.${ext}`))
+      return `/previews/${hash}.${ext}`
+    } catch { /* miss */ }
+  }
+  return null
+}
+
+async function persistLocal(buf: Buffer, hash: string): Promise<string> {
+  const dir = path.join(process.cwd(), 'public', 'previews')
+  await mkdir(dir, { recursive: true })
+  const name = `${hash}.${isPng(buf) ? 'png' : 'jpg'}`
+  await writeFile(path.join(dir, name), buf)
+  return `/previews/${name}`
+}
+
+async function persistImage(imageData: ImageData, publicId: string, hash: string, overwrite: boolean): Promise<string> {
+  try {
+    if (imageData.kind === 'buffer') {
+      return await uploadFromBuffer(imageData.data, publicId, { overwrite })
+    }
+    return await uploadFromUrl(imageData.data, publicId, { overwrite })
+  } catch (err) {
+    console.warn('[builder-preview] Cloudinary cache failed:', err instanceof Error ? err.message : err)
+    if (imageData.kind === 'buffer') return persistLocal(imageData.data, hash)
+    return imageData.data
+  }
+}
+
+async function generateWithXai(prompt: string, seed: number): Promise<Buffer> {
+  const { generateImage } = await import('ai')
+  const { image } = await generateImage({
+    model: xaiImageModel(),
+    prompt,
+    aspectRatio: '3:4',
+    seed,
+    maxRetries: 1,
+    abortSignal: AbortSignal.timeout(40_000),
+    providerOptions: {
+      xai: { quality: 'low' },
+    },
+  })
+  return Buffer.from(image.uint8Array)
+}
 
 async function generateWithHuggingFace(
   prompt: string,
   negativePrompt: string,
   token: string,
 ): Promise<Buffer> {
-  const hf    = new HfInference(token)
+  const hf = new InferenceClient(token)
   const model = process.env.HF_MODEL ?? 'black-forest-labs/FLUX.1-schnell'
-
   const blob = await hf.textToImage(
     {
       model,
       inputs: prompt,
       parameters: {
-        negative_prompt:     negativePrompt,
-        num_inference_steps: 4,
-        guidance_scale:      0,
-        width:               768,
-        height:              1024,
+        negative_prompt: negativePrompt,
+        num_inference_steps: 8,
+        guidance_scale: 0,
+        width: 768,
+        height: 1024,
       },
     },
-    { outputType: 'blob' },
+    { outputType: 'blob', signal: AbortSignal.timeout(18_000) },
   )
-
   return Buffer.from(await blob.arrayBuffer())
 }
 
-// ── Provider 2: Pollinations.ai (zero-config, always free) ───────────────────
-// Uses FLUX model. GET request with URL-encoded prompt.
-// Returns binary JPEG. No account or token required.
-
-async function generateWithPollinations(prompt: string): Promise<Buffer> {
-  const encoded = encodeURIComponent(prompt.slice(0, 480))   // leave room for params
-  const seed    = Math.floor(Math.random() * 999_999)
+async function generateWithPollinations(prompt: string, seed: number): Promise<Buffer> {
+  const encoded = encodeURIComponent(prompt.slice(0, 700))
   const url =
     `https://image.pollinations.ai/prompt/${encoded}` +
-    `?width=768&height=1024&model=flux&nologo=true&nofeed=true&seed=${seed}`
+    `?width=768&height=1024&model=flux&nologo=true&nofeed=true&private=true&seed=${seed}`
 
-  const res = await fetch(url, { method: 'GET' })
+  const res = await fetch(url, {
+    method: 'GET',
+    signal: AbortSignal.timeout(40_000),
+    headers: { Accept: 'image/*' },
+  })
 
   if (!res.ok) {
     throw new Error(`Pollinations error ${res.status}`)
   }
 
-  return Buffer.from(await res.arrayBuffer())
+  const type = res.headers.get('content-type') ?? ''
+  if (type.includes('text/html') || type.includes('application/json')) {
+    throw new Error('Pollinations returned a non-image response')
+  }
+
+  const buffer = Buffer.from(await res.arrayBuffer())
+  if (buffer.byteLength < 8_000) {
+    throw new Error('Pollinations returned an empty image')
+  }
+  return buffer
 }
 
-// ── Provider 3: Replicate (paid) ─────────────────────────────────────────────
-
 interface ReplicatePrediction {
-  id:      string
-  status:  'starting' | 'processing' | 'succeeded' | 'failed' | 'canceled'
+  id: string
+  status: 'starting' | 'processing' | 'succeeded' | 'failed' | 'canceled'
   output?: string[]
-  error?:  string
+  error?: string
 }
 
 async function generateWithReplicate(
@@ -147,14 +186,19 @@ async function generateWithReplicate(
     '7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc'
 
   const createRes = await fetch('https://api.replicate.com/v1/predictions', {
-    method:  'POST',
+    method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       version,
       input: {
-        prompt, negative_prompt: negativePrompt,
-        width: 768, height: 1024, num_outputs: 1,
-        guidance_scale: 7.5, num_inference_steps: 30, scheduler: 'K_EULER',
+        prompt,
+        negative_prompt: negativePrompt,
+        width: 768,
+        height: 1024,
+        num_outputs: 1,
+        guidance_scale: 7.5,
+        num_inference_steps: 30,
+        scheduler: 'K_EULER',
       },
     }),
   })
@@ -168,10 +212,10 @@ async function generateWithReplicate(
   }
 
   const created: ReplicatePrediction = await createRes.json()
-  const deadline = Date.now() + 120_000
+  const deadline = Date.now() + 90_000
 
   while (Date.now() < deadline) {
-    await new Promise((r) => setTimeout(r, 3_000))
+    await new Promise((r) => setTimeout(r, 2_500))
     const poll: ReplicatePrediction = await fetch(
       `https://api.replicate.com/v1/predictions/${created.id}`,
       { headers: { Authorization: `Bearer ${token}` } },
@@ -185,65 +229,77 @@ async function generateWithReplicate(
   throw new Error('Replicate generation timed out')
 }
 
-// ── Route handler ─────────────────────────────────────────────────────────────
-
-type Provider  = 'pollinations' | 'huggingface' | 'replicate'
-type ImageData = { kind: 'buffer'; data: Buffer } | { kind: 'url'; data: string }
-
 export async function POST(req: NextRequest) {
-  // 1. Rate limit
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-  if (!checkRateLimit(ip)) {
+  try {
+    return await handleGenerate(req)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Generation failed'
+    console.error('[builder-preview]', msg)
+    return NextResponse.json({ error: msg, code: 'GENERATION_FAILED' }, { status: 502 })
+  }
+}
+
+async function handleGenerate(req: NextRequest) {
+  if (!checkRateLimit(`builder-preview:${clientIp(req)}`, 8)) {
     return NextResponse.json({ error: 'Rate limit exceeded. Try again in an hour.' }, { status: 429 })
   }
 
-  // 2. Parse & validate
   let body: unknown
   try { body = await req.json() }
   catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }) }
 
   const raw = (body as Record<string, unknown>)?.spec
+  const refresh = Boolean((body as Record<string, unknown>)?.refresh)
   if (!validateSpec(raw)) {
     return NextResponse.json({ error: 'Invalid or incomplete spec' }, { status: 400 })
   }
   const spec = raw as BuilderVisualSpec
 
-  // 3. Cloudinary cache check
-  const hash     = specToHash(spec)
+  const hash = specToHash(spec)
   const publicId = `velura/custom-previews/${hash}`
 
-  try {
-    const cached = await getCloudinaryUrl(publicId)
-    if (cached) return NextResponse.json({ url: cached, cached: true, hash })
-  } catch { /* non-fatal */ }
+  if (!refresh) {
+    try {
+      const cached = (await getCloudinaryUrl(publicId)) ?? (await getLocalPreview(hash))
+      if (cached) return NextResponse.json({ url: cached, cached: true, hash })
+    } catch { /* non-fatal */ }
+  }
 
-  // 4. Build prompts — full prompt for HF/Replicate, short for Pollinations
-  const fullPrompt  = buildAIPrompt(spec)
+  const fullPrompt = buildAIPrompt(spec)
   const shortPrompt = buildPollinationsPrompt(spec)
-  const negativePrompt =
-    'person, human body, face, skin, mannequin, nudity, text, watermark, logo, ' +
-    'blurry, low quality, illustration, cartoon, sketch, NSFW'
+  const seed = specToSeed(spec, refresh ? Date.now() % 10_000 : 0)
 
-  // 5. Try providers in order
-  const hfToken        = process.env.HF_TOKEN
+  const hfToken = process.env.HF_TOKEN
   const replicateToken = process.env.REPLICATE_API_TOKEN
 
-  let imageData: ImageData
-  let provider:  Provider
+  let imageData: ImageData | null = null
+  let provider: Provider | undefined
+  const errors: string[] = []
 
-  if (hfToken) {
+  if (hasXaiKey()) {
     try {
-      imageData = { kind: 'buffer', data: await generateWithHuggingFace(fullPrompt, negativePrompt, hfToken) }
-      provider  = 'huggingface'
+      imageData = { kind: 'buffer', data: await generateWithXai(fullPrompt, seed) }
+      provider = 'xai'
     } catch (err) {
-      console.warn('[builder-preview] HF failed, falling back to Pollinations:', err instanceof Error ? err.message : err)
-      imageData = { kind: 'buffer', data: await generateWithPollinations(shortPrompt) }
-      provider  = 'pollinations'
+      errors.push(`xai: ${err instanceof Error ? err.message : 'failed'}`)
+      console.warn('[builder-preview] xAI failed:', err instanceof Error ? err.message : err)
     }
-  } else if (replicateToken) {
+  }
+
+  if (!imageData && hfToken) {
     try {
-      imageData = { kind: 'url', data: await generateWithReplicate(fullPrompt, negativePrompt, replicateToken) }
-      provider  = 'replicate'
+      imageData = { kind: 'buffer', data: await generateWithHuggingFace(fullPrompt, NEGATIVE_PROMPT, hfToken) }
+      provider = 'huggingface'
+    } catch (err) {
+      errors.push(`hf: ${err instanceof Error ? err.message : 'failed'}`)
+      console.warn('[builder-preview] HF failed:', err instanceof Error ? err.message : err)
+    }
+  }
+
+  if (!imageData && replicateToken) {
+    try {
+      imageData = { kind: 'url', data: await generateWithReplicate(fullPrompt, NEGATIVE_PROMPT, replicateToken) }
+      provider = 'replicate'
     } catch (err) {
       const e = err as Error & { code?: string }
       if (e.code === 'INSUFFICIENT_CREDITS') {
@@ -252,32 +308,25 @@ export async function POST(req: NextRequest) {
           { status: 402 },
         )
       }
-      console.warn('[builder-preview] Replicate failed, falling back to Pollinations:', e.message)
-      imageData = { kind: 'buffer', data: await generateWithPollinations(shortPrompt) }
-      provider  = 'pollinations'
+      errors.push(`replicate: ${e.message}`)
+      console.warn('[builder-preview] Replicate failed:', e.message)
     }
-  } else {
+  }
+
+  if (!imageData) {
     try {
-      imageData = { kind: 'buffer', data: await generateWithPollinations(shortPrompt) }
-      provider  = 'pollinations'
+      imageData = { kind: 'buffer', data: await generateWithPollinations(shortPrompt, seed) }
+      provider = 'pollinations'
     } catch (err) {
+      errors.push(`pollinations: ${err instanceof Error ? err.message : 'failed'}`)
       const msg = err instanceof Error ? err.message : 'Generation failed'
-      return NextResponse.json({ error: msg, code: 'GENERATION_FAILED' }, { status: 502 })
+      return NextResponse.json(
+        { error: msg, code: 'GENERATION_FAILED', detail: errors.join(' · ') },
+        { status: 502 },
+      )
     }
   }
 
-  // 6. Upload to Cloudinary for permanent caching
-  const uploadSrc =
-    imageData.kind === 'buffer'
-      ? `data:image/jpeg;base64,${imageData.data.toString('base64')}`
-      : imageData.data
-
-  let finalUrl: string
-  try {
-    finalUrl = await uploadFromUrl(uploadSrc, publicId)
-  } catch {
-    finalUrl = uploadSrc   // serve ephemeral source directly if upload fails
-  }
-
+  const finalUrl = await persistImage(imageData, publicId, hash, refresh)
   return NextResponse.json({ url: finalUrl, cached: false, hash, provider })
 }

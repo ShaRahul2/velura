@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { COUPONS, calcDiscount } from '@/lib/coupons'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 
 const Schema = z.object({
   code:     z.string().min(1).max(32),
@@ -9,6 +10,10 @@ const Schema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkRateLimit(`coupon:${clientIp(req)}`, 30, 10 * 60 * 1000))) {
+      return NextResponse.json({ error: 'Too many attempts. Please wait a few minutes.' }, { status: 429 })
+    }
+
     const body   = await req.json()
     const parsed = Schema.safeParse(body)
     if (!parsed.success) {

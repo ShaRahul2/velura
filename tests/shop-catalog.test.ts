@@ -1,7 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { products } from '../data/products'
-import { filterShopCatalog, paginateShop, parseShopQuery } from '../lib/shopQuery'
+import { filterShopCatalog, paginateShop, parseShopQuery, shopHref, parseShopSearchParams } from '../lib/shopQuery'
+import { buildVisualSpec, buildAIPrompt, buildPollinationsPrompt, specToSeed } from '../lib/builderVisualSpec'
 import { shouldBypassImageOptimizer } from '../lib/imageOptimizer'
 
 test('shop catalog filters by category, support, and search', () => {
@@ -41,6 +42,42 @@ test('shop query parser ignores junk and empty search', () => {
   assert.equal(q.page, 1)
   assert.equal(q.q, undefined)
   assert.equal(q.cat, 'everyday')
+})
+
+test('shopHref preserves filters, clears empty keys, and resets page on filter change', () => {
+  const base = { cat: 'lace', support: 'High', sort: 'rating', page: 3 }
+  assert.equal(shopHref(base, { cat: 'bridal' }), '/shop?cat=bridal&support=High&sort=rating')
+  assert.equal(shopHref(base, { support: '' }), '/shop?cat=lace&sort=rating')
+  assert.equal(shopHref(base, { page: 2 }), '/shop?cat=lace&support=High&sort=rating&page=2')
+  assert.equal(shopHref({ page: 1 }, {}), '/shop')
+
+  const parsed = parseShopSearchParams({ cat: 'everyday', page: ['2'] })
+  assert.equal(parsed.cat, 'everyday')
+  assert.equal(parsed.page, 2)
+})
+
+test('builder prompts insist on an empty garment and seed is stable', () => {
+  const spec = buildVisualSpec({
+    sizeMode: 'standard',
+    band: '34',
+    cup: 'B',
+    braType: 'everyday',
+    strapStyle: 'classic',
+    padding: 'light',
+    underwire: 'wired',
+    closure: 'back',
+    support: 'medium',
+    fabric: 'cotton',
+    color: 'cream',
+    fitUnit: 'cm',
+  })
+  const full = buildAIPrompt(spec).toLowerCase()
+  const short = buildPollinationsPrompt(spec).toLowerCase()
+  assert.match(full, /no person/)
+  assert.match(full, /everyday/)
+  assert.match(short, /no person/)
+  assert.equal(specToSeed(spec), specToSeed(spec))
+  assert.notEqual(specToSeed(spec, 1), specToSeed(spec, 0))
 })
 
 test('image optimizer bypasses Unsplash and keeps local files', () => {

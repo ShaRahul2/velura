@@ -16,7 +16,7 @@ const BodySchema = z.object({
 })
 
 export async function POST(req: Request) {
-  if (!checkRateLimit(`stylist:${clientIp(req)}`, 20)) {
+  if (!await checkRateLimit(`stylist:${clientIp(req)}`, 20)) {
     return NextResponse.json({ error: 'Please wait before asking again.' }, { status: 429 })
   }
 

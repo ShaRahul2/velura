@@ -46,10 +46,12 @@ export function ImageGallery({ images, product, colorLabel }: ImageGalleryProps)
   const [active, setActive] = useState(0)
   const shots = images.filter(Boolean)
   const safeIndex = shots[active] ? active : 0
+  const firstShot = shots[0]
 
+  // Reset to the first image whenever the image set changes (e.g. colour swap).
   useEffect(() => {
     setActive(0)
-  }, [shots[0]])
+  }, [firstShot])
 
   if (shots.length === 0) {
     return <div className="aspect-[3/4] bg-blush" />

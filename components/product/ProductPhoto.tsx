@@ -9,6 +9,7 @@ interface ProductPhotoProps {
   priority?: boolean
   className?: string
   quality?: number
+  blurDataURL?: string
 }
 
 export function ProductPhoto({
@@ -17,7 +18,8 @@ export function ProductPhoto({
   sizes,
   priority,
   className,
-  quality = 75,
+  quality = 70,
+  blurDataURL,
 }: ProductPhotoProps) {
   return (
     <Image
@@ -27,6 +29,8 @@ export function ProductPhoto({
       sizes={sizes}
       priority={priority}
       quality={quality}
+      placeholder={blurDataURL ? 'blur' : 'empty'}
+      blurDataURL={blurDataURL}
       unoptimized={shouldBypassImageOptimizer(src)}
       className={cn('object-cover', className)}
     />

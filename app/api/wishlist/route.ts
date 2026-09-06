@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requireCustomerProfile } from '@/lib/staffAuth'
 import { replaceWishlist, toggleWishlist, wishlistIdsForProfile } from '@/lib/accountCommerce'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 
 export async function GET() {
   const profile = await requireCustomerProfile()
@@ -11,6 +12,9 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   try {
+    if (!(await checkRateLimit(`wishlist:${clientIp(req)}`, 60, 10 * 60 * 1000))) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
     const profile = await requireCustomerProfile()
     if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const parsed = z.object({ ids: z.array(z.number().int().positive()).max(100) }).safeParse(await req.json().catch(() => null))
@@ -25,6 +29,9 @@ export async function PUT(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkRateLimit(`wishlist:${clientIp(req)}`, 60, 10 * 60 * 1000))) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
     const profile = await requireCustomerProfile()
     if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const parsed = z.object({ productId: z.number().int().positive() }).safeParse(await req.json().catch(() => null))

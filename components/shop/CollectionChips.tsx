@@ -1,9 +1,7 @@
-'use client'
-
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import type { ProductCategory } from '@/types'
 import { cn } from '@/lib/utils'
+import { shopHref, type ShopQuery } from '@/lib/shopQuery'
 
 const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -16,18 +14,8 @@ const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
   { id: 'bridal', label: 'Bridal' },
 ]
 
-export function CollectionChips() {
-  const searchParams = useSearchParams()
-  const activeCat = searchParams.get('cat') ?? 'all'
-
-  function hrefFor(id: ProductCategory | 'all') {
-    const params = new URLSearchParams(searchParams.toString())
-    if (id === 'all') params.delete('cat')
-    else params.set('cat', id)
-    params.delete('page')
-    const qs = params.toString()
-    return qs ? `/shop?${qs}` : '/shop'
-  }
+export function CollectionChips({ query }: { query: ShopQuery }) {
+  const activeCat = query.cat ?? 'all'
 
   return (
     <div className="scrollbar-none -mx-5 mb-6 overflow-x-auto px-5 md:mx-0 md:mb-8 md:px-0">
@@ -41,8 +29,9 @@ export function CollectionChips() {
           return (
             <Link
               key={id}
-              href={hrefFor(id)}
+              href={shopHref(query, { cat: id === 'all' ? '' : id })}
               scroll={false}
+              prefetch
               role="tab"
               aria-selected={active}
               className={cn(

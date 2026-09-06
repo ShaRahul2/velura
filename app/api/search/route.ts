@@ -33,7 +33,7 @@ async function refineQuery(query: string): Promise<{ keywords: string[]; cat?: P
 }
 
 export async function GET(req: Request) {
-  if (!checkRateLimit(`search:${clientIp(req)}`, 40)) {
+  if (!await checkRateLimit(`search:${clientIp(req)}`, 40)) {
     return NextResponse.json({ error: 'Too many searches.' }, { status: 429 })
   }
 

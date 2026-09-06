@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { type PaymentMethod, Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
-import { calcShipping, calcDiscount, BUILDER_BASE_PRICE, COD_LIMIT } from '@/lib/coupons'
+import { calcShipping, calcDiscount, COD_LIMIT } from '@/lib/coupons'
+import { calculateBuilderPrice } from '@/lib/builderPricing'
 import { requireCustomerId } from '@/lib/staffAuth'
 import { clearCart } from '@/lib/accountCommerce'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 
 // ── Zod schemas ───────────────────────────────────────────────────────────────
 
@@ -61,6 +63,10 @@ async function getProductPriceMap(ids: number[]): Promise<Map<number, number>> {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkRateLimit(`orders:${clientIp(req)}`, 12, 10 * 60 * 1000))) {
+      return NextResponse.json({ error: 'Too many orders in a short time. Please wait a few minutes.' }, { status: 429 })
+    }
+
     const body   = await req.json()
     const parsed = OrderSchema.safeParse(body)
     if (!parsed.success) {
@@ -91,8 +97,8 @@ export async function POST(req: NextRequest) {
       if (item.productId !== null) {
         return sum + (priceMap.get(item.productId) ?? 0) * item.qty
       }
-      // Custom bra: enforce minimum; trust builder-computed price above that
-      return sum + Math.max(BUILDER_BASE_PRICE, item.price) * item.qty
+      // Custom bra: recompute from the spec server-side; never trust item.price
+      return sum + calculateBuilderPrice(item.customSpec) * item.qty
     }, 0)
 
     const shipping = calcShipping(subtotal)
@@ -154,7 +160,7 @@ export async function POST(req: NextRequest) {
               qty:          item.qty,
               priceAtOrder: item.productId !== null
                 ? (priceMap.get(item.productId) ?? item.price)
-                : Math.max(BUILDER_BASE_PRICE, item.price),
+                : calculateBuilderPrice(item.customSpec),
               ...(item.customSpec != null && { customSpec: item.customSpec as Prisma.InputJsonValue }),
             })),
           },
