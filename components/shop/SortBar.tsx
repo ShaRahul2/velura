@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { LayoutGrid, Grid3x3, Square, SlidersHorizontal } from 'lucide-react'
 import { FilterDrawer } from './FilterDrawer'
+import { cn } from '@/lib/utils'
 
 const SORT_OPTIONS = [
   { value: '',           label: 'Featured' },
@@ -39,23 +40,21 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
 
   return (
     <>
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-lm pb-3">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-lm pb-3">
         <div className="flex items-center gap-3">
           <p className="font-sans text-[0.78rem] text-mauve">
             {total} {total === 1 ? 'piece' : 'pieces'}
           </p>
 
           <button
+            type="button"
             onClick={() => setFilterOpen(true)}
-            className="md:hidden flex items-center gap-1.5 font-sans text-[0.72rem] tracking-btn uppercase text-mauve"
+            className="flex items-center gap-1.5 font-sans text-[0.72rem] tracking-btn uppercase text-mauve md:hidden"
           >
             <SlidersHorizontal size={13} />
             Filter
             {activeFilterCount > 0 && (
-              <span
-                className="w-4 h-4 rounded-full flex items-center justify-center font-sans text-[0.55rem] text-blush"
-                style={{ background: '#0F0D0B' }}
-              >
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-deep font-sans text-[0.55rem] text-blush">
                 {activeFilterCount}
               </span>
             )}
@@ -67,35 +66,38 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
             value={activeSort}
             onChange={(e) => setSort(e.target.value)}
             aria-label="Sort products"
-            className="font-sans text-[0.72rem] sm:text-[0.78rem] text-deep bg-transparent border-none outline-none cursor-pointer max-w-[7.5rem] sm:max-w-none text-right"
+            className="max-w-[7.5rem] cursor-pointer border-none bg-transparent text-right font-sans text-[0.72rem] text-deep outline-none sm:max-w-none sm:text-[0.78rem]"
           >
             {SORT_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
 
-          <div className="hidden md:flex items-center gap-0.5">
+          <div className="hidden items-center gap-0.5 md:flex">
             <button
+              type="button"
               onClick={() => onColsChange(2)}
-              className="p-1.5"
-              style={{ color: cols === 2 ? '#0F0D0B' : '#9A8878' }}
+              className={cn('p-1.5', cols === 2 ? 'text-deep' : 'text-gold')}
               aria-label="2 columns"
+              aria-pressed={cols === 2}
             >
               <Square size={15} />
             </button>
             <button
+              type="button"
               onClick={() => onColsChange(3)}
-              className="p-1.5"
-              style={{ color: cols === 3 ? '#0F0D0B' : '#9A8878' }}
+              className={cn('p-1.5', cols === 3 ? 'text-deep' : 'text-gold')}
               aria-label="3 columns"
+              aria-pressed={cols === 3}
             >
               <Grid3x3 size={16} />
             </button>
             <button
+              type="button"
               onClick={() => onColsChange(4)}
-              className="p-1.5 hidden lg:block"
-              style={{ color: cols === 4 ? '#0F0D0B' : '#9A8878' }}
+              className={cn('hidden p-1.5 lg:block', cols === 4 ? 'text-deep' : 'text-gold')}
               aria-label="4 columns"
+              aria-pressed={cols === 4}
             >
               <LayoutGrid size={16} />
             </button>

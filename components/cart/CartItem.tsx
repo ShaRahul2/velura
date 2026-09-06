@@ -1,7 +1,7 @@
 'use client'
 
-import Image from 'next/image'
 import type { CartItem as CartItemType } from '@/types'
+import { ProductPhoto } from '@/components/product/ProductPhoto'
 import { formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/store/cartStore'
 import { Minus, Plus, X } from 'lucide-react'
@@ -23,12 +23,10 @@ export function CartItem({ item }: CartItemProps) {
         className="w-16 h-20 lg:w-20 lg:h-24 shrink-0 rounded-card overflow-hidden relative bg-blush flex items-center justify-center"
       >
         {item.images?.[0] ? (
-          <Image
+          <ProductPhoto
             src={item.images[0]}
             alt={describeCartLine(item)}
-            fill
             sizes="64px"
-            className="object-cover"
           />
         ) : (
           <span className="text-2xl">{item.emoji}</span>

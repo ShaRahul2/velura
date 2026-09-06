@@ -9,6 +9,8 @@ import { EditorialQuote } from '@/components/home/EditorialQuote'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { siteUrl } from '@/lib/site'
 
+export const revalidate = 3600
+
 export default function HomePage() {
   const base = siteUrl()
   return (
