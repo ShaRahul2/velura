@@ -45,7 +45,7 @@ function ClerkOrNextSignOut() {
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  if (pathname === '/admin/login' || pathname === '/admin/denied') return <>{children}</>
+  if (pathname === '/admin/login' || pathname === '/admin/denied' || pathname === '/admin/forbidden') return <>{children}</>
   return (
     <div className="admin-shell min-h-screen bg-[#141210] text-[#EDE9E4] md:flex">
       <a href="#admin-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-black focus:p-4">Skip to content</a>

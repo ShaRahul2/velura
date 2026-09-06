@@ -4,7 +4,7 @@
 # ─────────────────────────────────────────────
 # Read automatically by Claude Code on every session.
 # Single source of truth for context, conventions, architecture, and scope.
-# Last updated: May 2025 — Onyx & Pearl theme migration complete
+# Last updated: Sep 2026 — pre-launch hardening (theme + tech-stack notes refreshed)
 # ─────────────────────────────────────────────
 
 ---
@@ -365,9 +365,11 @@ Font weight: 300 (not 600)
 
 ## 6. TECH STACK
 
-**Frontend:** Next.js 14 (App Router) · TypeScript strict · Tailwind CSS v3 · Zustand · next/image · Cloudinary · lucide-react · CSS keyframes only
+**Frontend:** Next.js 16 (App Router, Turbopack) · React 19 · TypeScript strict · Tailwind CSS v4 (`@theme`) · Zustand · next/image · Cloudinary · lucide-react · CSS keyframes only
 
-**Backend:** Node.js 18+ · Prisma ORM · PostgreSQL (Neon cloud) · Razorpay · Cloudinary
+**Backend:** Node.js 20+ · Prisma ORM (`prisma.config.ts`) · PostgreSQL (Neon cloud) · Razorpay · Cloudinary · Clerk · Sentry
+
+> Note: this file predates the Next 16 upgrade in places. `AGENTS.md` is authoritative on framework specifics — read `node_modules/next/dist/docs/` before writing framework code.
 
 **Dev:** ESLint · Prettier · Husky · VS Code (ESLint, Prettier, Tailwind IntelliSense, Prisma)
 
@@ -712,32 +714,32 @@ If you see any of these hex values in the codebase, replace them immediately.
 
 ## 17. CURRENT STATUS
 
-**Completed:**
-- ✅ Brand identity and editorial direction established
-- ✅ Full HTML prototype — home, shop, cart, checkout, builder
-- ✅ Custom Bra Builder — 5-step flow, fit calculator, SVG preview
-- ✅ Product catalog — 15 products with editorial story copy
-- ✅ Onyx & Pearl theme — 22 surgical CSS operations, zero stragglers
-- ✅ Dark nav, editorial button radius, stone gradients, sharp corners
-- ✅ CLAUDE.md updated with complete Onyx & Pearl design system
-- ✅ TASKS.md — 120 tasks across 14 epics
+**Shipped (Next.js app, not just the prototype):**
+- ✅ Next.js 16 App Router · React 19 · Tailwind v4 · TypeScript strict
+- ✅ Onyx & Pearl theme, full component set migrated from the HTML prototype
+- ✅ Prisma + PostgreSQL (Neon) — Product, Category, Order, OrderItem,
+  SavedDesign, Profile, Review, NewsletterSubscriber models
+- ✅ Dynamic shop listing/detail (ISR, `revalidate = 3600`), server-authoritative pricing
+- ✅ Orders persisted; Razorpay create/verify/webhook with HMAC signature checks
+- ✅ Custom Bra Builder — 5-step flow, fit calculator, SVG + AI preview
+- ✅ Clerk customer accounts (Google + email), server cart/wishlist, `/account`
+- ✅ Role-gated admin desk (`/admin`) — orders, catalogue, customers, reviews,
+  subscribers — behind `app/admin/(protected)/layout.tsx` + per-page `requireStaff()`
+- ✅ NextAuth credentials admin fallback (`ADMIN_EMAIL` / `ADMIN_PASSWORD`)
+- ✅ SEO: `robots.ts`, `sitemap.ts`, per-route metadata; `error/loading/not-found`
+- ✅ Zod validation + rate limiting on public POST routes
+- ✅ Sentry wiring (inert without a DSN); security headers + HSTS in `next.config.ts`
+- ✅ GitHub Actions CI — lint · test · build against a Postgres service
+- ✅ Test suite — `tests/*.test.ts` (auth, roles, orders, shop query, builder pricing)
 
-**In progress:**
-- 🔄 Next.js 14 project scaffolding
-- 🔄 TypeScript type definitions
-- 🔄 Zustand store setup
-
-**Not started:**
-- ⬜ Component migration from HTML
-- ⬜ Prisma schema + Neon DB
-- ⬜ API routes
-- ⬜ Cloudinary setup + image upload
-- ⬜ Razorpay integration
-- ⬜ Product photography (3 shots × 15 products = 45 images)
-- ⬜ SEO metadata + Open Graph
-- ⬜ Vercel deployment
+**Before production launch — see PRE_LAUNCH.md:**
+- ⬜ Swap Razorpay test keys → live keys; set `RAZORPAY_WEBHOOK_SECRET`
+- ⬜ Provision Upstash Redis for the rate limiter (`UPSTASH_REDIS_REST_*`)
+- ⬜ Set `NEXT_PUBLIC_SENTRY_DSN` (+ `SENTRY_AUTH_TOKEN` for source maps)
+- ⬜ Product photography (3 shots × 15 products)
+- ⬜ Final Vercel env-var pass against `env.production.example`
 
 ---
 
-*Last updated: May 2025 — Onyx & Pearl theme migration*
+*Last updated: Sep 2026 — pre-launch hardening pass*
 *Maintainer: Velura Engineering*

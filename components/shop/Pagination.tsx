@@ -1,81 +1,88 @@
-'use client'
-
-import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { shopHref, type ShopQuery } from '@/lib/shopQuery'
+import { cn } from '@/lib/utils'
 
 interface PaginationProps {
   currentPage: number
-  totalPages:  number
+  totalPages: number
+  query: ShopQuery
 }
 
-export function Pagination({ currentPage, totalPages }: PaginationProps) {
-  const router       = useRouter()
-  const searchParams = useSearchParams()
-
-  function goTo(page: number) {
-    const params = new URLSearchParams(searchParams.toString())
-    if (page === 1) params.delete('page')
-    else params.set('page', String(page))
-    const qs = params.toString()
-    router.push(qs ? `/shop?${qs}` : '/shop')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+export function Pagination({ currentPage, totalPages, query }: PaginationProps) {
+  const pages: (number | '…')[] = []
+  if (totalPages <= 7) {
+    for (let n = 1; n <= totalPages; n++) pages.push(n)
+  } else {
+    const range = new Set(
+      [1, totalPages, currentPage - 1, currentPage, currentPage + 1].filter(
+        (n) => n >= 1 && n <= totalPages
+      )
+    )
+    let prev = 0
+    Array.from(range)
+      .sort((a, b) => a - b)
+      .forEach((n) => {
+        if (n - prev > 1) pages.push('…')
+        pages.push(n)
+        prev = n
+      })
   }
 
-  // Build a window of page numbers: always show first, last, and 3 around current
-  const pages: (number | '…')[] = []
-  const range = new Set([1, totalPages, currentPage - 1, currentPage, currentPage + 1]
-    .filter((n) => n >= 1 && n <= totalPages))
-  let prev = 0
-  Array.from(range).sort((a, b) => a - b).forEach((n) => {
-    if (n - prev > 1) pages.push('…')
-    pages.push(n)
-    prev = n
-  })
-
   return (
-    <div className="flex items-center justify-center gap-1 mt-12">
-      {/* Prev */}
-      <button
-        onClick={() => goTo(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center text-mauve disabled:opacity-30 hover:text-deep transition-colors"
-        aria-label="Previous page"
-      >
-        <ChevronLeft size={18} />
-      </button>
+    <nav className="mt-12 flex items-center justify-center gap-1" aria-label="Pagination">
+      {currentPage === 1 ? (
+        <span className="flex h-9 w-9 items-center justify-center text-mauve opacity-30 lg:h-10 lg:w-10">
+          <ChevronLeft size={18} aria-hidden="true" />
+        </span>
+      ) : (
+        <Link
+          href={shopHref(query, { page: currentPage - 1 })}
+          className="flex h-9 w-9 items-center justify-center text-mauve transition-colors hover:text-deep lg:h-10 lg:w-10"
+          aria-label="Previous page"
+        >
+          <ChevronLeft size={18} aria-hidden="true" />
+        </Link>
+      )}
 
-      {/* Page numbers */}
       {pages.map((p, i) =>
         p === '…' ? (
-          <span key={`ellipsis-${i}`} className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center font-sans text-[0.78rem] lg:text-[0.85rem] 2xl:text-[0.95rem] text-mauve">
+          <span
+            key={`ellipsis-${i}`}
+            className="flex h-9 w-9 items-center justify-center font-sans text-[0.78rem] text-mauve lg:h-10 lg:w-10 lg:text-[0.85rem]"
+          >
             …
           </span>
         ) : (
-          <button
+          <Link
             key={p}
-            onClick={() => goTo(p)}
-            className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center font-sans text-[0.78rem] lg:text-[0.85rem] 2xl:text-[0.95rem] transition-colors"
-            style={{
-              color:      p === currentPage ? '#0F0D0B' : '#6B6058',
-              fontWeight: p === currentPage ? 500 : 300,
-              borderBottom: p === currentPage ? '1px solid #0F0D0B' : 'none',
-            }}
+            href={shopHref(query, { page: p })}
+            className={cn(
+              'flex h-9 w-9 items-center justify-center font-sans text-[0.78rem] transition-colors lg:h-10 lg:w-10 lg:text-[0.85rem]',
+              p === currentPage
+                ? 'border-b border-deep font-medium text-deep'
+                : 'font-light text-mauve hover:text-deep'
+            )}
             aria-current={p === currentPage ? 'page' : undefined}
           >
             {p}
-          </button>
+          </Link>
         )
       )}
 
-      {/* Next */}
-      <button
-        onClick={() => goTo(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center text-mauve disabled:opacity-30 hover:text-deep transition-colors"
-        aria-label="Next page"
-      >
-        <ChevronRight size={18} />
-      </button>
-    </div>
+      {currentPage === totalPages ? (
+        <span className="flex h-9 w-9 items-center justify-center text-mauve opacity-30 lg:h-10 lg:w-10">
+          <ChevronRight size={18} aria-hidden="true" />
+        </span>
+      ) : (
+        <Link
+          href={shopHref(query, { page: currentPage + 1 })}
+          className="flex h-9 w-9 items-center justify-center text-mauve transition-colors hover:text-deep lg:h-10 lg:w-10"
+          aria-label="Next page"
+        >
+          <ChevronRight size={18} aria-hidden="true" />
+        </Link>
+      )}
+    </nav>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, Suspense, useEffect, useState } from 'react'
+import { FormEvent, Suspense, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { pageWrap } from '@/lib/utils'
@@ -15,11 +15,6 @@ function LookupForm() {
   const [error, setError] = useState('')
   const [order, setOrder] = useState<PublicOrder | null>(null)
   const [cancelling, setCancelling] = useState(false)
-
-  useEffect(() => {
-    const fromQuery = searchParams.get('id')
-    if (fromQuery && !orderId) setOrderId(fromQuery)
-  }, [searchParams, orderId])
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()

@@ -9,7 +9,8 @@ export function BuilderPromoBanner() {
           src="/images/categories/lace.jpg"
           alt=""
           fill
-          sizes="100vw"
+          sizes="(max-width: 1280px) 100vw, 1280px"
+          quality={60}
           className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-deep/62" />

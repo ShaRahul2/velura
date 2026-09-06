@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+/public/previews/
 
 # production
 /build
@@ -41,3 +42,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .clerk/
+
+# local debug / audit artifacts — never commit
+/.playwright-mcp/
+/graphify-out/
+/*.png
+/PROJECT_AUDIT_REPORT.md
+/audit-*.png
+/listing-*.png
+/pdp-*.png

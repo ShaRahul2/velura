@@ -42,6 +42,9 @@ function calculatePrice(state: BuilderState) {
 
 interface BuilderStore extends BuilderState {
   price: number
+  previewUrl: string | null
+  previewHash: string | null
+  setPreview: (url: string | null, hash: string | null) => void
   setSizeMode: (mode: 'standard' | 'fit') => void
   setBand: (band: string | null) => void
   setCup: (cup: string | null) => void
@@ -75,6 +78,9 @@ const initialState: BuilderState = {
 export const useBuilderStore = create<BuilderStore>()((set) => ({
   ...initialState,
   price: BASE_PRICE,
+  previewUrl: null,
+  previewHash: null,
+  setPreview: (previewUrl, previewHash) => set({ previewUrl, previewHash }),
   setSizeMode: (sizeMode) => set(() => ({ sizeMode })),
   setBand: (band) => set(() => ({ band })),
   setCup: (cup) => set(() => ({ cup })),
@@ -107,7 +113,7 @@ export const useBuilderStore = create<BuilderStore>()((set) => ({
     set((state) => ({ fabric, price: calculatePrice({ ...state, fabric }) })),
   setColor: (color) => set(() => ({ color })),
   setFitUnit: (fitUnit) => set(() => ({ fitUnit })),
-  reset: () => set({ ...initialState, price: BASE_PRICE }),
+  reset: () => set({ ...initialState, price: BASE_PRICE, previewUrl: null, previewHash: null }),
 }))
 
 export const useBuilder = useBuilderStore

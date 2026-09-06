@@ -103,9 +103,13 @@ export function AddressForm({ value, onChange, submitted }: AddressFormProps) {
   const addressRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
   const valueRef = useRef(value)
-  valueRef.current = value
   const onChangeRef = useRef(onChange)
-  onChangeRef.current = onChange
+  // Keep the latest value/onChange reachable from async callbacks without
+  // re-subscribing effects. Written after render, read only in later callbacks.
+  useEffect(() => {
+    valueRef.current = value
+    onChangeRef.current = onChange
+  })
   const placesOn = googlePlacesAvailable()
   const [pinHint, setPinHint] = useState('')
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([])

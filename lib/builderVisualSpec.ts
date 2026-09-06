@@ -58,6 +58,16 @@ export function specToHash(spec: BuilderVisualSpec): string {
   return Math.abs(h).toString(36).padStart(8, '0')
 }
 
+/** Deterministic 0–999999 seed so the same spec renders the same preview. */
+export function specToSeed(spec: BuilderVisualSpec, salt = 0): number {
+  const hash = specToHash(spec)
+  let n = salt >>> 0
+  for (let i = 0; i < hash.length; i++) {
+    n = Math.imul(n ^ hash.charCodeAt(i), 16777619) >>> 0
+  }
+  return n % 1_000_000
+}
+
 /**
  * Full prompt for HuggingFace / Replicate (supports long prompts, ~400 words).
  * Uses fashion-specific visual language so diffusion models render the right silhouette.
@@ -132,20 +142,20 @@ export function buildAIPrompt(spec: BuilderVisualSpec): string {
     : 'wire-free soft construction with no rigid wire, flexible casing only'
 
   return (
-    `Minimalist editorial product photograph of a single lingerie bra, flat-lay arrangement ` +
-    `on warm ivory linen surface. Soft studio key light from upper-left, gentle fill from right, ` +
-    `no harsh shadows. ` +
-    `The bra is: a ${braTypeDesc[spec.braType] ?? spec.braType}. ` +
+    `Luxury e-commerce product photograph of ONE empty lingerie bra lying flat, garment only. ` +
+    `No person, no model, no mannequin, no torso, no skin, no face, no hands, no body. ` +
+    `Centered on warm ivory linen. Soft studio key light from the upper left, gentle fill, no harsh shadows. ` +
+    `Portrait 3:4 still-life. ` +
+    `The bra is a ${braTypeDesc[spec.braType] ?? spec.braType}. ` +
     `Straps: ${strapDesc[spec.strapStyle] ?? spec.strapStyle}. ` +
     `Cups: ${paddingDesc[spec.padding] ?? spec.padding}. ` +
     `Construction: ${wireDesc}. ` +
     `Closure: ${closureDesc[spec.closure] ?? spec.closure}. ` +
     `Fabric: ${fabricDesc[spec.fabric] ?? spec.fabric}. ` +
-    `Colour: ${spec.colorLabel} (exact hex ${spec.colorHex}) — render the fabric in this exact colour tone. ` +
-    `Show photorealistic fabric texture, visible stitching and seams, precise hardware detail. ` +
-    `Celine / The Row aesthetic: minimal, refined, nothing excessive. ` +
-    `Absolutely no person, no human body, no skin, no face, no mannequin. ` +
-    `No text overlays, no logo, no watermark, no background props. Garment only.`
+    `Colour: ${spec.colorLabel}, hex ${spec.colorHex} — dye the entire garment this exact tone. ` +
+    `Photoreal fabric texture, visible stitching, precise metal hardware. ` +
+    `Editorial catalogue still-life, Celine / The Row, high detail, sharp focus. ` +
+    `No text, no logo, no watermark, no extra props. Isolated bra only.`
   )
 }
 
@@ -203,9 +213,10 @@ export function buildPollinationsPrompt(spec: BuilderVisualSpec): string {
   const padShort   = spec.padding === 'none' ? 'unpadded' : `${spec.padding}-padded`
 
   return (
+    `Empty lingerie bra only, no person, no mannequin, no body. ` +
     `${spec.colorLabel} ${braShort[spec.braType] ?? spec.braType}, ` +
     `${strapShort[spec.strapStyle] ?? spec.strapStyle}, ` +
-    `${wireShort}, ${padShort}, ${fabricShort[spec.fabric] ?? spec.fabric}. ` +
-    `Flat-lay on ivory linen, editorial product photo, studio light, no people, garment only.`
+    `${wireShort}, ${padShort}, ${fabricShort[spec.fabric] ?? spec.fabric}, ` +
+    `hex ${spec.colorHex}. Flat-lay on ivory linen, studio product photo, garment isolated.`
   )
 }

@@ -14,7 +14,7 @@ const Body = z.object({
 const NOT_FOUND = 'We could not find that order.'
 
 export async function POST(req: NextRequest) {
-  if (!checkRateLimit(`order-cancel:${clientIp(req)}`, 8)) {
+  if (!await checkRateLimit(`order-cancel:${clientIp(req)}`, 8)) {
     return NextResponse.json({ error: 'Too many attempts.' }, { status: 429 })
   }
 

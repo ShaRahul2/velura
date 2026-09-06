@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { X } from 'lucide-react'
 import type { ProductCategory } from '@/types'
 import { useFocusTrap } from '@/lib/useFocusTrap'
+import { shopHref, type ShopQuery } from '@/lib/shopQuery'
+import { cn } from '@/lib/utils'
 
 const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
   { id: 'all',      label: 'All' },
@@ -20,15 +22,15 @@ const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
 const SUPPORT = ['Light', 'Medium', 'High']
 
 interface FilterDrawerProps {
-  open:    boolean
+  open: boolean
   onClose: () => void
+  query: ShopQuery
 }
 
-export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
-  const router        = useRouter()
-  const searchParams  = useSearchParams()
-  const activeCat     = searchParams.get('cat') ?? 'all'
-  const activeSupport = searchParams.get('support') ?? ''
+export function FilterDrawer({ open, onClose, query }: FilterDrawerProps) {
+  const router = useRouter()
+  const activeCat = query.cat ?? 'all'
+  const activeSupport = query.support ?? ''
   const panelRef = useRef<HTMLElement>(null)
   useFocusTrap(open, panelRef, onClose)
 
@@ -38,17 +40,8 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  function setParam(key: string, value: string) {
-    const params = new URLSearchParams(searchParams.toString())
-    if (value === 'all' || value === '') params.delete(key)
-    else params.set(key, value)
-    params.delete('page')
-    const qs = params.toString()
-    router.push(qs ? `/shop?${qs}` : '/shop')
-  }
-
-  function clearAll() {
-    router.push('/shop')
+  function go(href: string) {
+    router.push(href)
     onClose()
   }
 
@@ -62,7 +55,7 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
 
       <aside
         ref={panelRef}
-        className="drawer-panel fixed top-0 left-0 h-full w-72 z-50 flex flex-col bg-cream md:hidden"
+        className="drawer-panel fixed top-0 left-0 z-50 flex h-full w-72 flex-col bg-cream md:hidden"
         role="dialog"
         aria-modal="true"
         aria-label="Filters"
@@ -74,28 +67,29 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
           boxShadow: open ? '6px 0 32px rgba(15,13,11,0.14)' : 'none',
         }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 h-16 border-b border-lm shrink-0">
-          <p className="font-sans text-[0.68rem] lg:text-[0.72rem] tracking-label uppercase text-deep">Filters</p>
-          <button onClick={onClose} className="p-2 text-mauve hover:text-deep transition-colors">
-            <X size={16} />
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-lm px-6">
+          <p className="font-sans text-[0.68rem] tracking-label uppercase text-deep lg:text-[0.72rem]">Filters</p>
+          <button type="button" onClick={onClose} className="p-2 text-mauve transition-colors hover:text-deep" aria-label="Close filters">
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-8">
-          {/* Category */}
+        <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6">
           <div>
-            <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-rose mb-4">Category</p>
+            <p className="mb-4 font-sans text-[0.65rem] tracking-label uppercase text-rose lg:text-[0.7rem]">Category</p>
             <ul className="flex flex-col gap-1">
               {CATEGORIES.map(({ id, label }) => {
                 const active = activeCat === id
                 return (
                   <li key={id}>
                     <button
-                      onClick={() => { setParam('cat', id); onClose() }}
-                      className="w-full text-left font-sans text-[0.85rem] lg:text-[0.9rem] py-2.5 transition-colors"
+                      type="button"
+                      onClick={() => go(shopHref(query, { cat: id === 'all' ? '' : id }))}
+                      className={cn(
+                        'w-full py-2.5 text-left font-sans text-[0.85rem] transition-colors lg:text-[0.9rem]',
+                        active ? 'font-medium text-deep' : 'font-light text-mauve'
+                      )}
                       aria-pressed={active}
-                      style={{ color: active ? '#0F0D0B' : '#6B6058', fontWeight: active ? 500 : 300 }}
                     >
                       {label}
                     </button>
@@ -105,18 +99,21 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
             </ul>
           </div>
 
-          {/* Support */}
           <div>
-            <p className="font-sans text-[0.65rem] lg:text-[0.7rem] tracking-label uppercase text-rose mb-4">Support</p>
+            <p className="mb-4 font-sans text-[0.65rem] tracking-label uppercase text-rose lg:text-[0.7rem]">Support</p>
             <ul className="flex flex-col gap-1">
               {SUPPORT.map((level) => {
                 const active = activeSupport === level
                 return (
                   <li key={level}>
                     <button
-                      onClick={() => { setParam('support', active ? '' : level); onClose() }}
-                      className="w-full text-left font-sans text-[0.85rem] lg:text-[0.9rem] py-2 transition-colors"
-                      style={{ color: active ? '#0F0D0B' : '#6B6058', fontWeight: active ? 500 : 300 }}
+                      type="button"
+                      onClick={() => go(shopHref(query, { support: active ? '' : level }))}
+                      className={cn(
+                        'w-full py-2 text-left font-sans text-[0.85rem] transition-colors lg:text-[0.9rem]',
+                        active ? 'font-medium text-deep' : 'font-light text-mauve'
+                      )}
+                      aria-pressed={active}
                     >
                       {level}
                     </button>
@@ -127,12 +124,11 @@ export function FilterDrawer({ open, onClose }: FilterDrawerProps) {
           </div>
         </div>
 
-        {/* Footer — clear all */}
-        <div className="px-6 py-5 border-t border-lm shrink-0">
+        <div className="shrink-0 border-t border-lm px-6 py-5">
           <button
-            onClick={clearAll}
-            className="pressable w-full h-10 font-sans text-[0.75rem] lg:text-[0.8rem] tracking-btn uppercase border border-lm text-mauve hover:border-deep hover:text-deep"
-            style={{ borderRadius: 3 }}
+            type="button"
+            onClick={() => go('/shop')}
+            className="pressable h-10 w-full rounded-btn border border-lm font-sans text-[0.75rem] tracking-btn uppercase text-mauve hover:border-deep hover:text-deep lg:text-[0.8rem]"
           >
             Clear all filters
           </button>

@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { calculateFit } from '@/lib/fitCalculator'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkRateLimit(`fit:${clientIp(req)}`, 40, 10 * 60 * 1000))) {
+      return NextResponse.json({ error: 'Please wait before trying again.' }, { status: 429 })
+    }
+
     const body = await req.json() as unknown
     if (
       typeof body !== 'object' || body === null ||

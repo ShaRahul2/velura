@@ -12,7 +12,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, request) {
-        if (!checkRateLimit(`admin-login:${clientIp(request)}`, 10, 15 * 60 * 1000)) return null
+        if (!await checkRateLimit(`admin-login:${clientIp(request)}`, 10, 15 * 60 * 1000)) return null
         const email    = credentials?.email    as string | undefined
         const password = credentials?.password as string | undefined
 

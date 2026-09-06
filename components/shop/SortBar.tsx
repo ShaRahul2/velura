@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { LayoutGrid, Grid3x3, Square, SlidersHorizontal } from 'lucide-react'
 import { FilterDrawer } from './FilterDrawer'
 import { cn } from '@/lib/utils'
+import { shopHref, type ShopQuery } from '@/lib/shopQuery'
 
 const SORT_OPTIONS = [
   { value: '',           label: 'Featured' },
@@ -15,27 +16,20 @@ const SORT_OPTIONS = [
 ]
 
 interface SortBarProps {
-  total:        number
-  cols:         2 | 3 | 4
+  total: number
+  cols: 2 | 3 | 4
   onColsChange: (c: 2 | 3 | 4) => void
+  query: ShopQuery
 }
 
-export function SortBar({ total, cols, onColsChange }: SortBarProps) {
-  const router       = useRouter()
-  const searchParams = useSearchParams()
-  const activeSort   = searchParams.get('sort') ?? ''
+export function SortBar({ total, cols, onColsChange, query }: SortBarProps) {
+  const router = useRouter()
   const [filterOpen, setFilterOpen] = useState(false)
-
-  const activeFilterCount = [searchParams.get('cat'), searchParams.get('support')]
-    .filter(Boolean).length
+  const activeSort = query.sort ?? ''
+  const activeFilterCount = [query.cat, query.support].filter(Boolean).length
 
   function setSort(value: string) {
-    const params = new URLSearchParams(searchParams.toString())
-    if (value === '') params.delete('sort')
-    else params.set('sort', value)
-    params.delete('page')
-    const qs = params.toString()
-    router.push(qs ? `/shop?${qs}` : '/shop')
+    router.push(shopHref(query, { sort: value }))
   }
 
   return (
@@ -49,9 +43,9 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
-            className="flex items-center gap-1.5 font-sans text-[0.72rem] tracking-btn uppercase text-mauve md:hidden"
+            className="flex h-11 items-center gap-1.5 font-sans text-[0.72rem] tracking-btn uppercase text-mauve md:hidden"
           >
-            <SlidersHorizontal size={13} />
+            <SlidersHorizontal size={13} aria-hidden="true" />
             Filter
             {activeFilterCount > 0 && (
               <span className="flex h-4 w-4 items-center justify-center rounded-full bg-deep font-sans text-[0.55rem] text-blush">
@@ -66,7 +60,7 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
             value={activeSort}
             onChange={(e) => setSort(e.target.value)}
             aria-label="Sort products"
-            className="max-w-[7.5rem] cursor-pointer border-none bg-transparent text-right font-sans text-[0.72rem] text-deep outline-none sm:max-w-none sm:text-[0.78rem]"
+            className="h-11 max-w-[7.5rem] cursor-pointer border-none bg-transparent text-right font-sans text-[0.72rem] text-deep outline-none sm:max-w-none sm:text-[0.78rem]"
           >
             {SORT_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
@@ -77,37 +71,35 @@ export function SortBar({ total, cols, onColsChange }: SortBarProps) {
             <button
               type="button"
               onClick={() => onColsChange(2)}
-              className={cn('p-1.5', cols === 2 ? 'text-deep' : 'text-gold')}
+              className={cn('flex h-11 w-11 items-center justify-center', cols === 2 ? 'text-deep' : 'text-gold')}
               aria-label="2 columns"
               aria-pressed={cols === 2}
             >
-              <Square size={15} />
+              <Square size={15} aria-hidden="true" />
             </button>
             <button
               type="button"
               onClick={() => onColsChange(3)}
-              className={cn('p-1.5', cols === 3 ? 'text-deep' : 'text-gold')}
+              className={cn('flex h-11 w-11 items-center justify-center', cols === 3 ? 'text-deep' : 'text-gold')}
               aria-label="3 columns"
               aria-pressed={cols === 3}
             >
-              <Grid3x3 size={16} />
+              <Grid3x3 size={16} aria-hidden="true" />
             </button>
             <button
               type="button"
               onClick={() => onColsChange(4)}
-              className={cn('hidden p-1.5 lg:block', cols === 4 ? 'text-deep' : 'text-gold')}
+              className={cn('hidden h-11 w-11 items-center justify-center lg:flex', cols === 4 ? 'text-deep' : 'text-gold')}
               aria-label="4 columns"
               aria-pressed={cols === 4}
             >
-              <LayoutGrid size={16} />
+              <LayoutGrid size={16} aria-hidden="true" />
             </button>
           </div>
         </div>
       </div>
 
-      <Suspense>
-        <FilterDrawer open={filterOpen} onClose={() => setFilterOpen(false)} />
-      </Suspense>
+      <FilterDrawer open={filterOpen} onClose={() => setFilterOpen(false)} query={query} />
     </>
   )
 }

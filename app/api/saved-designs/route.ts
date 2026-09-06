@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 
 const SaveSchema = z.object({
   specHash:   z.string().min(1).max(64),
@@ -23,6 +24,10 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkRateLimit(`saved-designs:${clientIp(req)}`, 30, 10 * 60 * 1000))) {
+      return NextResponse.json({ error: 'Too many requests. Please wait a few minutes.' }, { status: 429 })
+    }
+
     const body   = await req.json()
     const parsed = SaveSchema.safeParse(body)
     if (!parsed.success) {

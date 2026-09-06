@@ -60,6 +60,8 @@ export const ProductCard = memo(function ProductCard({ product, priority = false
               alt={primaryAlt}
               sizes={CARD_SIZES}
               priority={priority}
+              quality={70}
+              blurDataURL={product.blurDataURL}
             />
           </div>
 
@@ -70,7 +72,7 @@ export const ProductCard = memo(function ProductCard({ product, priority = false
                 hovered ? 'opacity-100' : 'opacity-0'
               )}
             >
-              <ProductPhoto src={product.images[1]} alt="" sizes={CARD_SIZES} />
+              <ProductPhoto src={product.images[1]} alt="" sizes={CARD_SIZES} quality={70} />
             </div>
           )}
         </Link>
@@ -97,37 +99,35 @@ export const ProductCard = memo(function ProductCard({ product, priority = false
       </div>
 
       <div className="mt-3 flex flex-1 flex-col gap-1">
-        <div className="flex h-8 items-center">
-          {colors.length > 0 ? (
-            <div className="-ml-1 flex items-center">
-              {colors.slice(0, 5).map((hex, i) => {
-                const selected = i === colorIndex
-                return (
-                  <button
-                    key={`${hex}-${i}`}
-                    type="button"
-                    onClick={() => setColorIndex(i)}
-                    aria-label={`Show colour ${i + 1}`}
-                    aria-pressed={selected}
-                    className="flex h-8 w-8 items-center justify-center"
-                  >
-                    <span
-                      className="h-2.5 w-2.5 rounded-full"
-                      style={{
-                        background: hex,
-                        boxShadow: selected
-                          ? '0 0 0 1.5px #0F0D0B, 0 0 0 3px #F8F6F3'
-                          : 'inset 0 0 0 1px rgba(15,13,11,0.14)',
-                      }}
-                    />
-                  </button>
-                )
-              })}
-            </div>
-          ) : (
-            <span className="sr-only">One colourway</span>
-          )}
-        </div>
+        {colors.length > 0 ? (
+          <div className="-ml-1 flex h-8 items-center">
+            {colors.slice(0, 5).map((hex, i) => {
+              const selected = i === colorIndex
+              return (
+                <button
+                  key={`${hex}-${i}`}
+                  type="button"
+                  onClick={() => setColorIndex(i)}
+                  aria-label={`Show colour ${i + 1}`}
+                  aria-pressed={selected}
+                  className="flex h-8 w-8 items-center justify-center"
+                >
+                  <span
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{
+                      background: hex,
+                      boxShadow: selected
+                        ? '0 0 0 1.5px #0F0D0B, 0 0 0 3px #F8F6F3'
+                        : 'inset 0 0 0 1px rgba(15,13,11,0.14)',
+                    }}
+                  />
+                </button>
+              )
+            })}
+          </div>
+        ) : (
+          <span className="sr-only">One colourway</span>
+        )}
 
         <div className="flex items-baseline justify-between gap-3">
           <Link href={`/shop/${product.id}`} className="min-w-0">
@@ -172,7 +172,7 @@ export const ProductCard = memo(function ProductCard({ product, priority = false
             addToast(`${product.name} (${size}${selectedColour ? ` · ${selectedColour}` : ''}) added to bag`)
             openCart()
           }}
-          className="mt-1.5 self-start font-sans text-[0.68rem] uppercase tracking-btn text-deep underline underline-offset-4 hover:opacity-70"
+          className="mt-1.5 self-start font-sans text-[0.68rem] uppercase tracking-btn text-deep underline underline-offset-4 hover:opacity-70 md:opacity-0 md:transition-opacity md:duration-150 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
         >
           Add to Bag
         </button>

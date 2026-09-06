@@ -67,12 +67,37 @@ export async function getCloudinaryUrl(publicId: string): Promise<string | null>
 export async function uploadFromUrl(
   imageUrl: string,
   publicId: string,
+  { overwrite = false }: { overwrite?: boolean } = {},
 ): Promise<string> {
   const result = await cloudinary.uploader.upload(imageUrl, {
     public_id:    publicId,
-    overwrite:    false,
+    overwrite,
     resource_type: 'image',
     folder:       '',   // publicId already contains the full path
   })
   return (result as { secure_url: string }).secure_url
+}
+
+export async function uploadFromBuffer(
+  buffer: Buffer,
+  publicId: string,
+  { overwrite = false }: { overwrite?: boolean } = {},
+): Promise<string> {
+  return await new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        public_id: publicId,
+        overwrite,
+        resource_type: 'image',
+      },
+      (err, result) => {
+        if (err || !result?.secure_url) {
+          reject(err ?? new Error('Cloudinary upload failed'))
+          return
+        }
+        resolve(result.secure_url)
+      },
+    )
+    stream.end(buffer)
+  })
 }

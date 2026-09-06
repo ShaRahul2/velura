@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requireCustomerProfile } from '@/lib/staffAuth'
 import { mergeGuestCart, mergeGuestWishlist } from '@/lib/accountCommerce'
+import { checkRateLimit, clientIp } from '@/lib/rateLimit'
 import type { CartItem } from '@/types'
 
 const CartItemSchema = z.object({
@@ -26,6 +27,9 @@ const Body = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await checkRateLimit(`account-sync:${clientIp(req)}`, 30, 10 * 60 * 1000))) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
     const profile = await requireCustomerProfile()
     if (!profile) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const parsed = Body.safeParse(await req.json().catch(() => null))
