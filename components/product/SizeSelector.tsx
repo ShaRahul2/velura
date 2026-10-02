@@ -48,6 +48,31 @@ export function SizeSelector({ available, selected, onSelect }: SizeSelectorProp
     if (selectedParts?.band) setBand(selectedParts.band)
   }, [selectedParts?.band])
 
+  if (sizes.length === 0 && available.length > 0) {
+    return (
+      <div className="flex flex-wrap gap-2">
+        {available.map((size) => {
+          const isSelected = selected === size
+          return (
+            <button
+              key={size}
+              type="button"
+              onClick={() => onSelect(size)}
+              className={cn(
+                'h-9 min-w-[44px] px-3 rounded-pill font-sans text-[0.76rem] border transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.97]',
+                isSelected
+                  ? 'border-deep bg-deep text-blush'
+                  : 'border-lm bg-transparent text-deep hover:border-mauve'
+              )}
+            >
+              {size}
+            </button>
+          )
+        })}
+      </div>
+    )
+  }
+
   const cups = sizes
     .filter((s) => splitSize(s).band === band)
     .map((s) => splitSize(s).cup)

@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { products } from '../data/products'
+import { parseSizeRange } from '../lib/sizes'
 import { filterShopCatalog, paginateShop, parseShopQuery, shopHref, parseShopSearchParams } from '../lib/shopQuery'
 import { buildVisualSpec, buildAIPrompt, buildPollinationsPrompt, specToSeed } from '../lib/builderVisualSpec'
 import { shouldBypassImageOptimizer } from '../lib/imageOptimizer'
@@ -14,6 +15,8 @@ test('panties is its own shop collection', () => {
   for (const name of ['CottonDay', 'FullBrief', 'FineCut', 'HighRise', 'EdgeLace']) {
     assert.ok(names.includes(name))
   }
+  assert.deepEqual(parseSizeRange('XS–4XL'), ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'])
+  assert.deepEqual(parseSizeRange('32A–32C'), ['32A', '32B', '32C'])
 })
 
 test('shop catalog filters by category, support, and search', () => {
