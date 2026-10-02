@@ -70,11 +70,13 @@ export default async function ProductPage({ params }: PageProps) {
       availability: 'https://schema.org/InStock',
       url: `${siteUrl()}/shop/${product.id}`,
     },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: product.rating,
-      reviewCount: product.reviews,
-    },
+    ...(product.reviews > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: product.rating,
+        reviewCount: product.reviews,
+      },
+    }),
   }
 
   return (

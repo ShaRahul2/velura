@@ -18,7 +18,7 @@ function isPlaceholderUrl(url: string) {
 
 export const ITEMS_PER_PAGE = 12
 
-const VALID_CATS:     ProductCategory[] = ['everyday', 'pushup', 'lace', 'sports', 'seamless', 'plus', 'bridal']
+const VALID_CATS:     ProductCategory[] = ['everyday', 'pushup', 'lace', 'sports', 'seamless', 'plus', 'bridal', 'panties']
 const VALID_SUPPORT:  SupportLevel[]    = ['Light', 'Medium', 'High']
 
 // ── Include shape used by all queries ─────────────────────────────────────────

@@ -6,6 +6,8 @@ const SUPPORT = ['Light', 'Medium', 'High'] as const
 
 export function FilterSidebar({ query }: { query: ShopQuery }) {
   const activeSupport = query.support ?? ''
+  // Support levels describe bras; panties have no support filter.
+  if (query.cat === 'panties') return null
 
   return (
     <aside className="hidden w-36 shrink-0 md:block lg:w-44">

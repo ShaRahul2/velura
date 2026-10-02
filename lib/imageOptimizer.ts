@@ -6,6 +6,8 @@ const BYPASS_HOSTS = new Set([
 
 /** Unsplash and similar CDNs reject the Next.js optimizer user-agent. */
 export function shouldBypassImageOptimizer(src: string): boolean {
+  // Local SVG art (panty cut illustrations) is served as-is; the optimizer rejects SVG.
+  if (src.endsWith('.svg')) return true
   if (!src || src.startsWith('/') || src.startsWith('data:')) return false
   try {
     const host = new URL(src).hostname

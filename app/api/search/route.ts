@@ -9,7 +9,7 @@ import type { Product, ProductCategory, SupportLevel } from '@/types'
 
 const IntentSchema = z.object({
   keywords: z.array(z.string()).max(6),
-  cat: z.enum(['everyday', 'pushup', 'lace', 'sports', 'seamless', 'plus', 'bridal']).nullable(),
+  cat: z.enum(['everyday', 'pushup', 'lace', 'sports', 'seamless', 'plus', 'bridal', 'panties']).nullable(),
   support: z.enum(['Light', 'Medium', 'High']).nullable(),
 })
 

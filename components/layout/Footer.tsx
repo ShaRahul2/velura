@@ -13,6 +13,7 @@ const COLS = [
       { label: 'Seamless', href: '/shop?cat=seamless' },
       { label: 'Plus', href: '/shop?cat=plus' },
       { label: 'Bridal', href: '/shop?cat=bridal' },
+      { label: 'Panties', href: '/shop?cat=panties' },
     ],
   },
   {

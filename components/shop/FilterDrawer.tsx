@@ -17,6 +17,7 @@ const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
   { id: 'seamless', label: 'Seamless' },
   { id: 'plus',     label: 'Plus' },
   { id: 'bridal',   label: 'Bridal' },
+  { id: 'panties',  label: 'Panties' },
 ]
 
 const SUPPORT = ['Light', 'Medium', 'High']

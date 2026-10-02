@@ -4,7 +4,7 @@ import { useState, useRef, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Product } from '@/types'
 
-const CATEGORIES = ['everyday', 'pushup', 'lace', 'sports', 'seamless', 'plus', 'bridal'] as const
+const CATEGORIES = ['everyday', 'pushup', 'lace', 'sports', 'seamless', 'plus', 'bridal', 'panties'] as const
 const BADGES     = ['', 'Bestseller', 'New', 'Sale', 'Premium', 'Comfort Fit'] as const
 const SUPPORT    = ['Light', 'Medium', 'High'] as const
 

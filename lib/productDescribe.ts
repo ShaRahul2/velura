@@ -11,6 +11,7 @@ const CAT_NOUN: Record<ProductCategory, string> = {
   seamless: 'seamless bra',
   plus:     'full-figure bra',
   bridal:   'bridal bra',
+  panties:  'panty',
 }
 
 const SHOT_PHRASE: Record<ShotKind, string> = {

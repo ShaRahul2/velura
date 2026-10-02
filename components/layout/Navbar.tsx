@@ -10,9 +10,10 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
-const NAV_LINKS = [
+const NAV_LINKS: { href: string; label: string; isNew?: boolean }[] = [
   { href: '/shop', label: 'Shop' },
   { href: '/shop?cat=everyday', label: 'Everyday' },
+  { href: '/shop?cat=panties', label: 'Panties', isNew: true },
   { href: '/shop?cat=bridal', label: 'Bridal' },
   { href: '/builder', label: '✦ Custom Bra' },
 ]
@@ -43,7 +44,7 @@ export function Navbar() {
       </Link>
 
       <nav className="mr-6 hidden items-center gap-7 md:flex lg:gap-9">
-        {NAV_LINKS.map(({ href, label }) => {
+        {NAV_LINKS.map(({ href, label, isNew }) => {
           const isBuilder = href === '/builder'
           const active = isBuilder
             ? pathname.startsWith('/builder')
@@ -62,6 +63,11 @@ export function Navbar() {
               )}
             >
               {label}
+              {isNew && (
+                <span className="ml-1.5 inline-block translate-y-[-1px] rounded-badge border border-rose/60 px-1 py-px align-middle text-[0.54rem] tracking-label text-rose">
+                  New
+                </span>
+              )}
             </Link>
           )
         })}

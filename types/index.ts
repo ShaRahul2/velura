@@ -6,6 +6,7 @@ export type ProductCategory =
   | 'seamless'
   | 'plus'
   | 'bridal'
+  | 'panties'
 
 export type ImageType = 'front' | 'back' | 'lifestyle' | 'detail'
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { isLetterSize } from '@/lib/sizes'
 
 interface SizeSelectorProps {
   available: string[]
@@ -31,6 +32,7 @@ function splitSize(size: string) {
 }
 
 export function SizeSelector({ available, selected, onSelect }: SizeSelectorProps) {
+  const letterSizes = useMemo(() => available.filter(isLetterSize), [available])
   const sizes = useMemo(
     () => available.filter((s) => STANDARD_SIZES.has(s)),
     [available]
@@ -58,6 +60,32 @@ export function SizeSelector({ available, selected, onSelect }: SizeSelectorProp
     const nextSize = cup ? `${next}${cup}` : ''
     if (nextSize && sizes.includes(nextSize)) onSelect(nextSize)
     else onSelect('')
+  }
+
+  if (letterSizes.length > 0) {
+    return (
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Size">
+        {letterSizes.map((size) => {
+          const isSelected = selected === size
+          return (
+            <button
+              key={size}
+              type="button"
+              onClick={() => onSelect(size)}
+              aria-pressed={isSelected}
+              className={cn(
+                'h-11 min-w-[52px] px-4 rounded-pill font-sans text-[0.78rem] border transition-[background-color,color,border-color,transform] duration-150 ease-out active:scale-[0.97]',
+                isSelected
+                  ? 'border-deep bg-deep text-blush'
+                  : 'border-lm bg-transparent text-deep hover:border-mauve'
+              )}
+            >
+              {size}
+            </button>
+          )
+        })}
+      </div>
+    )
   }
 
   return (

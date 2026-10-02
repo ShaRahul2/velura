@@ -10,6 +10,7 @@ export const SHOP_CATS: ProductCategory[] = [
   'seamless',
   'plus',
   'bridal',
+  'panties',
 ]
 
 export const SHOP_SUPPORT: SupportLevel[] = ['Light', 'Medium', 'High']
