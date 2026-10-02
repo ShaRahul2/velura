@@ -14,7 +14,7 @@ const CAT_COPY: Record<string, string> = {
   seamless: 'Invisible under anything.',
   plus: 'Built for every curve. Designed, not adjusted.',
   bridal: 'Worn once. Remembered forever.',
-  panties: 'The other half of the set. Worn closest, noticed least.',
+  panties: 'Cut close. Forgotten by noon.',
 }
 
 interface ShopContentProps {
@@ -41,10 +41,9 @@ export function ShopContent({ products, total, page, totalPages, query }: ShopCo
       {showBanner ? (
         <div className="relative mb-8 h-[200px] overflow-hidden bg-deep md:mb-12 md:h-[260px] lg:h-[300px]">
           <Image
-            src={cat === 'panties' ? '/images/categories/panties-banner.svg' : `/images/categories/${cat}.jpg`}
+            src={`/images/categories/${cat}.jpg`}
             alt=""
             fill
-            unoptimized={cat === 'panties'}
             sizes="100vw"
             priority
             quality={60}

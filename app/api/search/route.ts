@@ -5,11 +5,11 @@ import { products as catalog } from '@/data/products'
 import { searchCatalog, toSearchHit } from '@/lib/catalogSearch'
 import { hasXaiKey, xaiModel } from '@/lib/xai'
 import { checkRateLimit, clientIp } from '@/lib/rateLimit'
-import type { Product, ProductCategory, SupportLevel } from '@/types'
+import { PRODUCT_CATEGORIES, type Product, type ProductCategory, type SupportLevel } from '@/types'
 
 const IntentSchema = z.object({
   keywords: z.array(z.string()).max(6),
-  cat: z.enum(['everyday', 'pushup', 'lace', 'sports', 'seamless', 'plus', 'bridal', 'panties']).nullable(),
+  cat: z.enum(PRODUCT_CATEGORIES).nullable(),
   support: z.enum(['Light', 'Medium', 'High']).nullable(),
 })
 

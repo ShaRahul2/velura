@@ -3,13 +3,15 @@ import Image from 'next/image'
 import { PANTY_CUTS } from '@/lib/pantyCuts'
 import { formatPrice, pageWrap } from '@/lib/utils'
 
+// A bra and panty photographed in the same nude shade.
 const SET = {
   braHref: '/shop/1',
   braImage: '/images/products/feathersoft-1.jpg',
   braPrice: 699,
+  pantyName: 'CottonDay',
   pantyHref: '/shop/43',
-  pantyImage: '/images/products/panties/feathersoft-hipster-d4b896-1.svg',
-  pantyPrice: 549,
+  pantyImage: '/images/products/cottonday-1.jpg',
+  pantyPrice: 499,
 }
 
 export function PantiesLaunch() {
@@ -58,12 +60,20 @@ export function PantiesLaunch() {
             ))}
           </ul>
 
-          <Link
-            href="/shop?cat=panties"
-            className="pressable pressable-track inline-flex h-12 w-fit items-center rounded-btn bg-blush px-8 font-sans text-[0.78rem] tracking-btn uppercase text-deep"
-          >
-            Explore Collection
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/shop?cat=panties"
+              className="pressable pressable-track inline-flex h-12 items-center rounded-btn bg-blush px-8 font-sans text-[0.78rem] tracking-btn uppercase text-deep"
+            >
+              Explore Collection
+            </Link>
+            <Link
+              href="/builder?garment=panties"
+              className="inline-flex h-12 items-center rounded-btn border border-rose px-6 font-sans text-[0.78rem] tracking-btn uppercase text-rose transition-colors duration-200 hover:bg-rose hover:text-deep"
+            >
+              Build Yours
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-rows-[minmax(0,1fr)_auto] border-t border-nav-border lg:border-l lg:border-t-0">
@@ -84,14 +94,14 @@ export function PantiesLaunch() {
             <Link href={SET.pantyHref} className="group relative overflow-hidden bg-blush">
               <Image
                 src={SET.pantyImage}
-                alt="FeatherSoft Hipster in nude"
+                alt="CottonDay panty in nude"
                 fill
-                unoptimized
                 sizes="(max-width: 1024px) 50vw, 25vw"
-                className="object-contain img-zoom"
+                quality={70}
+                className="object-cover img-zoom"
               />
               <span className="absolute left-3 top-3 rounded-badge bg-deep px-2 py-1 font-sans text-[0.6rem] tracking-label uppercase text-blush">
-                Hipster
+                Panty
               </span>
             </Link>
           </div>
@@ -100,7 +110,7 @@ export function PantiesLaunch() {
               <p className="font-sans text-[0.62rem] tracking-label uppercase text-rose">
                 Same knit · same shade
               </p>
-              <p className="mt-1 font-serif text-[1.35rem] font-light">FeatherSoft, in two parts.</p>
+              <p className="mt-1 font-serif text-[1.35rem] font-light">FeatherSoft, with {SET.pantyName}.</p>
             </div>
             <div className="flex items-center gap-5">
               <p className="font-sans text-[1rem] text-blush">

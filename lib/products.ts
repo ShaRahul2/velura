@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache'
 import { db } from '@/lib/db'
 import { BadgeType as DbBadge, SupportLevel as DbSupportLevel, type Prisma } from '@prisma/client'
 import { products as STATIC } from '@/data/products'
-import type { Product, BadgeType, ProductCategory, SupportLevel } from '@/types'
+import { PRODUCT_CATEGORIES, type Product, type BadgeType, type ProductCategory, type SupportLevel } from '@/types'
 
 const STATIC_BY_ID = new Map(STATIC.map((p) => [p.id, p]))
 
@@ -18,7 +18,7 @@ function isPlaceholderUrl(url: string) {
 
 export const ITEMS_PER_PAGE = 12
 
-const VALID_CATS:     ProductCategory[] = ['everyday', 'pushup', 'lace', 'sports', 'seamless', 'plus', 'bridal', 'panties']
+const VALID_CATS:     readonly ProductCategory[] = PRODUCT_CATEGORIES
 const VALID_SUPPORT:  SupportLevel[]    = ['Light', 'Medium', 'High']
 
 // ── Include shape used by all queries ─────────────────────────────────────────

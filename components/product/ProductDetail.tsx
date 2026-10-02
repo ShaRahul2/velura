@@ -13,7 +13,7 @@ import { useUiStore } from '@/store/uiStore'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { colorLabel } from '@/lib/colorways'
 import { imagesForColor } from '@/lib/productColorImages'
-import { isLetterRange, parseSizeRange } from '@/lib/sizes'
+import { parseSizeRange } from '@/lib/sizes'
 import { ProductMeta } from './ProductMeta'
 
 interface ProductDetailProps {
@@ -32,8 +32,6 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
   const wishlisted = useWishlistStore((s) => s.isWishlisted(product.id))
 
   const availableSizes = parseSizeRange(product.sizes)
-  const letterSized = isLetterRange(product.sizes)
-  const isPanty = product.cat === 'panties'
   const [guideOpen, setGuideOpen] = useState(false)
   const colors = product.colorways ?? []
   const selectedHex = colors[colorIndex]
@@ -91,9 +89,7 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
           )}
         </div>
         <p className="font-sans text-[0.72rem] text-mauve">
-          {product.reviews > 0
-            ? `${product.rating} · ${product.reviews.toLocaleString('en-IN')} reviews`
-            : 'New · no reviews yet'}
+          {product.rating} · {product.reviews.toLocaleString('en-IN')} reviews
         </p>
       </div>
 
@@ -147,10 +143,15 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
         </div>
         {guideOpen && (
           <p className="font-sans text-[0.8rem] font-light text-mauve leading-relaxed mb-3">
-            {letterSized
-              ? 'Waist at its narrowest, hips at their fullest. Between two sizes, take the larger for full coverage.'
-              : 'Band from underbust, rounded up to the even inch. Cup from the difference to the fullest point.'}
-            {' '}This piece: {product.sizes}. Unsure —{' '}
+            {product.cat === 'panties' ? (
+              <>This piece is sized {product.sizes}, at the waist. </>
+            ) : (
+              <>
+                Band from underbust, rounded up to the even inch. Cup from the difference to the fullest point.
+                This piece: {product.sizes}.{' '}
+              </>
+            )}
+            Unsure —{' '}
             <Link href="/size-guide" className="text-deep underline underline-offset-4">
               read the full guide
             </Link>
@@ -188,7 +189,7 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
         {[
           'Free shipping above ₹999',
           '15-day easy returns',
-          isPanty ? `${product.fabric} · matched to its bra` : `${product.fabric} · ${product.support} support`,
+          `${product.fabric} · ${product.support} support`,
         ].map((line) => (
           <li key={line} className="flex gap-2 font-sans text-[0.74rem] text-mauve">
             <span className="text-rose">✦</span>

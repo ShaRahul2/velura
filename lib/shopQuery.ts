@@ -2,16 +2,18 @@ import type { Product, ProductCategory, SupportLevel } from '@/types'
 import { searchCatalog } from '@/lib/catalogSearch'
 import { ITEMS_PER_PAGE } from '@/lib/products'
 
-export const SHOP_CATS: ProductCategory[] = [
-  'everyday',
-  'pushup',
-  'lace',
-  'sports',
-  'seamless',
-  'plus',
-  'bridal',
-  'panties',
+export const SHOP_COLLECTIONS: { id: ProductCategory; label: string }[] = [
+  { id: 'everyday', label: 'Everyday' },
+  { id: 'pushup', label: 'Push-Up' },
+  { id: 'lace', label: 'Lace' },
+  { id: 'sports', label: 'Sports' },
+  { id: 'seamless', label: 'Seamless' },
+  { id: 'plus', label: 'Plus' },
+  { id: 'bridal', label: 'Bridal' },
+  { id: 'panties', label: 'Panties' },
 ]
+
+export const SHOP_CATS: ProductCategory[] = SHOP_COLLECTIONS.map((collection) => collection.id)
 
 export const SHOP_SUPPORT: SupportLevel[] = ['Light', 'Medium', 'High']
 

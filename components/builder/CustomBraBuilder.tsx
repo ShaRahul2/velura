@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useBuilderStore } from '@/store/builderStore'
 import { StepBar } from './StepBar'
 import { Step1Size } from './Step1Size'
@@ -8,12 +8,19 @@ import { Step2BraType } from './Step2BraType'
 import { Step3Style } from './Step3Style'
 import { Step4FabricColor } from './Step4FabricColor'
 import { Step5Review } from './Step5Review'
+import { StepPantyStyle } from './StepPantyStyle'
 import { ProductPreview } from './ProductPreview'
 import { formatPrice } from '@/lib/utils'
 
-const STEPS = 5
+const BRA_LABELS = ['Size', 'Type', 'Style', 'Fabric', 'Review']
+const PANTY_LABELS = ['Style', 'Fabric', 'Review']
 
 function canProceed(step: number, store: ReturnType<typeof useBuilderStore.getState>): boolean {
+  if (store.garment === 'panties') {
+    if (step === 1) return !!(store.pantyStyle && store.pantySize)
+    if (step === 2) return !!(store.fabric && store.color)
+    return true
+  }
   if (step === 1) return !!(store.band && store.cup)
   if (step === 2) return !!store.braType
   if (step === 3) return !!(store.strapStyle && store.padding && store.underwire && store.closure && store.support)
@@ -21,23 +28,39 @@ function canProceed(step: number, store: ReturnType<typeof useBuilderStore.getSt
   return true
 }
 
-export function CustomBraBuilder() {
+export function CustomBraBuilder({ initialGarment = 'bra' }: { initialGarment?: 'bra' | 'panties' }) {
   const [step, setStep] = useState(1)
   const store = useBuilderStore()
+  const setGarment = useBuilderStore((s) => s.setGarment)
+  const garment = store.garment === 'panties' ? 'panties' : 'bra'
+  const labels = garment === 'panties' ? PANTY_LABELS : BRA_LABELS
+  const steps = labels.length
   const ready = canProceed(step, store)
   const price = store.price
   const scroller = useRef<HTMLDivElement>(null)
+  const seeded = useRef(false)
+
+  useLayoutEffect(() => {
+    if (seeded.current) return
+    seeded.current = true
+    if (initialGarment === 'panties') setGarment('panties')
+  }, [initialGarment, setGarment])
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: 0 })
   }, [step])
 
-  function next() { if (step < STEPS) setStep(step + 1) }
+  function next() { if (step < steps) setStep(step + 1) }
   function goTo(newStep: number) {
-    if (newStep >= 1 && newStep <= STEPS) setStep(newStep)
+    if (newStep >= 1 && newStep <= steps) setStep(newStep)
   }
   function resetAll() {
     store.reset()
+    setStep(1)
+  }
+  function chooseGarment(nextGarment: 'bra' | 'panties') {
+    if (nextGarment === garment) return
+    setGarment(nextGarment)
     setStep(1)
   }
 
@@ -47,11 +70,29 @@ export function CustomBraBuilder() {
         <div className="flex items-center justify-between gap-3 max-w-[1400px] mx-auto">
           <div className="min-w-0">
             <p className="font-sans text-[0.58rem] tracking-label uppercase text-rose">
-              Custom Bra Builder
+              {garment === 'panties' ? 'Custom Panties' : 'Custom Bra Builder'}
             </p>
             <h1 className="font-serif font-light text-deep truncate text-[1.25rem] md:text-[1.45rem] leading-tight">
-              Built for your body.
+              {garment === 'panties' ? 'Cut for the day.' : 'Built for your body.'}
             </h1>
+          </div>
+          <div className="hidden sm:flex border border-lm rounded-btn overflow-hidden" role="tablist" aria-label="Garment">
+            {(['bra', 'panties'] as const).map((id) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={garment === id}
+                onClick={() => chooseGarment(id)}
+                className="h-8 px-3 font-sans text-[0.62rem] tracking-btn uppercase transition-colors"
+                style={{
+                  background: garment === id ? '#0F0D0B' : 'transparent',
+                  color: garment === id ? '#EDE9E4' : '#6B6058',
+                }}
+              >
+                {id === 'bra' ? 'Bra' : 'Panties'}
+              </button>
+            ))}
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right hidden sm:block">
@@ -71,7 +112,25 @@ export function CustomBraBuilder() {
       </header>
 
       <div className="shrink-0 px-4 md:px-8 pt-3 pb-1 max-w-[1400px] w-full mx-auto">
-        <StepBar current={step} onStepClick={goTo} />
+        <div className="sm:hidden mb-2 flex border border-lm rounded-btn overflow-hidden w-fit" role="tablist" aria-label="Garment">
+          {(['bra', 'panties'] as const).map((id) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={garment === id}
+              onClick={() => chooseGarment(id)}
+              className="h-8 px-3 font-sans text-[0.62rem] tracking-btn uppercase"
+              style={{
+                background: garment === id ? '#0F0D0B' : 'transparent',
+                color: garment === id ? '#EDE9E4' : '#6B6058',
+              }}
+            >
+              {id === 'bra' ? 'Bra' : 'Panties'}
+            </button>
+          ))}
+        </div>
+        <StepBar current={step} steps={labels} onStepClick={goTo} />
       </div>
 
       <div className="flex-1 min-h-0 max-w-[1400px] w-full mx-auto px-4 md:px-8">
@@ -85,11 +144,21 @@ export function CustomBraBuilder() {
                 <ProductPreview currentStep={step} compact />
               </div>
             )}
-            {step === 1 && <Step1Size />}
-            {step === 2 && <Step2BraType />}
-            {step === 3 && <Step3Style />}
-            {step === 4 && <Step4FabricColor />}
-            {step === 5 && <Step5Review />}
+            {garment === 'panties' ? (
+              <>
+                {step === 1 && <StepPantyStyle />}
+                {step === 2 && <Step4FabricColor />}
+                {step === 3 && <Step5Review />}
+              </>
+            ) : (
+              <>
+                {step === 1 && <Step1Size />}
+                {step === 2 && <Step2BraType />}
+                {step === 3 && <Step3Style />}
+                {step === 4 && <Step4FabricColor />}
+                {step === 5 && <Step5Review />}
+              </>
+            )}
           </div>
 
           <aside className="hidden lg:flex min-h-0 py-2">
@@ -102,10 +171,12 @@ export function CustomBraBuilder() {
         <div className="max-w-[1400px] mx-auto">
         {!ready && (
           <p className="sm:hidden font-sans text-[0.62rem] text-mauve mb-2">
-            {step === 1 && 'Select a band and cup to continue.'}
-            {step === 2 && 'Select a silhouette to continue.'}
-            {step === 3 && 'Finish the construction to continue.'}
-            {step === 4 && 'Select a fabric and colour to continue.'}
+            {garment === 'panties' && step === 1 && 'Select a cut and a size to continue.'}
+            {garment === 'panties' && step === 2 && 'Select a fabric and colour to continue.'}
+            {garment === 'bra' && step === 1 && 'Select a band and cup to continue.'}
+            {garment === 'bra' && step === 2 && 'Select a silhouette to continue.'}
+            {garment === 'bra' && step === 3 && 'Finish the construction to continue.'}
+            {garment === 'bra' && step === 4 && 'Select a fabric and colour to continue.'}
           </p>
         )}
         <div className="flex items-center gap-2">
@@ -117,7 +188,7 @@ export function CustomBraBuilder() {
               Back
             </button>
           )}
-          {step < STEPS ? (
+          {step < steps ? (
             <div className="flex-1 lg:flex-none flex items-center gap-3 min-w-0">
               <button
                 onClick={next}
@@ -128,10 +199,12 @@ export function CustomBraBuilder() {
               </button>
               {!ready && (
                 <p className="hidden sm:block font-sans text-[0.68rem] text-mauve">
-                  {step === 1 && 'Select a band and cup.'}
-                  {step === 2 && 'Select a silhouette.'}
-                  {step === 3 && 'Finish the construction.'}
-                  {step === 4 && 'Select a fabric and colour.'}
+                  {garment === 'panties' && step === 1 && 'Select a cut and a size.'}
+                  {garment === 'panties' && step === 2 && 'Select a fabric and colour.'}
+                  {garment === 'bra' && step === 1 && 'Select a band and cup.'}
+                  {garment === 'bra' && step === 2 && 'Select a silhouette.'}
+                  {garment === 'bra' && step === 3 && 'Finish the construction.'}
+                  {garment === 'bra' && step === 4 && 'Select a fabric and colour.'}
                 </p>
               )}
             </div>

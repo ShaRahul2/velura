@@ -5,19 +5,12 @@ import { useRouter } from 'next/navigation'
 import { X } from 'lucide-react'
 import type { ProductCategory } from '@/types'
 import { useFocusTrap } from '@/lib/useFocusTrap'
-import { shopHref, type ShopQuery } from '@/lib/shopQuery'
+import { SHOP_COLLECTIONS, shopHref, type ShopQuery } from '@/lib/shopQuery'
 import { cn } from '@/lib/utils'
 
 const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
-  { id: 'all',      label: 'All' },
-  { id: 'everyday', label: 'Everyday' },
-  { id: 'pushup',   label: 'Push-Up' },
-  { id: 'lace',     label: 'Lace' },
-  { id: 'sports',   label: 'Sports' },
-  { id: 'seamless', label: 'Seamless' },
-  { id: 'plus',     label: 'Plus' },
-  { id: 'bridal',   label: 'Bridal' },
-  { id: 'panties',  label: 'Panties' },
+  { id: 'all', label: 'All' },
+  ...SHOP_COLLECTIONS,
 ]
 
 const SUPPORT = ['Light', 'Medium', 'High']

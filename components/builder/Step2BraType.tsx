@@ -9,6 +9,8 @@ import type { BuilderVisualSpec } from '@/lib/builderVisualSpec'
 function typeSpec(typeId: string, colorId: string): BuilderVisualSpec {
   const d = TYPE_DEFAULTS[typeId] ?? {}
   return {
+    garment:    'bra',
+    pantyStyle: 'panty-brief',
     braType:    typeId,
     strapStyle: typeId === 'strapless' ? 'none' : (d.strapStyle ?? 'classic'),
     padding:    d.padding    ?? 'none',

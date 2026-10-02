@@ -19,7 +19,7 @@ const CATEGORIES: {
   { slug: 'seamless', label: 'Seamless',  description: 'Invisible under anything.',           sortOrder: 5 },
   { slug: 'plus',     label: 'Plus',      description: 'Designed for fuller curves.',         sortOrder: 6 },
   { slug: 'bridal',   label: 'Bridal',    description: 'For the morning of.',                 sortOrder: 7 },
-  { slug: 'panties',  label: 'Panties',   description: 'The other half of the set.',          sortOrder: 8 },
+  { slug: 'panties',  label: 'Panties',   description: 'Cut close. Forgotten by noon.',       sortOrder: 8 },
 ]
 
 // ── Badge mapping ─────────────────────────────────────────────────────────────
@@ -128,7 +128,7 @@ async function main() {
 
   // 4. Sample reviews
   console.log('Seeding reviews...')
-  const reviewRows = STATIC.filter((p) => p.reviews > 0).flatMap((p) => generateReviews(p.id, p.rating))
+  const reviewRows = STATIC.flatMap((p) => generateReviews(p.id, p.rating))
   await db.review.createMany({ data: reviewRows })
 
   // Reset PG sequences

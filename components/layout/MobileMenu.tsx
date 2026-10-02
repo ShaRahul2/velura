@@ -15,8 +15,8 @@ const NAV_LINKS = [
 ]
 
 const CATS = [
-  { href: '/shop?cat=panties', label: 'Panties' },
   { href: '/shop?cat=everyday', label: 'Everyday' },
+  { href: '/shop?cat=panties', label: 'Panties' },
   { href: '/shop?cat=lace', label: 'Lace' },
   { href: '/shop?cat=bridal', label: 'Bridal' },
   { href: '/shop?cat=plus', label: 'Plus' },

@@ -44,11 +44,14 @@ export function ShopResults({ products, total, page, totalPages, query }: ShopRe
       ) : products.length > 8 ? (
         <>
           <ProductGrid products={first8} cols={cols} priorityCount={4} />
-          <BuilderPromoBanner />
+          <BuilderPromoBanner garment={query.cat === 'panties' ? 'panties' : 'bra'} />
           <ProductGrid products={rest} cols={cols} />
         </>
       ) : (
-        <ProductGrid products={products} cols={cols} priorityCount={4} />
+        <>
+          <ProductGrid products={products} cols={cols} priorityCount={4} />
+          {query.cat === 'panties' && <BuilderPromoBanner garment="panties" />}
+        </>
       )}
 
       {totalPages > 1 && (

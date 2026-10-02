@@ -3,31 +3,21 @@ import { getAllCategories } from '@/lib/products'
 import Image from 'next/image'
 import { pageWrap } from '@/lib/utils'
 
-interface CategoryTile {
+type CollectionCard = {
   id: string
   label: string
   sub: string
   image: string
   span: string
-  isNew?: boolean
 }
 
-// Editorial order — also the grid order, so the 2×2 tiles (Everyday, Panties) lead.
-const CATEGORIES: CategoryTile[] = [
+const CATEGORIES: CollectionCard[] = [
   {
     id: 'everyday',
     label: 'Everyday',
     sub: "The bra you forget you're wearing.",
     image: '/images/categories/everyday.jpg',
     span: 'col-span-2 row-span-2 min-h-[280px] md:min-h-0',
-  },
-  {
-    id: 'panties',
-    label: 'Panties',
-    sub: 'The other half of the set.',
-    image: '/images/categories/panties.svg',
-    span: 'col-span-2 row-span-2 min-h-[280px] md:min-h-0',
-    isNew: true,
   },
   {
     id: 'lace',
@@ -71,29 +61,33 @@ const CATEGORIES: CategoryTile[] = [
     image: '/images/categories/pushup.jpg',
     span: 'col-span-2 min-h-[200px] md:min-h-0',
   },
+  {
+    id: 'panties',
+    label: 'Panties',
+    sub: 'Cut close. Forgotten by noon.',
+    image: '/images/categories/panties.jpg',
+    span: 'col-span-2 min-h-[200px] md:min-h-0',
+  },
 ]
 
 export async function CategoryGrid() {
   let categories = CATEGORIES
   try {
     const rows = await getAllCategories()
-    const rank = (id: string) => {
-      const i = CATEGORIES.findIndex((c) => c.id === id)
-      return i === -1 ? CATEGORIES.length : i
-    }
-    if (rows.length) categories = rows
-      .map((row): CategoryTile => {
-        const fallback = CATEGORIES.find((c) => c.id === row.slug)
+    if (rows.length) {
+      const fromDb = rows.map(row => {
+        const fallback = CATEGORIES.find(c => c.id === row.slug)
         return {
-          span: '',
-          ...fallback,
           id: row.slug,
           label: row.label,
           sub: row.description ?? fallback?.sub ?? '',
-          image: row.imageUrl || fallback?.image || `/images/categories/${row.slug}.jpg`,
+          image: row.imageUrl || fallback?.image || '/images/categories/everyday.jpg',
+          span: fallback?.span ?? '',
         }
       })
-      .sort((a, b) => rank(a.id) - rank(b.id))
+      const seen = new Set<string>(fromDb.map(item => item.id))
+      categories = [...fromDb, ...CATEGORIES.filter(item => !seen.has(item.id))]
+    }
   } catch { /* Retain editorial collection navigation if the database is unavailable. */ }
 
   return (
@@ -119,7 +113,7 @@ export async function CategoryGrid() {
       </div>
 
       <div className="grid auto-rows-[200px] grid-cols-2 gap-2 md:auto-rows-[240px] md:grid-cols-4 md:gap-3 lg:auto-rows-[280px]">
-        {categories.map(({ id, label, sub, image, span, isNew }) => (
+        {categories.map(({ id, label, sub, image, span }) => (
           <Link
             key={id}
             href={`/shop?cat=${id}`}
@@ -129,7 +123,6 @@ export async function CategoryGrid() {
               src={image}
               alt={label}
               fill
-              unoptimized={image.endsWith('.svg')}
               sizes="(max-width: 768px) 50vw, 25vw"
               quality={70}
               className="object-cover img-zoom"
@@ -141,11 +134,6 @@ export async function CategoryGrid() {
                   'linear-gradient(to top, rgba(15,13,11,0.58) 0%, rgba(15,13,11,0.08) 55%, rgba(15,13,11,0.00) 100%)',
               }}
             />
-            {isNew && (
-              <span className="absolute left-4 top-4 rounded-badge border border-white/30 px-2 py-1 font-sans text-[0.6rem] tracking-label uppercase text-blush md:left-5 md:top-5">
-                New
-              </span>
-            )}
             <div className="absolute inset-x-0 bottom-0 p-4 md:p-5">
               <h3 className="font-serif text-[1.25rem] font-light leading-tight text-blush md:text-[1.5rem]">
                 {label}

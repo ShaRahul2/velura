@@ -20,6 +20,7 @@ const COLS = [
     title: 'Custom',
     links: [
       { label: 'Build Yours', href: '/builder' },
+      { label: 'Custom panties', href: '/builder?garment=panties' },
       { label: 'Fit Calculator', href: '/builder' },
       { label: 'All collections', href: '/shop' },
     ],

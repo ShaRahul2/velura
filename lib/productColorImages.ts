@@ -1,5 +1,4 @@
 import type { Product } from '@/types'
-import { pantyImages } from '@/lib/pantyImages'
 
 const SLUG: Record<number, string> = {
   1: 'feathersoft', 2: 'morningdew', 3: 'nudesense', 4: 'velvetplunge',
@@ -12,10 +11,8 @@ const SLUG: Record<number, string> = {
   29: 'pearlgown', 30: 'firstlight', 31: 'paleshift', 32: 'knitline',
   33: 'softrise', 34: 'nethour', 35: 'holdfast', 36: 'airbound',
   37: 'strapease', 38: 'veilcup', 39: 'smokeknit', 40: 'redhour',
-  41: 'mossline', 42: 'inklace',
-  43: 'feathersoft-hipster', 44: 'secondskin-bikini', 45: 'floralluxe-thong',
-  46: 'velvetplunge-brief', 47: 'curvelove-highwaist', 48: 'quietknit-boyshort',
-  49: 'dayveil-bikini', 50: 'afterdark-thong',
+  41: 'mossline', 42: 'inklace', 43: 'cottonday', 44: 'fullbrief',
+  45: 'finecut', 46: 'highrise', 47: 'edgelace',
 }
 
 export function colorVariantSrc(productId: number, hex: string, angle = 1): string {
@@ -45,7 +42,6 @@ export function imagesForColor(product: Product, colorIndex: number): string[] {
   if (!hex || colorIndex === 0) return unique(product.images)
 
   const slug = SLUG[product.id] ?? 'feathersoft'
-  if (product.cat === 'panties' && SLUG[product.id]) return pantyImages(slug, hex)
   const key = `${slug}-${hex.replace('#', '').toLowerCase()}`
   const count = EXTRA_ANGLES[key] ?? 1
   const images: string[] = []

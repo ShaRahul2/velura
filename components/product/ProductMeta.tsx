@@ -11,7 +11,7 @@ export function ProductMeta({ product }: { product: Product }) {
       id: 'fit',
       label: 'Fit',
       body: product.cat === 'panties'
-        ? `Sized ${product.sizes}, by waist and hip. Between two sizes, take the larger — the atelier can place you if the number is uncertain.`
+        ? `${product.support} support. Sized ${product.sizes}. The waist, not the cup.`
         : `${product.support} support. Sized ${product.sizes}. Band first, then cup — the atelier can place you if the number is uncertain.`,
     },
     {

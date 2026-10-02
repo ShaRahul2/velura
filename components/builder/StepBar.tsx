@@ -1,13 +1,15 @@
 'use client'
 
-const STEPS = ['Size', 'Type', 'Style', 'Fabric', 'Review']
+const DEFAULT_STEPS = ['Size', 'Type', 'Style', 'Fabric', 'Review']
 
 interface StepBarProps {
   current: number
+  steps?: string[]
   onStepClick?: (step: number) => void
 }
 
-export function StepBar({ current, onStepClick }: StepBarProps) {
+export function StepBar({ current, steps = DEFAULT_STEPS, onStepClick }: StepBarProps) {
+  const STEPS = steps
   return (
     <div className="flex items-center gap-0 mb-2 shrink-0 w-full min-w-0 overflow-hidden">
       {STEPS.map((label, i) => {
