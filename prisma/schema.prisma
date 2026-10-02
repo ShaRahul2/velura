@@ -17,6 +17,7 @@ enum ProductCategory {
   seamless
   plus
   bridal
+  panties
 }
 
 enum BadgeType {

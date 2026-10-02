@@ -2,6 +2,7 @@ export const FREE_SHIPPING_THRESHOLD = 999
 export const SHIPPING_COST           = 79
 export const COD_LIMIT               = 5000
 export const BUILDER_BASE_PRICE      = 999
+export const PANTY_BASE_PRICE        = 549
 
 export const COUPONS: Record<string, { type: 'pct' | 'flat'; value: number }> = {
   VELURA10: { type: 'pct',  value: 0.10 },

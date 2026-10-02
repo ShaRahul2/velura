@@ -143,8 +143,15 @@ export function ProductDetail({ product, colorIndex = 0, onColorChange }: Produc
         </div>
         {guideOpen && (
           <p className="font-sans text-[0.8rem] font-light text-mauve leading-relaxed mb-3">
-            Band from underbust, rounded up to the even inch. Cup from the difference to the fullest point.
-            This piece: {product.sizes}. Unsure —{' '}
+            {product.cat === 'panties' ? (
+              <>This piece is sized {product.sizes}, at the waist. </>
+            ) : (
+              <>
+                Band from underbust, rounded up to the even inch. Cup from the difference to the fullest point.
+                This piece: {product.sizes}.{' '}
+              </>
+            )}
+            Unsure —{' '}
             <Link href="/size-guide" className="text-deep underline underline-offset-4">
               read the full guide
             </Link>

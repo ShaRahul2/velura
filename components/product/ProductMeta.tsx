@@ -10,7 +10,9 @@ export function ProductMeta({ product }: { product: Product }) {
     {
       id: 'fit',
       label: 'Fit',
-      body: `${product.support} support. Sized ${product.sizes}. Band first, then cup — the atelier can place you if the number is uncertain.`,
+      body: product.cat === 'panties'
+        ? `${product.support} support. Sized ${product.sizes}. The waist, not the cup.`
+        : `${product.support} support. Sized ${product.sizes}. Band first, then cup — the atelier can place you if the number is uncertain.`,
     },
     {
       id: 'fabric',

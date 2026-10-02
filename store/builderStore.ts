@@ -5,13 +5,16 @@ import {
   CB_CLOSURE_OPTIONS,
   CB_FABRIC_OPTIONS,
   CB_PADDING_OPTIONS,
+  CB_PANTY_STYLES,
   CB_SUPPORT_OPTIONS,
   CB_STRAP_STYLES,
   CB_UNDERWIRE_OPTIONS,
+  PANTY_DEFAULTS,
   TYPE_DEFAULTS,
 } from '@/data/builderOptions'
+import { BUILDER_BASE_PRICE, PANTY_BASE_PRICE } from '@/lib/coupons'
 
-const BASE_PRICE = 999
+const BASE_PRICE = BUILDER_BASE_PRICE
 
 const priceMap = new Map<string, number>([
   ...CB_BRA_TYPES.map((option): [string, number] => [option.id, option.price]),
@@ -21,6 +24,7 @@ const priceMap = new Map<string, number>([
   ...CB_CLOSURE_OPTIONS.map((option): [string, number] => [option.id, option.price]),
   ...CB_SUPPORT_OPTIONS.map((option): [string, number] => [option.id, option.price]),
   ...CB_FABRIC_OPTIONS.map((option): [string, number] => [option.id, option.price]),
+  ...CB_PANTY_STYLES.map((option): [string, number] => [option.id, option.price]),
 ])
 
 function optionPrice(optionId: string | null) {
@@ -28,6 +32,9 @@ function optionPrice(optionId: string | null) {
 }
 
 function calculatePrice(state: BuilderState) {
+  if (state.garment === 'panties') {
+    return PANTY_BASE_PRICE + optionPrice(state.pantyStyle ?? null) + optionPrice(state.fabric)
+  }
   return (
     BASE_PRICE +
     optionPrice(state.braType) +
@@ -57,10 +64,14 @@ interface BuilderStore extends BuilderState {
   setFabric: (fabric: string | null) => void
   setColor: (color: string | null) => void
   setFitUnit: (unit: 'cm' | 'in') => void
+  setGarment: (garment: 'bra' | 'panties') => void
+  setPantyStyle: (pantyStyle: string | null) => void
+  setPantySize: (pantySize: string | null) => void
   reset: () => void
 }
 
 const initialState: BuilderState = {
+  garment: 'bra',
   sizeMode: 'standard',
   band: null,
   cup: null,
@@ -73,6 +84,8 @@ const initialState: BuilderState = {
   fabric: null,
   color: null,
   fitUnit: 'cm',
+  pantyStyle: null,
+  pantySize: null,
 }
 
 export const useBuilderStore = create<BuilderStore>()((set) => ({
@@ -113,7 +126,30 @@ export const useBuilderStore = create<BuilderStore>()((set) => ({
     set((state) => ({ fabric, price: calculatePrice({ ...state, fabric }) })),
   setColor: (color) => set(() => ({ color })),
   setFitUnit: (fitUnit) => set(() => ({ fitUnit })),
-  reset: () => set({ ...initialState, price: BASE_PRICE, previewUrl: null, previewHash: null }),
+  setGarment: (garment) =>
+    set((state) => {
+      const next: BuilderState = { ...state, garment }
+      return { ...next, price: calculatePrice(next), previewUrl: null, previewHash: null }
+    }),
+  setPantyStyle: (pantyStyle) =>
+    set((state) => {
+      const defaults = pantyStyle ? PANTY_DEFAULTS[pantyStyle] ?? {} : {}
+      const next: BuilderState = {
+        ...state,
+        pantyStyle,
+        fabric: defaults.fabric ?? state.fabric,
+      }
+      return { ...next, price: calculatePrice(next) }
+    }),
+  setPantySize: (pantySize) => set(() => ({ pantySize })),
+  reset: () =>
+    set((state) => ({
+      ...initialState,
+      garment: state.garment ?? 'bra',
+      price: state.garment === 'panties' ? PANTY_BASE_PRICE : BASE_PRICE,
+      previewUrl: null,
+      previewHash: null,
+    })),
 }))
 
 export const useBuilder = useBuilderStore

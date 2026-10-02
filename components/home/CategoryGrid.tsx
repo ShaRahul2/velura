@@ -3,7 +3,15 @@ import { getAllCategories } from '@/lib/products'
 import Image from 'next/image'
 import { pageWrap } from '@/lib/utils'
 
-const CATEGORIES = [
+type CollectionCard = {
+  id: string
+  label: string
+  sub: string
+  image: string
+  span: string
+}
+
+const CATEGORIES: CollectionCard[] = [
   {
     id: 'everyday',
     label: 'Everyday',
@@ -53,16 +61,33 @@ const CATEGORIES = [
     image: '/images/categories/pushup.jpg',
     span: 'col-span-2 min-h-[200px] md:min-h-0',
   },
+  {
+    id: 'panties',
+    label: 'Panties',
+    sub: 'Cut close. Forgotten by noon.',
+    image: '/images/categories/panties.jpg',
+    span: 'col-span-2 min-h-[200px] md:min-h-0',
+  },
 ]
 
 export async function CategoryGrid() {
   let categories = CATEGORIES
   try {
     const rows = await getAllCategories()
-    if (rows.length) categories = rows.map(row => {
-      const fallback = CATEGORIES.find(c => c.id === row.slug)!
-      return { ...fallback, id: row.slug, label: row.label, sub: row.description ?? fallback.sub, image: row.imageUrl || fallback.image }
-    })
+    if (rows.length) {
+      const fromDb = rows.map(row => {
+        const fallback = CATEGORIES.find(c => c.id === row.slug)
+        return {
+          id: row.slug,
+          label: row.label,
+          sub: row.description ?? fallback?.sub ?? '',
+          image: row.imageUrl || fallback?.image || '/images/categories/everyday.jpg',
+          span: fallback?.span ?? '',
+        }
+      })
+      const seen = new Set<string>(fromDb.map(item => item.id))
+      categories = [...fromDb, ...CATEGORIES.filter(item => !seen.has(item.id))]
+    }
   } catch { /* Retain editorial collection navigation if the database is unavailable. */ }
 
   return (

@@ -11,6 +11,7 @@ test('admin callbacks cannot leave the admin path or loop to login',()=>{
 test('invalid and unknown product fields are rejected',()=>{
  for(const value of [{price:-1},{price:1.5},{isActive:'false'},{reviews:-1},{rating:6},{cat:'unknown'},{admin:true}])assert.equal(productSchema.partial().safeParse(value).success,false)
  assert.equal(productSchema.partial().safeParse({isActive:false}).success,true)
+ assert.equal(productSchema.partial().safeParse({cat:'panties'}).success,true)
  assert.equal(validPrice({price:200,oldPrice:100}),false)
  assert.equal(categorySchema.safeParse({label:'Lace',description:'',imageUrl:'javascript:alert(1)',sortOrder:0}).success,false)
 })

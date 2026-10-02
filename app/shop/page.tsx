@@ -12,7 +12,7 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Shop',
-  description: 'Explore the full Velura collection. 26AA–52K. Everyday, sports, lace, bridal, and more.',
+  description: 'Explore the full Velura collection. Bras and panties. 26AA–52K, XS–4XL.',
 }
 
 export default async function ShopPage({

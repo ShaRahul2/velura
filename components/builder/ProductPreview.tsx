@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useBuilderStore } from '@/store/builderStore'
 import { BraSVG } from './BraSVG'
+import { PantySVG } from './PantySVG'
 import { buildVisualSpec, specToHash } from '@/lib/builderVisualSpec'
 import { formatPrice, cn } from '@/lib/utils'
 import {
@@ -10,6 +11,7 @@ import {
   CB_COLOR_OPTIONS,
   CB_FABRIC_OPTIONS,
   CB_STRAP_STYLES,
+  CB_PANTY_STYLES,
   CB_SUPPORT_OPTIONS,
   DARK_COLOR_IDS,
   optionLabel,
@@ -31,18 +33,20 @@ export function ProductPreview({ currentStep, compact = false, fill = false }: P
   const store = useBuilderStore()
   const {
     braType, color, fabric, band, cup, price,
-    strapStyle, support,
+    strapStyle, support, garment, pantyStyle, pantySize,
     previewUrl, previewHash, setPreview,
   } = store
+  const isPanty = garment === 'panties'
 
   const spec          = buildVisualSpec(store)
   const selectedColor = CB_COLOR_OPTIONS.find((c) => c.id === color)
   const bgColor       = selectedColor?.color ?? '#EDE9E4'
   const isDark        = DARK_COLOR_IDS.has(color ?? '')
-  const size          = band && cup ? `${band}${cup}` : EMPTY_VALUE
-  const braTypeLabel  = optionLabel(CB_BRA_TYPES, braType)
+  const size          = isPanty ? (pantySize ?? EMPTY_VALUE) : (band && cup ? `${band}${cup}` : EMPTY_VALUE)
+  const braTypeLabel  = isPanty ? optionLabel(CB_PANTY_STYLES, pantyStyle ?? null) : optionLabel(CB_BRA_TYPES, braType)
   const fabricLabel   = optionLabel(CB_FABRIC_OPTIONS, fabric)
   const strapLabel    = braType === 'strapless' ? 'No straps' : optionLabel(CB_STRAP_STYLES, strapStyle)
+  const stepCount     = isPanty ? 3 : STEP_LABELS.length
 
   const [loading, setLoading] = useState(false)
   const [aiError, setAiError] = useState('')
@@ -67,7 +71,9 @@ export function ProductPreview({ currentStep, compact = false, fill = false }: P
     return () => abortRef.current?.abort()
   }, [])
 
-  const canGenerate = currentStep >= 3 && !!braType && !!fabric && !!color
+  const canGenerate = isPanty
+    ? currentStep >= 2 && !!pantyStyle && !!fabric && !!color
+    : currentStep >= 3 && !!braType && !!fabric && !!color
 
   async function handleGenerateAI(refresh = false) {
     abortRef.current?.abort()
@@ -146,7 +152,11 @@ export function ProductPreview({ currentStep, compact = false, fill = false }: P
           }}
         >
           <div className={cn(compact ? 'w-32 h-20' : 'w-full max-w-[240px] h-36 xl:h-40')}>
-            <BraSVG spec={spec} />
+            {isPanty ? (
+              <PantySVG styleId={pantyStyle ?? 'panty-brief'} color={bgColor} />
+            ) : (
+              <BraSVG spec={spec} />
+            )}
           </div>
           {color && !compact && (
             <div className="mt-3 flex items-center gap-2">
@@ -259,18 +269,28 @@ export function ProductPreview({ currentStep, compact = false, fill = false }: P
         <>
           <div>
             <div className="flex justify-between items-baseline mb-3">
-              <span className="font-sans text-[0.62rem] tracking-label uppercase text-mauve">Custom Bra</span>
+              <span className="font-sans text-[0.62rem] tracking-label uppercase text-mauve">
+                {isPanty ? 'Custom Panties' : 'Custom Bra'}
+              </span>
               <span className="font-serif text-[1.35rem] font-light text-deep">{formatPrice(price)}</span>
             </div>
             <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 pt-2 border-t border-lm">
-              {[
-                { label: 'Size',    value: size },
-                { label: 'Type',    value: braTypeLabel },
-                { label: 'Fabric',  value: fabricLabel },
-                { label: 'Colour',  value: selectedColor?.label ?? EMPTY_VALUE },
-                { label: 'Straps',  value: strapLabel },
-                { label: 'Support', value: optionLabel(CB_SUPPORT_OPTIONS, support) },
-              ].map(({ label, value }) => (
+              {(isPanty
+                ? [
+                    { label: 'Size', value: size },
+                    { label: 'Cut', value: braTypeLabel },
+                    { label: 'Fabric', value: fabricLabel },
+                    { label: 'Colour', value: selectedColor?.label ?? EMPTY_VALUE },
+                  ]
+                : [
+                    { label: 'Size', value: size },
+                    { label: 'Type', value: braTypeLabel },
+                    { label: 'Fabric', value: fabricLabel },
+                    { label: 'Colour', value: selectedColor?.label ?? EMPTY_VALUE },
+                    { label: 'Straps', value: strapLabel },
+                    { label: 'Support', value: optionLabel(CB_SUPPORT_OPTIONS, support) },
+                  ]
+              ).map(({ label, value }) => (
                 <div key={label}>
                   <p className="font-sans text-[0.55rem] tracking-label uppercase text-mauve">{label}</p>
                   <p className="font-sans text-[0.78rem] text-deep truncate" title={value}>{value}</p>
@@ -280,7 +300,7 @@ export function ProductPreview({ currentStep, compact = false, fill = false }: P
           </div>
 
           <div className="flex justify-center gap-1.5 mt-auto">
-            {STEP_LABELS.map((_, i) => (
+            {Array.from({ length: stepCount }, (_, i) => (
               <span
                 key={i}
                 className="block transition-all duration-200"

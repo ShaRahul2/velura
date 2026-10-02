@@ -11,6 +11,7 @@ const CAT_NOUN: Record<ProductCategory, string> = {
   seamless: 'seamless bra',
   plus:     'full-figure bra',
   bridal:   'bridal bra',
+  panties:  'panties',
 }
 
 const SHOT_PHRASE: Record<ShotKind, string> = {
@@ -87,9 +88,11 @@ export function describeCartLine(item: {
   size: string
   colorLabel?: string
   isCustom?: boolean
+  customSpec?: { garment?: string } | null
 }): string {
   if (item.isCustom) {
-    return [item.name, 'custom bra', item.colorLabel, `size ${item.size}`]
+    const piece = item.customSpec?.garment === 'panties' ? 'custom panties' : 'custom bra'
+    return [item.name, piece, item.colorLabel, `size ${item.size}`]
       .filter(Boolean)
       .join(' · ')
   }

@@ -27,6 +27,9 @@ const SPEC_LABEL: Record<string, string> = {
   fabric: 'Fabric',
   color: 'Colour',
   fitUnit: 'Unit',
+  garment: 'Garment',
+  pantyStyle: 'Cut',
+  pantySize: 'Panty size',
 }
 
 function asPaymentDetails(value: unknown): StoredPaymentDetails | null {

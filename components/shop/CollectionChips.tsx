@@ -1,17 +1,11 @@
 import Link from 'next/link'
 import type { ProductCategory } from '@/types'
 import { cn } from '@/lib/utils'
-import { shopHref, type ShopQuery } from '@/lib/shopQuery'
+import { SHOP_COLLECTIONS, shopHref, type ShopQuery } from '@/lib/shopQuery'
 
 const CATEGORIES: { id: ProductCategory | 'all'; label: string }[] = [
   { id: 'all', label: 'All' },
-  { id: 'everyday', label: 'Everyday' },
-  { id: 'pushup', label: 'Push-Up' },
-  { id: 'lace', label: 'Lace' },
-  { id: 'sports', label: 'Sports' },
-  { id: 'seamless', label: 'Seamless' },
-  { id: 'plus', label: 'Plus' },
-  { id: 'bridal', label: 'Bridal' },
+  ...SHOP_COLLECTIONS,
 ]
 
 export function CollectionChips({ query }: { query: ShopQuery }) {
