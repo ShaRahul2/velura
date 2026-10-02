@@ -11,7 +11,8 @@ const SLUG: Record<number, string> = {
   29: 'pearlgown', 30: 'firstlight', 31: 'paleshift', 32: 'knitline',
   33: 'softrise', 34: 'nethour', 35: 'holdfast', 36: 'airbound',
   37: 'strapease', 38: 'veilcup', 39: 'smokeknit', 40: 'redhour',
-  41: 'mossline', 42: 'inklace',
+  41: 'mossline', 42: 'inklace', 43: 'cottonday', 44: 'fullbrief',
+  45: 'finecut', 46: 'highrise', 47: 'edgelace',
 }
 
 export function colorVariantSrc(productId: number, hex: string, angle = 1): string {

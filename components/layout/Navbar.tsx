@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 const NAV_LINKS = [
   { href: '/shop', label: 'Shop' },
   { href: '/shop?cat=everyday', label: 'Everyday' },
+  { href: '/shop?cat=panties', label: 'Panties' },
   { href: '/shop?cat=bridal', label: 'Bridal' },
   { href: '/builder', label: '✦ Custom Bra' },
 ]

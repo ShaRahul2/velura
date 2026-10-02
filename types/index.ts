@@ -1,11 +1,15 @@
-export type ProductCategory =
-  | 'everyday'
-  | 'pushup'
-  | 'lace'
-  | 'sports'
-  | 'seamless'
-  | 'plus'
-  | 'bridal'
+export const PRODUCT_CATEGORIES = [
+  'everyday',
+  'pushup',
+  'lace',
+  'sports',
+  'seamless',
+  'plus',
+  'bridal',
+  'panties',
+] as const
+
+export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number]
 
 export type ImageType = 'front' | 'back' | 'lifestyle' | 'detail'
 
@@ -53,6 +57,8 @@ export interface Product {
 }
 
 export interface BuilderState {
+  /** Absent on older saved specs. Treated as a bra. */
+  garment?: 'bra' | 'panties'
   sizeMode: 'standard' | 'fit'
   band: string | null
   cup: string | null
@@ -65,6 +71,8 @@ export interface BuilderState {
   fabric: string | null
   color: string | null
   fitUnit: 'cm' | 'in'
+  pantyStyle?: string | null
+  pantySize?: string | null
 }
 
 export interface CartItem {

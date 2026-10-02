@@ -1,10 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { calculateBuilderPrice } from '../lib/builderPricing'
-import { BUILDER_BASE_PRICE } from '../lib/coupons'
+import { BUILDER_BASE_PRICE, PANTY_BASE_PRICE } from '../lib/coupons'
 import {
   CB_BRA_TYPES,
   CB_FABRIC_OPTIONS,
+  CB_PANTY_STYLES,
   CB_STRAP_STYLES,
   CB_SUPPORT_OPTIONS,
 } from '../data/builderOptions'
@@ -28,6 +29,22 @@ test('unknown option ids contribute zero', () => {
     calculateBuilderPrice({ braType: 'made-up', fabric: 'also-fake' }),
     BUILDER_BASE_PRICE,
   )
+})
+
+test('panties use their own base and ignore bra add-ons', () => {
+  const style = CB_PANTY_STYLES.find((o) => o.id === 'panty-highwaist')!.price
+  const fabric = CB_FABRIC_OPTIONS.find((o) => o.id === 'lace')!.price
+  assert.equal(
+    calculateBuilderPrice({
+      garment: 'panties',
+      pantyStyle: 'panty-highwaist',
+      fabric: 'lace',
+      braType: 'plunge',
+      price: 1,
+    }),
+    PANTY_BASE_PRICE + style + fabric,
+  )
+  assert.equal(calculateBuilderPrice({ garment: 'panties' }), PANTY_BASE_PRICE)
 })
 
 test('server pricing matches the client store formula for a full spec', () => {

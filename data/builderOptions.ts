@@ -53,6 +53,25 @@ export const CB_SUPPORT_OPTIONS = [
   { id: 'high',   label: 'High',   price: 100 },
 ] as const
 
+export const CB_PANTY_STYLES = [
+  { id: 'panty-cotton',    label: 'Cotton brief', price: 0,   description: 'Everyday cotton. Full coverage.' },
+  { id: 'panty-brief',     label: 'Brief',        price: 0,   description: 'Classic cut. Sits at the hip.' },
+  { id: 'panty-bikini',    label: 'Bikini',       price: 50,  description: 'Low rise. Narrow sides.' },
+  { id: 'panty-highwaist', label: 'High waist',   price: 150, description: 'Held at the waist.' },
+  { id: 'panty-lace',      label: 'Lace',         price: 200, description: 'Scalloped edge. Sheer panels.' },
+] as const
+
+export const CB_PANTY_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'] as const
+
+/** Fabric the atelier starts from when a panty cut is chosen. */
+export const PANTY_DEFAULTS: Record<string, { fabric?: string }> = {
+  'panty-cotton':    { fabric: 'cotton' },
+  'panty-brief':     { fabric: 'modal' },
+  'panty-bikini':    { fabric: 'microfiber' },
+  'panty-highwaist': { fabric: 'smooth' },
+  'panty-lace':      { fabric: 'lace' },
+}
+
 export const CB_FABRIC_OPTIONS = [
   { id: 'cotton',     label: 'Cotton blend', price: 0,   description: 'Breathable. Soft. Everyday.' },
   { id: 'modal',      label: 'Modal',        price: 50,  description: 'Cool hand. Fine drape.' },

@@ -14,6 +14,7 @@ const CAT_COPY: Record<string, string> = {
   seamless: 'Invisible under anything.',
   plus: 'Built for every curve. Designed, not adjusted.',
   bridal: 'Worn once. Remembered forever.',
+  panties: 'Cut close. Forgotten by noon.',
 }
 
 interface ShopContentProps {

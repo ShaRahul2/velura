@@ -13,12 +13,14 @@ const COLS = [
       { label: 'Seamless', href: '/shop?cat=seamless' },
       { label: 'Plus', href: '/shop?cat=plus' },
       { label: 'Bridal', href: '/shop?cat=bridal' },
+      { label: 'Panties', href: '/shop?cat=panties' },
     ],
   },
   {
     title: 'Custom',
     links: [
       { label: 'Build Yours', href: '/builder' },
+      { label: 'Custom panties', href: '/builder?garment=panties' },
       { label: 'Fit Calculator', href: '/builder' },
       { label: 'All collections', href: '/shop' },
     ],

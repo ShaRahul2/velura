@@ -5,6 +5,17 @@ import { filterShopCatalog, paginateShop, parseShopQuery, shopHref, parseShopSea
 import { buildVisualSpec, buildAIPrompt, buildPollinationsPrompt, specToSeed } from '../lib/builderVisualSpec'
 import { shouldBypassImageOptimizer } from '../lib/imageOptimizer'
 
+test('panties is its own shop collection', () => {
+  const panties = filterShopCatalog(products, { cat: 'panties', page: 1 })
+  assert.ok(panties.length >= 5)
+  assert.ok(panties.every((p) => p.cat === 'panties'))
+  assert.equal(shopHref({ page: 1 }, { cat: 'panties' }), '/shop?cat=panties')
+  const names = panties.map((p) => p.name)
+  for (const name of ['CottonDay', 'FullBrief', 'FineCut', 'HighRise', 'EdgeLace']) {
+    assert.ok(names.includes(name))
+  }
+})
+
 test('shop catalog filters by category, support, and search', () => {
   const everyday = filterShopCatalog(products, { cat: 'everyday', page: 1 })
   assert.ok(everyday.length > 0)
@@ -76,6 +87,10 @@ test('builder prompts insist on an empty garment and seed is stable', () => {
   assert.match(full, /no person/)
   assert.match(full, /everyday/)
   assert.match(short, /no person/)
+  const panty = buildAIPrompt({ ...spec, garment: 'panties', pantyStyle: 'panty-lace' }).toLowerCase()
+  assert.match(panty, /panties/)
+  assert.match(panty, /no person/)
+  assert.doesNotMatch(panty, /t-shirt bra/)
   assert.equal(specToSeed(spec), specToSeed(spec))
   assert.notEqual(specToSeed(spec, 1), specToSeed(spec, 0))
 })

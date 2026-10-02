@@ -19,6 +19,7 @@ const CATEGORIES: {
   { slug: 'seamless', label: 'Seamless',  description: 'Invisible under anything.',           sortOrder: 5 },
   { slug: 'plus',     label: 'Plus',      description: 'Designed for fuller curves.',         sortOrder: 6 },
   { slug: 'bridal',   label: 'Bridal',    description: 'For the morning of.',                 sortOrder: 7 },
+  { slug: 'panties',  label: 'Panties',   description: 'Cut close. Forgotten by noon.',       sortOrder: 8 },
 ]
 
 // ── Badge mapping ─────────────────────────────────────────────────────────────

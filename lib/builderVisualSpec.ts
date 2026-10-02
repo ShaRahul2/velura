@@ -7,6 +7,8 @@ import { CB_COLOR_OPTIONS } from '@/data/builderOptions'
  * All nulls are resolved to sensible defaults so downstream code never needs to guard.
  */
 export interface BuilderVisualSpec {
+  garment:    'bra' | 'panties'
+  pantyStyle: string
   braType:    string   // one of the configured custom bra silhouettes
   strapStyle: string   // classic | adjustable | crossback | wide | none
   padding:    string   // none | light | medium | high
@@ -17,14 +19,17 @@ export interface BuilderVisualSpec {
   colorId:    string
   colorLabel: string
   colorHex:   string
-  size:       string   // "34B" or "—"
+  size:       string   // "34B", "M", or "—"
 }
 
 export function buildVisualSpec(state: BuilderState): BuilderVisualSpec {
   const colorEntry  = CB_COLOR_OPTIONS.find((c) => c.id === (state.color ?? 'cream'))
   const isStrapless = state.braType === 'strapless'
+  const garment = state.garment === 'panties' ? 'panties' : 'bra'
 
   return {
+    garment,
+    pantyStyle: state.pantyStyle ?? 'panty-brief',
     braType:    state.braType    ?? 'everyday',
     strapStyle: isStrapless ? 'none' : (state.strapStyle ?? 'classic'),
     padding:    state.padding    ?? 'none',
@@ -35,7 +40,9 @@ export function buildVisualSpec(state: BuilderState): BuilderVisualSpec {
     colorId:    state.color      ?? 'cream',
     colorLabel: colorEntry?.label ?? 'Warm Stone',
     colorHex:   colorEntry?.color ?? '#EDE9E4',
-    size:       state.band && state.cup ? `${state.band}${state.cup}` : '—',
+    size:       garment === 'panties'
+      ? (state.pantySize ?? '—')
+      : (state.band && state.cup ? `${state.band}${state.cup}` : '—'),
   }
 }
 
@@ -45,11 +52,14 @@ export function buildVisualSpec(state: BuilderState): BuilderVisualSpec {
  * Used as the Cloudinary public_id for AI-preview caching.
  */
 export function specToHash(spec: BuilderVisualSpec): string {
-  const key = [
+  const braKey = [
     spec.braType, spec.strapStyle, spec.padding,
     spec.underwire, spec.closure, spec.support,
     spec.fabric,   spec.colorId,
   ].join('|')
+  const key = spec.garment === 'panties'
+    ? `panties|${spec.pantyStyle}|${braKey}`
+    : braKey
   // djb2-inspired hash → base-36 string, 8 chars minimum
   let h = 5381
   for (let i = 0; i < key.length; i++) {
@@ -73,7 +83,31 @@ export function specToSeed(spec: BuilderVisualSpec, salt = 0): number {
  * Uses fashion-specific visual language so diffusion models render the right silhouette.
  * Explicitly bans human bodies, mannequin faces, text, and logos.
  */
+const PANTY_STYLE_DESC: Record<string, string> = {
+  'panty-cotton':    'everyday full-coverage cotton briefs with a soft jersey waistband and clean leg openings',
+  'panty-brief':     'classic briefs with moderate coverage and a smooth waist elastic',
+  'panty-bikini':    'low-rise bikini panties with narrow side straps and a low waist',
+  'panty-highwaist': 'high-waist panties with a tall smooth waistband and a full front panel',
+  'panty-lace':      'delicate French lace panties with scalloped eyelash trim and sheer floral lace',
+}
+
+function buildPantyPrompt(spec: BuilderVisualSpec): string {
+  return (
+    `Luxury e-commerce product photograph of ONE empty pair of panties lying flat, garment only. ` +
+    `No person, no model, no mannequin, no torso, no skin, no face, no hands, no body. ` +
+    `Centered on warm ivory linen. Soft studio key light from the upper left, gentle fill, no harsh shadows. ` +
+    `Portrait 3:4 still-life. ` +
+    `The garment is ${PANTY_STYLE_DESC[spec.pantyStyle] ?? 'a pair of briefs'}. ` +
+    `Fabric: ${spec.fabric}. ` +
+    `Colour: ${spec.colorLabel}, hex ${spec.colorHex} — dye the entire garment this exact tone. ` +
+    `Photoreal fabric texture, visible stitching. ` +
+    `Editorial catalogue still-life, Celine / The Row, high detail, sharp focus. ` +
+    `No text, no logo, no watermark, no extra props. Isolated panties only.`
+  )
+}
+
 export function buildAIPrompt(spec: BuilderVisualSpec): string {
+  if (spec.garment === 'panties') return buildPantyPrompt(spec)
   // ── Bra type — describe the physical silhouette and cup shape ───────────────
   const braTypeDesc: Record<string, string> = {
     everyday:   'everyday T-shirt bra with smooth seamless rounded cups, moderate coverage, minimal visible seaming',
@@ -165,6 +199,14 @@ export function buildAIPrompt(spec: BuilderVisualSpec): string {
  * Pollinations FLUX model can follow concise fashion-photography language well.
  */
 export function buildPollinationsPrompt(spec: BuilderVisualSpec): string {
+  if (spec.garment === 'panties') {
+    const cut = PANTY_STYLE_DESC[spec.pantyStyle] ?? 'briefs'
+    return (
+      `Empty panties only, no person, no mannequin, no body. ` +
+      `${spec.colorLabel} ${cut}, ${spec.fabric}, hex ${spec.colorHex}. ` +
+      `Flat-lay on ivory linen, studio product photo, garment isolated.`
+    )
+  }
   const braShort: Record<string, string> = {
     everyday:   'smooth T-shirt bra with rounded seamless cups',
     balconette: 'balconette bra with straight-across cup neckline',
