@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     const order = await db.order.findUnique({
       where: { id: current.id },
-      include: { items: true },
+      include: { items: true, shipment: { include: { events: true } } },
     })
     if (!order) return NextResponse.json({ error: NOT_FOUND }, { status: 404 })
 

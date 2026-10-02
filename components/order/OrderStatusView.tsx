@@ -22,14 +22,61 @@ export function OrderStatusView({
         {order.note}
       </p>
 
-      {(order.trackingNumber || order.carrier) && (
-        <div className="mb-8 border border-lm px-4 py-4">
-          <p className="mb-1 font-sans text-[0.62rem] tracking-label uppercase text-rose">Tracking</p>
-          <p className="font-sans text-[0.88rem] text-deep">
-            {order.carrier ? `${order.carrier} · ` : ''}
-            {order.trackingNumber ?? '—'}
+      {order.tracking ? (
+        <div className="mb-8 border border-lm px-4 py-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <p className="font-sans text-[0.62rem] tracking-label uppercase text-rose">Tracking</p>
+            <p className="font-sans text-[0.7rem] uppercase tracking-[0.08em] text-mauve">
+              {order.tracking.statusLabel}
+            </p>
+          </div>
+          <p className="mt-1 font-sans text-[0.88rem] text-deep">
+            {order.tracking.courier ? `${order.tracking.courier} · ` : ''}
+            {order.tracking.awb ?? '—'}
           </p>
+          {order.tracking.estimatedDelivery && !order.tracking.deliveredAt && (
+            <p className="mt-1 font-sans text-[0.74rem] text-mauve">
+              Expected by {formatOrderDate(order.tracking.estimatedDelivery)}
+            </p>
+          )}
+          {order.tracking.trackingUrl && (
+            <a
+              href={order.tracking.trackingUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-block font-sans text-[0.72rem] uppercase tracking-btn text-deep underline underline-offset-4"
+            >
+              Track parcel
+            </a>
+          )}
+
+          {order.tracking.events.length > 0 && (
+            <ol className="mt-5 space-y-3 border-l border-lm pl-4">
+              {order.tracking.events.map((ev, i) => (
+                <li key={`${ev.occurredAt}-${i}`} className="relative">
+                  <span
+                    className={`absolute -left-[21px] top-1 h-2 w-2 rounded-full ${i === 0 ? 'bg-deep' : 'bg-lm'}`}
+                  />
+                  <p className="font-sans text-[0.8rem] text-deep">{ev.description}</p>
+                  <p className="mt-0.5 font-sans text-[0.66rem] text-mauve">
+                    {ev.label}
+                    {ev.location ? ` · ${ev.location}` : ''} · {formatOrderDate(ev.occurredAt)}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          )}
         </div>
+      ) : (
+        (order.trackingNumber || order.carrier) && (
+          <div className="mb-8 border border-lm px-4 py-4">
+            <p className="mb-1 font-sans text-[0.62rem] tracking-label uppercase text-rose">Tracking</p>
+            <p className="font-sans text-[0.88rem] text-deep">
+              {order.carrier ? `${order.carrier} · ` : ''}
+              {order.trackingNumber ?? '—'}
+            </p>
+          </div>
+        )
       )}
 
       <div className="border-t border-lm">

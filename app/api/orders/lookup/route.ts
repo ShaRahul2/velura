@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
     const order = await db.order.findUnique({
       where: { id: parsed.data.orderId.trim() },
-      include: { items: true },
+      include: { items: true, shipment: { include: { events: true } } },
     })
 
     if (!order || !emailsMatch(order.email, parsed.data.email)) {

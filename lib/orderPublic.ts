@@ -1,6 +1,32 @@
-import type { Order, OrderItem, OrderStatus, PaymentMethod, PaymentStatus } from '@prisma/client'
+import type {
+  Order,
+  OrderItem,
+  OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
+  Shipment,
+  ShipmentEvent,
+  ShipmentStatus,
+} from '@prisma/client'
 import { formatPrice } from '@/lib/utils'
 import { customerCanCancel } from '@/lib/orderActionPolicy'
+import { SHIPMENT_STATUS_LABEL } from '@/lib/shipping/status'
+
+export type PublicTracking = {
+  status: ShipmentStatus
+  statusLabel: string
+  courier: string | null
+  awb: string | null
+  trackingUrl: string | null
+  estimatedDelivery: string | null
+  deliveredAt: string | null
+  events: Array<{ status: ShipmentStatus; label: string; description: string; location: string | null; occurredAt: string }>
+}
+
+type OrderForPublic = Order & {
+  items: OrderItem[]
+  shipment?: (Shipment & { events: ShipmentEvent[] }) | null
+}
 
 export type PublicOrder = {
   id: string
@@ -26,6 +52,7 @@ export type PublicOrder = {
   canCancel: boolean
   carrier: string | null
   trackingNumber: string | null
+  tracking: PublicTracking | null
 }
 
 const FULFILMENT: Record<OrderStatus, string> = {
@@ -83,9 +110,31 @@ export function deliveryNote(order: {
     : '3–5 business days after confirmation.'
 }
 
-export function toPublicOrder(
-  order: Order & { items: OrderItem[] },
-): PublicOrder {
+function toPublicTracking(order: OrderForPublic): PublicTracking | null {
+  const s = order.shipment
+  if (!s) return null
+  return {
+    status: s.status,
+    statusLabel: SHIPMENT_STATUS_LABEL[s.status],
+    courier: s.courier ?? order.carrier,
+    awb: s.awb ?? order.trackingNumber,
+    trackingUrl: s.trackingUrl,
+    estimatedDelivery: s.estimatedDelivery?.toISOString() ?? null,
+    deliveredAt: s.deliveredAt?.toISOString() ?? null,
+    events: [...s.events]
+      .sort((a, b) => b.occurredAt.getTime() - a.occurredAt.getTime())
+      .slice(0, 30)
+      .map((e) => ({
+        status: e.status,
+        label: SHIPMENT_STATUS_LABEL[e.status],
+        description: e.description,
+        location: e.location,
+        occurredAt: e.occurredAt.toISOString(),
+      })),
+  }
+}
+
+export function toPublicOrder(order: OrderForPublic): PublicOrder {
   return {
     id: order.id,
     createdAt: order.createdAt.toISOString(),
@@ -116,6 +165,7 @@ export function toPublicOrder(
     canCancel: customerCanCancel(order.status),
     carrier: order.carrier,
     trackingNumber: order.trackingNumber,
+    tracking: toPublicTracking(order),
   }
 }
 

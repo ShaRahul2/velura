@@ -9,6 +9,15 @@ export function AnnouncementBar() {
           ·
         </span>
         15-day returns
+        <span className="mx-2.5 hidden opacity-30 md:inline" aria-hidden="true">
+          ·
+        </span>
+        <Link
+          href="/shop?cat=panties"
+          className="hidden text-blush underline underline-offset-4 decoration-white/20 hover:decoration-white/50 md:inline"
+        >
+          Panties — now in
+        </Link>
         <span className="mx-2.5 hidden opacity-30 sm:inline" aria-hidden="true">
           ·
         </span>

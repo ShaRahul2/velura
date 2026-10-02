@@ -3,6 +3,7 @@ import { HeroSection } from '@/components/home/HeroSection'
 import { MarqueeBanner } from '@/components/home/MarqueeBanner'
 import { FeaturedProducts, FeaturedProductsSkeleton } from '@/components/home/FeaturedProducts'
 import { CategoryGrid } from '@/components/home/CategoryGrid'
+import { PantiesLaunch } from '@/components/home/PantiesLaunch'
 import { AtelierBanner } from '@/components/home/AtelierBanner'
 import { Lookbook } from '@/components/home/Lookbook'
 import { EditorialQuote } from '@/components/home/EditorialQuote'
@@ -31,6 +32,7 @@ export default function HomePage() {
         <FeaturedProducts />
       </Suspense>
       <CategoryGrid />
+      <PantiesLaunch />
       <AtelierBanner />
       <Lookbook />
       <EditorialQuote />
